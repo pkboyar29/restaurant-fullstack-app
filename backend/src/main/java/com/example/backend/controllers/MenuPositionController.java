@@ -23,7 +23,7 @@ public class MenuPositionController {
     }
 
     @GetMapping(path = "/")
-    public ResponseEntity<List<MenuPosition>> getAllMenuPositions() {
+    public ResponseEntity<List<MenuPosition>> getAllMenuPositions() throws Exception {
         List<MenuPosition> allMenuPositions = menuPositionService.getAllMenuPositions();
 
         return ResponseEntity.status(HttpStatus.OK).body(allMenuPositions);

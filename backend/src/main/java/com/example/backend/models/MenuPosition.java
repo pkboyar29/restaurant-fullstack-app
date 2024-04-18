@@ -3,7 +3,6 @@ package com.example.backend.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "menu_positions")
@@ -31,10 +30,9 @@ public class MenuPosition {
     @Column(name = "portion", length = 40, nullable = false)
     private String portion;
 
-//    @ManyToOne
-//    @JoinColumn(name = "menu_section", nullable = false)
-    @Column(name = "menu_section", nullable = false)
-    private Long menuSection;
+    @ManyToOne
+    @JoinColumn(name = "menu_section", nullable = false)
+    private MenuSection menuSection;
 
     public Long getId() {
         return id;
@@ -64,7 +62,7 @@ public class MenuPosition {
         return portion;
     }
 
-    public Long getMenuSection() {
+    public MenuSection getMenuSection() {
         return menuSection;
     }
 
@@ -96,7 +94,7 @@ public class MenuPosition {
         this.portion = portion;
     }
 
-    public void setMenuSection(Long menuSection) {
+    public void setMenuSection(MenuSection menuSection) {
         this.menuSection = menuSection;
     }
 }
