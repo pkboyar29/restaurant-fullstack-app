@@ -1,0 +1,32 @@
+// Переменные
+
+$rubik: "Rubik", sans-serif;
+$open-sans: "Open Sans", sans-serif;
+$inter: "Inter", sans-serif;
+
+$blueColor: #003F62;
+// $fontSize: "";
+
+// Импорт шрифтов
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+// Импорт файлов
+
+@import "nullstyle.scss";
+@import "App.scss";
+@import "sidebar.scss";
+@import "header.scss";
+
+// Основной код
+
+body {
+   background-color: #E7E7E3;
+}
+
+.admin-panel {
+   display: flex;
+}
+
+.right-panel {
+   width: 100%;
+}

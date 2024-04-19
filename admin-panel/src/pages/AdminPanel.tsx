@@ -1,8 +1,17 @@
+import Header from "../components/Header"
+import Sidebar from "../components/Sidebar"
+
 function AdminPanel() {
 
    return (
       <div className="admin-panel">
-         Административная панель
+         <Sidebar />
+         <div className="right-panel">
+            <Header />
+            <div className="main">
+               Привет
+            </div>
+         </div>
       </div>
    )
 }
