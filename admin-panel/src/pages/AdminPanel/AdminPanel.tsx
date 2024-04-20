@@ -1,5 +1,6 @@
 import Header from "../../components/Header/Header"
 import Sidebar from "../../components/Sidebar/Sidebar"
+import ListMenuPositions from "../../components/ListMenuPositions/ListMenuPositions"
 
 function AdminPanel() {
 
@@ -9,7 +10,7 @@ function AdminPanel() {
          <div className="right-panel">
             <Header />
             <div className="main">
-               Привет
+               <ListMenuPositions />
             </div>
          </div>
       </div>
