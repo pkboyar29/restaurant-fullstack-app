@@ -1,6 +1,6 @@
 import Header from "../../components/Header/Header"
 import Sidebar from "../../components/Sidebar/Sidebar"
-import ListMenuPositions from "../../components/ListMenuPositions/ListMenuPositions"
+import ListMenuPositions from "./ListMenuPositions/ListMenuPositions"
 
 function AdminPanel() {
 
