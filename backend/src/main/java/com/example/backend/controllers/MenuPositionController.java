@@ -2,7 +2,6 @@ package com.example.backend.controllers;
 
 import com.example.backend.models.MenuPosition;
 import com.example.backend.services.MenuPositionService;
-import com.example.backend.services.MenuSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

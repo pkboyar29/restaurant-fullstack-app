@@ -1,0 +1,108 @@
+240420112512114431,pg_dump: last built-in OID is 16383
+
+240420112512117084,pg_dump: reading extensions
+
+240420112512119721,pg_dump: identifying extension members
+
+240420112512121482,pg_dump: reading schemas
+
+240420112512121996,pg_dump: reading user-defined tables
+
+240420112512128941,pg_dump: reading user-defined functions
+
+240420112512135682,pg_dump: reading user-defined types
+
+240420112512139024,pg_dump: reading procedural languages
+
+240420112512140122,pg_dump: reading user-defined aggregate functions
+
+240420112512140715,pg_dump: reading user-defined operators
+
+240420112512142227,pg_dump: reading user-defined access methods
+
+240420112512142759,pg_dump: reading user-defined operator classes
+
+240420112512144213,pg_dump: reading user-defined operator families
+
+240420112512145750,pg_dump: reading user-defined text search parsers
+
+240420112512146987,pg_dump: reading user-defined text search templates
+
+240420112512148211,pg_dump: reading user-defined text search dictionaries
+
+240420112512150231,pg_dump: reading user-defined text search configurations
+
+240420112512152269,pg_dump: reading user-defined foreign-data wrappers
+
+240420112512154173,pg_dump: reading user-defined foreign servers
+
+240420112512155512,pg_dump: reading default privileges
+
+240420112512156232,pg_dump: reading user-defined collations
+
+240420112512157547,pg_dump: reading user-defined conversions
+
+240420112512159045,pg_dump: reading type casts
+
+240420112512160835,pg_dump: reading transforms
+
+240420112512161202,pg_dump: reading table inheritance information
+
+240420112512161890,pg_dump: reading event triggers
+
+240420112512162906,pg_dump: finding extension tables
+
+240420112512164747,pg_dump: finding inheritance relationships
+
+240420112512165138,pg_dump: reading column info for interesting tables
+
+240420112512166929,pg_dump: finding table default expressions
+
+240420112512168300,pg_dump: finding table check constraints
+
+240420112512168724,pg_dump: flagging inherited columns in subtables
+
+240420112512169132,pg_dump: reading partitioning data
+
+240420112512169800,pg_dump: reading indexes
+
+240420112512172361,pg_dump: flagging indexes in partitioned tables
+
+240420112512172778,pg_dump: reading extended statistics
+
+240420112512173954,pg_dump: reading constraints
+
+240420112512174343,pg_dump: reading triggers
+
+240420112512175480,pg_dump: reading rewrite rules
+
+240420112512176519,pg_dump: reading policies
+
+240420112512176910,pg_dump: reading row-level security policies
+
+240420112512177718,pg_dump: reading publications
+
+240420112512178629,pg_dump: reading publication membership of tables
+
+240420112512180288,pg_dump: reading publication membership of schemas
+
+240420112512182058,pg_dump: reading subscriptions
+
+240420112512185089,pg_dump: reading large objects
+
+240420112512185712,pg_dump: reading dependency data
+
+240420112512198507,pg_dump: saving encoding = UTF8
+
+240420112512198984,pg_dump: saving standard_conforming_strings = on
+
+240420112512199457,pg_dump: saving search_path = 
+
+240420112512199838,pg_dump: saving database definition
+
+240420112512204923,pg_dump: dumping contents of table "public.menu_position_images"
+
+240420112512205479,pg_dump: dumping contents of table "public.menu_positions"
+
+240420112512206086,pg_dump: dumping contents of table "public.menu_sections"
+
