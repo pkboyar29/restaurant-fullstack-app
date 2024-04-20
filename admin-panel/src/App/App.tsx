@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom"
-import AdminPanel from "./pages/AdminPanel"
-import SignIn from "./pages/SignIn"
-import './scss/style.scss'
+import AdminPanel from "../pages/AdminPanel/AdminPanel"
+import SignIn from "../pages/SignIn/SignIn"
+import './App.scss'
 
 function App() {
 
