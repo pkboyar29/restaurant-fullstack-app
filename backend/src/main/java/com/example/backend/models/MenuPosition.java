@@ -1,5 +1,6 @@
 package com.example.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -42,14 +43,17 @@ public class MenuPosition {
         return name;
     }
 
+    @JsonIgnore
     public String getDescr() {
         return descr;
     }
 
+    @JsonIgnore
     public Boolean getAvailability() {
         return availability;
     }
 
+    @JsonIgnore
     public LocalDate getDateEnteredInMenu() {
         return dateEnteredInMenu;
     }
@@ -62,6 +66,7 @@ public class MenuPosition {
         return portion;
     }
 
+    @JsonIgnore
     public MenuSection getMenuSection() {
         return menuSection;
     }
