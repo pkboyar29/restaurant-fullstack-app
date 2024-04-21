@@ -28,16 +28,22 @@ function Table({ data, columns }: TableProps) {
                <tr key={headerGroup.id} className="table-header__row">
                   {headerGroup.headers.map((header) => (
                      <th key={header.id} className='table-header__cell'>
-                        <div>
-                           {flexRender(header.column.columnDef.header, header.getContext())}
-                        </div>
+                        {flexRender(header.column.columnDef.header, header.getContext())}
                      </th>
                   ))}
                </tr>
             ))}
          </thead>
-         <tbody>
-
+         <tbody className="table-body">
+            {table.getRowModel().rows.map((row) => (
+               <tr key={row.id} className="table-body__row">
+                  {row.getVisibleCells().map((cell) => (
+                     <td key={cell.id} className="table-body__cell">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                     </td>
+                  ))}
+               </tr>
+            ))}
          </tbody>
       </table>
    )

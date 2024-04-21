@@ -17,7 +17,7 @@ function ListMenuPositions() {
          cell: (info) => info.getValue()
       }),
       columnHelper.accessor('name', {
-         header: () => 'Название',
+         header: () => 'Название позиции меню',
          cell: (info) => info.getValue()
       }),
       columnHelper.accessor('portion', {
