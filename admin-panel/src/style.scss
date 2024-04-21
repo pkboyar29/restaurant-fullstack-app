@@ -5,6 +5,7 @@ $open-sans: "Open Sans", sans-serif;
 $inter: "Inter", sans-serif;
 
 $blueColor: #003F62;
+$blackColor1: #232321;
 // $fontSize: "";
 
 // Импорт шрифтов
@@ -120,10 +121,11 @@ h6 {
    box-sizing: border-box;
 }
 
-// Основной код
+// Общие стили
 
 body {
    background-color: #E7E7E3;
+   font-family: $rubik;
 }
 
 .admin-panel {
@@ -132,4 +134,14 @@ body {
 
 .right-panel {
    width: 100%;
+}
+
+.title {
+   font-size: 24px;
+   font-weight: 600;
+   font-family: $rubik;
+}
+
+.main-area {
+   margin: 30px 40px 0 40px;
 }

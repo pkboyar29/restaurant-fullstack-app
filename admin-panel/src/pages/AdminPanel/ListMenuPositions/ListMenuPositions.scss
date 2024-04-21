@@ -1,0 +1,37 @@
+@import '../../../style.scss';
+
+.list-header {
+   display: flex;
+   justify-content: space-between;
+
+   &__buttons {
+      display: flex;
+      gap: 40px;
+   }
+
+   &-button {
+      height: 48px;
+      cursor: pointer;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 27px;
+      gap: 8px;
+      background-color: $blackColor1;
+      transition: all .5s;
+      color: #fff;
+      text-transform: uppercase;
+
+      &:hover {
+         background-color: #9c9c81;
+      }
+
+      &-icon {
+
+      }
+
+      &-text {
+
+      }
+   }
+}

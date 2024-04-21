@@ -1,0 +1,14 @@
+@import '../../style.scss';
+
+.table {
+
+   &-header {
+
+      &__row {}
+
+      &__cell {
+         color: #232321;
+         font-weight: 600;
+      }
+   }
+}
