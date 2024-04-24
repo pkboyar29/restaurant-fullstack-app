@@ -43,17 +43,14 @@ public class MenuPosition {
         return name;
     }
 
-    @JsonIgnore
     public String getDescr() {
         return descr;
     }
 
-    @JsonIgnore
     public Boolean getAvailability() {
         return availability;
     }
 
-    @JsonIgnore
     public LocalDate getDateEnteredInMenu() {
         return dateEnteredInMenu;
     }
@@ -70,6 +67,12 @@ public class MenuPosition {
     public MenuSection getMenuSection() {
         return menuSection;
     }
+
+    public String getSectionName() {
+        return menuSection.getName();
+    }
+
+    // геттер, который будет возвращать список изображений для этой позиции меню, там где нет изображений, null?
 
     public void setId(Long id) {
         this.id = id;
