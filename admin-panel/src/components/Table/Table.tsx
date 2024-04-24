@@ -1,6 +1,8 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { useEffect } from 'react'
 import styles from './Table.module.scss'
+import editButtonIcon from '../../assets/edit-button.svg'
+import deleteButtonIcon from '../../assets/delete-button.svg'
 
 interface TableProps {
    data: any[],
@@ -42,6 +44,15 @@ function Table({ data, columns }: TableProps) {
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                      </td>
                   ))}
+                  {/* добавить сюда две иконки */}
+                  <td className={styles['table-body__icons']}>
+                     <div className={styles['table-body__icon']}>
+                        <img src={editButtonIcon} alt="Edit button" />
+                     </div>
+                     <div className={styles['table-body__icon']}>
+                        <img src={deleteButtonIcon} alt="Delete button" />
+                     </div>
+                  </td>
                </tr>
             ))}
          </tbody>

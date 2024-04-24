@@ -48,5 +48,17 @@
          font-weight: 600;
          font-size: 16px;
       }
+
+
+      &__icons {
+         display: inline-flex;
+         gap: 15px;
+      }
+
+      &__icon {
+         cursor: pointer;
+         width: 23px;
+         height: 23px;
+      }
    }
 }
