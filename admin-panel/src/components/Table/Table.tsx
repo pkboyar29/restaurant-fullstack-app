@@ -1,6 +1,6 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { useEffect } from 'react'
-import './Table.scss'
+import styles from './Table.module.scss'
 
 interface TableProps {
    data: any[],
@@ -22,23 +22,23 @@ function Table({ data, columns }: TableProps) {
    })
 
    return (
-      <table className="table">
-         <thead className="table-header">
+      <table className={styles['table']}>
+         <thead className={styles['table-header']}>
             {table.getHeaderGroups().map((headerGroup) => (
-               <tr key={headerGroup.id} className="table-header__row">
+               <tr key={headerGroup.id} className={styles['table-header__row']}>
                   {headerGroup.headers.map((header) => (
-                     <th key={header.id} className='table-header__cell'>
+                     <th key={header.id} className={styles['table-header__cell']}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
                      </th>
                   ))}
                </tr>
             ))}
          </thead>
-         <tbody className="table-body">
+         <tbody className={styles['table-body']}>
             {table.getRowModel().rows.map((row) => (
-               <tr key={row.id} className="table-body__row">
+               <tr key={row.id} className={styles['table-body__row']}>
                   {row.getVisibleCells().map((cell) => (
-                     <td key={cell.id} className="table-body__cell">
+                     <td key={cell.id} className={styles['table-body__cell']}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                      </td>
                   ))}

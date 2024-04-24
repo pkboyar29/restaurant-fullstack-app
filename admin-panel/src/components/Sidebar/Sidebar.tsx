@@ -1,14 +1,14 @@
-import './Sidebar.scss'
+import styles from './Sidebar.module.scss'
 
 function Sidebar() {
    return (
-      <div className="sidebar">
-         <div className="sidebar__logo">Логотип</div>
-         <div className="sidebar__menu">
-            <div className="sidebar__item">Главная</div>
-            <div className="sidebar__item">Меню</div>
-            <div className="sidebar__item">Заказы на вынос</div>
-            <div className="sidebar__item">Клиенты</div>
+      <div className={styles['sidebar']}>
+         <div className={styles['sidebar__logo']}>Логотип</div>
+         <div className={styles['sidebar__menu']}>
+            <div className={styles['sidebar__item']}>Главная</div>
+            <div className={styles['sidebar__item']}>Меню</div>
+            <div className={styles['sidebar__item']}>Заказы на вынос</div>
+            <div className={styles['sidebar__item']}>Клиенты</div>
          </div>
       </div>
    )

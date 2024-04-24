@@ -1,4 +1,4 @@
-import './ListMenuPositions.scss'
+import styles from './ListMenuPositions.module.scss'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import Table from '../../../components/Table/Table'
@@ -39,20 +39,20 @@ function ListMenuPositions() {
 
    return (
       <>
-         <div className="main-area">
-            <div className="list-header">
-               <div className="title">
+         <div className={styles['main-area']}>
+            <div className={styles['list-header']}>
+               <div className={styles['title']}>
                   Список позиций меню
                </div>
 
-               <div className="list-header__buttons">
-                  <div className="list-header-button">
-                     <div className="list-header-button__icon">+</div>
-                     <div className="list-header-button__text">Новый раздел меню</div>
+               <div className={styles['list-header__buttons']}>
+                  <div className={styles['list-header-button']}>
+                     <div className={styles['list-header-button__icon']}>+</div>
+                     <div className={styles['list-header-button__text']}>Новый раздел меню</div>
                   </div>
-                  <div className="list-header-button">
-                     <div className="list-header-button__icon">+</div>
-                     <div className="list-header-button__text">Новая позиция меню</div>
+                  <div className={styles['list-header-button']}>
+                     <div className={styles['list-header-button__icon']}>+</div>
+                     <div className={styles['list-header-button__text']}>Новая позиция меню</div>
                   </div>
                </div>
             </div>
