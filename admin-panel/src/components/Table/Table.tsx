@@ -44,7 +44,6 @@ function Table({ data, columns }: TableProps) {
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                      </td>
                   ))}
-                  {/* добавить сюда две иконки */}
                   <td className={styles['table-body__icons']}>
                      <div className={styles['table-body__icon']}>
                         <img src={editButtonIcon} alt="Edit button" />

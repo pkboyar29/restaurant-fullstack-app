@@ -1,9 +1,10 @@
 import styles from './ListMenuPositions.module.scss'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import Table from '../../../components/Table/Table'
-import { MenuPosition } from '../../../ts/MenuPosition'
+import { MenuPosition } from '../../../ts/types/MenuPosition'
 import { createColumnHelper } from '@tanstack/react-table'
+import Table from '../../../components/Table/Table'
+import Switch from '../../../components/Switch/Switch'
 
 function ListMenuPositions() {
 
@@ -20,6 +21,10 @@ function ListMenuPositions() {
          header: () => 'Название позиции меню',
          cell: (info) => info.getValue()
       }),
+      columnHelper.accessor('sectionName', {
+         header: () => 'Название секции меню',
+         cell: (info) => info.getValue()
+      }),
       columnHelper.accessor('portion', {
          header: () => 'Порция',
          cell: (info) => info.getValue()
@@ -28,6 +33,12 @@ function ListMenuPositions() {
          header: () => 'Цена',
          cell: (info) => info.getValue()
       }),
+      columnHelper.accessor('availability', {
+         header: () => 'Доступность',
+         cell: props => (
+            <span>{<Switch initialValue={props.getValue()} />}</span>
+         )
+      })
    ]
 
    useEffect(() => {
