@@ -1,15 +1,18 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+
 import styles from './Table.module.scss'
 import editButtonIcon from '../../assets/edit-button.svg'
 import deleteButtonIcon from '../../assets/delete-button.svg'
+import DeleteModal from '../Modal/Modal'
 
 interface TableProps {
    data: any[],
-   columns: any[]
+   columns: any[],
+   deleteHandler: (id: number | string) => void
 }
 
-function Table({ data, columns }: TableProps) {
+function Table({ data, columns, deleteHandler }: TableProps) {
 
    useEffect(() => {
       console.log(data)
@@ -23,8 +26,24 @@ function Table({ data, columns }: TableProps) {
       getCoreRowModel: getCoreRowModel()
    })
 
+   const [modal, setModal] = useState<boolean>(false)
+
+   const [selectedCell, setSelectedCell] = useState<number>(0)
+
+   const pressDelete = (): void => {
+      deleteHandler(selectedCell)
+      setModal(false)
+      setSelectedCell(0)
+   }
+
+   const pressCancel = (): void => {
+      setModal(false)
+      setSelectedCell(0)
+   }
+
    return (
       <table className={styles['table']}>
+         {modal && <DeleteModal modalText='Вы точно хотите удалить эту позицию меню?' buttonConfirmText='Удалить' confirmHandler={pressDelete} cancelHandler={pressCancel} />}
          <thead className={styles['table-header']}>
             {table.getHeaderGroups().map((headerGroup) => (
                <tr key={headerGroup.id} className={styles['table-header__row']}>
@@ -38,6 +57,7 @@ function Table({ data, columns }: TableProps) {
          </thead>
          <tbody className={styles['table-body']}>
             {table.getRowModel().rows.map((row) => (
+
                <tr key={row.id} className={styles['table-body__row']}>
                   {row.getVisibleCells().map((cell) => (
                      <td key={cell.id} className={styles['table-body__cell']}>
@@ -45,14 +65,19 @@ function Table({ data, columns }: TableProps) {
                      </td>
                   ))}
                   <td className={styles['table-body__icons']}>
-                     <div className={styles['table-body__icon']}>
+                     <button className={styles['table-body__icon']}>
                         <img src={editButtonIcon} alt="Edit button" />
-                     </div>
-                     <div className={styles['table-body__icon']}>
+                     </button>
+                     <button onClick={() => {
+                        setSelectedCell(row.getVisibleCells()[0].getValue())
+                        setModal(true)
+                        // deleteHandler(row.getVisibleCells()[0].getValue())
+                     }} className={styles['table-body__icon']}>
                         <img src={deleteButtonIcon} alt="Delete button" />
-                     </div>
+                     </button>
                   </td>
                </tr>
+
             ))}
          </tbody>
       </table>

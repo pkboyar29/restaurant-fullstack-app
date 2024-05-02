@@ -42,11 +42,22 @@ function ListMenuPositions() {
    ]
 
    useEffect(() => {
-      // получить результат запроса сразу в переменную (через присовение переменной)?
+      getAllMenuPositions()
+   }, [])
+
+   const deleteHandler = (id: number | string): void => {
+      axios.delete('http://127.0.0.1:8080/api/menu-positions/' + id)
+         .then(response => {
+            console.log(response.data)
+            getAllMenuPositions()
+         })
+   }
+
+   const getAllMenuPositions = () => {
       axios.get('http://127.0.0.1:8080/api/menu-positions/')
          .then(response => setMenuPositions(response.data))
          .catch(error => console.log(error))
-   }, [])
+   }
 
    return (
       <>
@@ -67,7 +78,7 @@ function ListMenuPositions() {
                   </div>
                </div>
             </div>
-            {menuPositions.length > 0 ? (<Table data={menuPositions} columns={columns} />) : (<div>Loading...</div>)}
+            {menuPositions.length > 0 ? (<Table deleteHandler={deleteHandler} data={menuPositions} columns={columns} />) : (<div>Loading...</div>)}
          </div>
       </>
    )

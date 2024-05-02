@@ -5,7 +5,6 @@ interface SwitchProps {
    initialValue?: boolean
 }
 
-
 function Switch({ initialValue }: SwitchProps) {
 
    const [isToggled, setIsToggled] = useState(initialValue)
