@@ -9,4 +9,8 @@ import java.util.List;
 @Repository
 public interface MenuPositionRepository extends JpaRepository<MenuPosition, Long> {
     List<MenuPosition> findAll();
+
+    void deleteById(Long id);
+
+    boolean existsById(Long id);
 }
