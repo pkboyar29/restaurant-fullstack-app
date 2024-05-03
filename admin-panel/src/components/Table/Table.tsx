@@ -14,10 +14,10 @@ interface TableProps {
 
 function Table({ data, columns, deleteHandler }: TableProps) {
 
-   // useEffect(() => {
-   //    console.log(data)
-   //    console.log(columns)
-   // }, [])
+   useEffect(() => {
+      console.log(data)
+      console.log(columns)
+   }, [])
 
    const table = useReactTable({
       data,

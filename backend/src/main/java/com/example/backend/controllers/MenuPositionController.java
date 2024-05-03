@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.IIOException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +25,24 @@ public class MenuPositionController {
     }
 
     @GetMapping(path = "/")
-    public ResponseEntity<List<MenuPosition>> getAllMenuPositions() throws Exception {
-        List<MenuPosition> allMenuPositions = menuPositionService.getAllMenuPositions();
+    public ResponseEntity<List<MenuPosition>> getAllMenuPositions(@RequestParam(required = false) Long sectionId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(allMenuPositions);
+        List<MenuPosition> menuPositions;
+        if (sectionId != null) {
+            try {
+                menuPositions = menuPositionService.getMenuPositionsBySectionId(sectionId);
+            }
+            catch (ObjectNotFoundException e) {
+//                Map <String, String> body = new HashMap<>();
+//                body.put("message", e.getMessage());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        }
+        else {
+            menuPositions = menuPositionService.getAllMenuPositions();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(menuPositions);
     }
 
     @DeleteMapping(path = "/{id}")

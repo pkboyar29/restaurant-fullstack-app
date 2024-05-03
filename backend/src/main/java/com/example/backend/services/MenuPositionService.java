@@ -3,8 +3,10 @@ package com.example.backend.services;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuPosition;
 import com.example.backend.models.MenuPositionImage;
+import com.example.backend.models.MenuSection;
 import com.example.backend.repositories.MenuPositionImageRepository;
 import com.example.backend.repositories.MenuPositionRepository;
+import com.example.backend.repositories.MenuSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -21,16 +23,31 @@ import java.util.Optional;
 @Service
 public class MenuPositionService {
     private final MenuPositionRepository menuPositionRepository;
+    private final MenuSectionRepository menuSectionRepository;
     private final MenuPositionImageRepository menuPositionImageRepository;
 
     @Autowired
-    public MenuPositionService(MenuPositionRepository menuPositionRepository, MenuPositionImageRepository menuPositionImageRepository) {
+    public MenuPositionService(MenuPositionRepository menuPositionRepository, MenuSectionRepository menuSectionRepository, MenuPositionImageRepository menuPositionImageRepository) {
         this.menuPositionRepository = menuPositionRepository;
+        this.menuSectionRepository = menuSectionRepository;
         this.menuPositionImageRepository = menuPositionImageRepository;
     }
 
     public List<MenuPosition> getAllMenuPositions() {
         return menuPositionRepository.findAll();
+    }
+
+    public List<MenuPosition> getMenuPositionsBySectionId(Long sectionId) throws ObjectNotFoundException {
+
+        Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(sectionId);
+
+        if (optionalMenuSection.isEmpty()) {
+            throw new ObjectNotFoundException("Menu section doesn't exist");
+        }
+
+        MenuSection menuSection = optionalMenuSection.get();
+
+        return menuPositionRepository.findByMenuSection(menuSection);
     }
 
     public void deleteMenuPosition(Long id) throws ObjectNotFoundException, IOException {
