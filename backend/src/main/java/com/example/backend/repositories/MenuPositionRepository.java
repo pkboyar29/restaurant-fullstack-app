@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MenuPositionRepository extends JpaRepository<MenuPosition, Long> {
@@ -12,5 +13,5 @@ public interface MenuPositionRepository extends JpaRepository<MenuPosition, Long
 
     void deleteById(Long id);
 
-    boolean existsById(Long id);
+    Optional<MenuPosition> findById(Long id);
 }

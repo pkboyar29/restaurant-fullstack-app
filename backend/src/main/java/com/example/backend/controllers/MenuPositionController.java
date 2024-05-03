@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.IIOException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,10 @@ public class MenuPositionController {
         catch (ObjectNotFoundException e) {
             body.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+        }
+        catch (IOException e) {
+            body.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
         }
         body.put("message", "Menu position successfully deleted");
         return ResponseEntity.status(HttpStatus.OK).body(body);
