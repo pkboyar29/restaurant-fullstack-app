@@ -14,10 +14,10 @@ interface TableProps {
 
 function Table({ data, columns, deleteHandler }: TableProps) {
 
-   useEffect(() => {
-      console.log(data)
-      console.log(columns)
-   }, [])
+   // useEffect(() => {
+   //    console.log(data)
+   //    console.log(columns)
+   // }, [])
 
    const table = useReactTable({
       data,
@@ -69,9 +69,8 @@ function Table({ data, columns, deleteHandler }: TableProps) {
                         <img src={editButtonIcon} alt="Edit button" />
                      </button>
                      <button onClick={() => {
-                        setSelectedCell(row.getVisibleCells()[0].getValue())
+                        setSelectedCell(row.getVisibleCells()[0].getValue() as number)
                         setModal(true)
-                        // deleteHandler(row.getVisibleCells()[0].getValue())
                      }} className={styles['table-body__icon']}>
                         <img src={deleteButtonIcon} alt="Delete button" />
                      </button>

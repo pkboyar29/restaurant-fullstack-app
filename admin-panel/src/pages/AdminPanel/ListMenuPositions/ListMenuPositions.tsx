@@ -22,14 +22,14 @@ function ListMenuPositions() {
          cell: (info) => info.getValue()
       }),
       columnHelper.accessor('sectionName', {
-         header: () => 'Название секции меню',
+         header: () => 'Название раздела меню',
          cell: (info) => info.getValue()
       }),
       columnHelper.accessor('portion', {
          header: () => 'Порция',
          cell: (info) => info.getValue()
       }),
-      columnHelper.accessor('price', {
+      columnHelper.accessor('priceText', {
          header: () => 'Цена',
          cell: (info) => info.getValue()
       }),
@@ -55,7 +55,15 @@ function ListMenuPositions() {
 
    const getAllMenuPositions = () => {
       axios.get('http://127.0.0.1:8080/api/menu-positions/')
-         .then(response => setMenuPositions(response.data))
+         .then(response => {
+            const menuPositions: MenuPosition[] = response.data
+            menuPositions.map((position) => {
+               position.priceText = position.price + "₽"
+            })
+            console.log("menu = ")
+            console.log(menuPositions)
+            setMenuPositions(menuPositions)
+         })
          .catch(error => console.log(error))
    }
 
