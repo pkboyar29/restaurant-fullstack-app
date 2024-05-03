@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.dto.MenuPositionRequestDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuPosition;
 import com.example.backend.models.MenuPositionImage;
@@ -17,6 +18,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +50,30 @@ public class MenuPositionService {
         MenuSection menuSection = optionalMenuSection.get();
 
         return menuPositionRepository.findByMenuSection(menuSection);
+    }
+
+    public void addMenuPosition(MenuPositionRequestDTO menuPositionRequestDTO) {
+        MenuPosition newMenuPosition = new MenuPosition();
+
+        newMenuPosition.setName(menuPositionRequestDTO.getName());
+        newMenuPosition.setDescr(menuPositionRequestDTO.getDescr());
+        newMenuPosition.setPortion(menuPositionRequestDTO.getPortion());
+        newMenuPosition.setPrice(menuPositionRequestDTO.getPrice());
+        newMenuPosition.setAvailability(menuPositionRequestDTO.isAvailability());
+        newMenuPosition.setDateEnteredInMenu(LocalDate.now());
+
+        Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(menuPositionRequestDTO.getMenuSection());
+        if (optionalMenuSection.isEmpty()) {
+            throw new ObjectNotFoundException("Menu section doesn't exist");
+        }
+        newMenuPosition.setMenuSection(optionalMenuSection.get());
+
+        try {
+            menuPositionRepository.save(newMenuPosition);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to add menu position: " + e.getMessage());
+        }
     }
 
     public void deleteMenuPosition(Long id) throws ObjectNotFoundException, IOException {

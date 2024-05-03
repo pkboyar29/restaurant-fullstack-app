@@ -29,7 +29,7 @@ public class MenuPositionImageController {
         this.menuPositionImageService = menuPositionImageService;
     }
 
-    @GetMapping(path = "/")
+    @GetMapping
     public ResponseEntity<List<MenuPositionImage>> getAllMenuPositionImages() {
         List<MenuPositionImage> allMenuPositionImages = menuPositionImageService.getAllMenuPositionImages();
 

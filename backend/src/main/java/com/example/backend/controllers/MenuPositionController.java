@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.MenuPositionRequestDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuPosition;
 import com.example.backend.services.MenuPositionService;
@@ -24,7 +25,7 @@ public class MenuPositionController {
         this.menuPositionService = menuPositionService;
     }
 
-    @GetMapping(path = "/")
+    @GetMapping
     public ResponseEntity<List<MenuPosition>> getAllMenuPositions(@RequestParam(required = false) Long sectionId) {
 
         List<MenuPosition> menuPositions;
@@ -43,6 +44,21 @@ public class MenuPositionController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(menuPositions);
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, String>> addMenuPosition(@RequestBody MenuPositionRequestDTO menuPositionRequestDTO) {
+        Map <String, String> responseBody = new HashMap<>();
+
+        try {
+            menuPositionService.addMenuPosition(menuPositionRequestDTO);
+            responseBody.put("message", "Successful");
+        }
+        catch (RuntimeException e) {
+            responseBody.put("message", e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @DeleteMapping(path = "/{id}")

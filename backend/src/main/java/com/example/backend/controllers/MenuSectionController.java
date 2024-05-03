@@ -23,7 +23,7 @@ public class MenuSectionController {
         this.menuSectionService = menuSectionService;
     }
 
-    @GetMapping(path = "/")
+    @GetMapping
     public ResponseEntity<List<MenuSection>> getAllMenuSections() {
         List<MenuSection> menuSections = menuSectionService.getAllMenuSections();
 

@@ -74,10 +74,6 @@ public class MenuPosition {
 
     // геттер, который будет возвращать список изображений для этой позиции меню, там где нет изображений, null?
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
