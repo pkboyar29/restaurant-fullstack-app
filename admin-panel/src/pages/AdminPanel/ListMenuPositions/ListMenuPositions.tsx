@@ -39,7 +39,7 @@ function ListMenuPositions() {
       columnHelper.accessor('availability', {
          header: () => 'Доступность',
          cell: props => (
-            <span>{<Switch initialValue={props.getValue()} />}</span>
+            <span>{props.getValue() ? <>Да</> : <>Нет</>}</span>
          )
       })
    ]
