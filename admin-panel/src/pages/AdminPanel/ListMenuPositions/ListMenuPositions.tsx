@@ -4,15 +4,20 @@ import { useEffect, useState } from 'react'
 import { MenuPosition } from '../../../ts/types/MenuPosition'
 import { createColumnHelper } from '@tanstack/react-table'
 import Table from '../../../components/Table/Table'
-import Switch from '../../../components/Switch/Switch'
 import downIcon from '../../../assets/down.svg'
+import { useNavigate } from 'react-router-dom'
 
-function ListMenuPositions() {
+interface ListMenuPositionsProps {
+   updateKey: number
+}
+
+function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
+
+   const navigate = useNavigate()
 
    const [menuPositions, setMenuPositions] = useState<MenuPosition[]>([])
    const [menuSections, setMenuSections] = useState<any[]>([])
    const [dropdownVisible, setDropdownVisible] = useState<boolean>(false)
-   const [selectedSection, setSelectedSection] = useState<number>(0) // 0 - это все разделы меню
 
    const columnHelper = createColumnHelper<MenuPosition>()
    const columns = [
@@ -47,7 +52,7 @@ function ListMenuPositions() {
    useEffect(() => {
       getAllMenuPositions()
       getAllMenuSections()
-   }, [])
+   }, [updateKey])
 
    const deleteHandler = (id: number | string): void => {
       axios.delete('http://127.0.0.1:8080/api/menu-positions/' + id)
@@ -59,7 +64,7 @@ function ListMenuPositions() {
    }
 
    const getAllMenuPositions = (): void => {
-      axios.get('http://127.0.0.1:8080/api/menu-positions/')
+      axios.get('http://127.0.0.1:8080/api/menu-positions')
          .then(response => {
             const menuPositions: MenuPosition[] = response.data
             menuPositions.map((position) => {
@@ -73,7 +78,7 @@ function ListMenuPositions() {
    }
 
    const getMenuPositionsBySectionId = (id: number): void => {
-      axios.get('http://127.0.0.1:8080/api/menu-positions/?sectionId=' + id)
+      axios.get('http://127.0.0.1:8080/api/menu-positions?sectionId=' + id)
          .then(response => {
             const menuPositions: MenuPosition[] = response.data
             menuPositions.map((position) => {
@@ -87,7 +92,7 @@ function ListMenuPositions() {
    }
 
    const getAllMenuSections = (): void => {
-      axios.get('http://127.0.0.1:8080/api/menu-sections/')
+      axios.get('http://127.0.0.1:8080/api/menu-sections')
          .then(response => {
             console.log(response.data)
             setMenuSections(response.data)
@@ -95,9 +100,8 @@ function ListMenuPositions() {
          .catch(error => console.log(error))
    }
 
-   const selectSectionHandler = (id: number): void => {
+   const onSelectSectionHandler = (id: number): void => {
       console.log(id)
-      setSelectedSection(id)
       setDropdownVisible(false)
 
       const sectionNameElement = document.querySelector('#section-name')
@@ -117,6 +121,10 @@ function ListMenuPositions() {
       }
    }
 
+   const onAddButtonClick = (): void => {
+      navigate('/admin-panel/add-menu-position')
+   }
+
    return (
       <>
          <div className={styles['main-area']}>
@@ -126,14 +134,10 @@ function ListMenuPositions() {
                   Список позиций меню
                </div>
                <div className={styles['list-header__buttons']}>
-                  <div className={styles['list-header-button']}>
-                     <div className={styles['list-header-button__icon']}>+</div>
-                     <div className={styles['list-header-button__text']}>Новый раздел меню</div>
-                  </div>
-                  <div className={styles['list-header-button']}>
+                  <button onClick={onAddButtonClick} className={styles['list-header-button']}>
                      <div className={styles['list-header-button__icon']}>+</div>
                      <div className={styles['list-header-button__text']}>Новая позиция меню</div>
-                  </div>
+                  </button>
                </div>
             </div>
 
@@ -141,12 +145,12 @@ function ListMenuPositions() {
                <div className={styles['list__filters__sections']}>
                   <button onClick={() => setDropdownVisible(!dropdownVisible)} className={`${styles['list__filter']} ${styles['list-filter']}`}>
                      <div id='section-name' className={styles['list-filter__name']}>Все разделы меню</div>
-                     <div className={`${styles['list-filter__icon']} ${dropdownVisible && styles['active']}`}><img src={downIcon} alt="треугольник вниз" /></div>
+                     <div className={`${styles['list-filter__icon']} ${dropdownVisible && styles['active']}`}><img src={downIcon} alt='треугольник вниз' /></div>
                   </button>
                   {dropdownVisible && <div className={`${styles['dropdownMenu']}`}>
-                     <div key={0} className={styles['dropdownMenu__item']} onClick={() => selectSectionHandler(0)}>Все разделы меню</div>
+                     <div key={0} className={styles['dropdownMenu__item']} onClick={() => onSelectSectionHandler(0)}>Все разделы меню</div>
                      {menuSections.map((section) => (
-                        <div key={section.id} className={styles['dropdownMenu__item']} onClick={() => selectSectionHandler(section.id)}>{section.name}</div>
+                        <div key={section.id} className={styles['dropdownMenu__item']} onClick={() => onSelectSectionHandler(section.id)}>{section.name}</div>
                      ))}
                   </div>}
                </div>

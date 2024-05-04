@@ -7,8 +7,9 @@ $inter: "Inter", sans-serif;
 $blueColor: #003F62;
 $blueColorHover: #617985;
 $blackColor1: #232321;
+$blackColor2: #1C1C1A;
 $greyColor: rgba(35, 35, 33, 0.7);
-// $fontSize: "";
+$greyColor2: #79767C;
 
 // Импорт шрифтов
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
@@ -145,5 +146,105 @@ body {
 }
 
 .main-area {
-   margin: 30px 40px 0 40px;
+   margin: 30px 40px;
+}
+
+// FORM
+
+.form {
+   margin: 30px 0 30px;
+   background-color: #fff;
+   padding: 30px 30px 40px 30px;
+   border-radius: 20px;
+
+   &__columns {
+      display: flex;
+      gap: 30px;
+      width: 100%;
+   }
+
+   &__column {
+      flex: 0 0 30%;
+      // max-width: 500px;
+   }
+
+   &__column__first {
+      flex: 0 0 30%;
+   }
+
+   &__buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin: 20px 0 0;
+
+      button,
+      input {
+         font-family: $rubik;
+         font-weight: 500;
+         font-size: 16px;
+         border-radius: 13px;
+         padding: 15px 0;
+         width: 220px;
+      }
+   }
+
+   &__confirm {
+      cursor: pointer;
+      background-color: $blueColor;
+      color: #fff;
+      transition: all .5s;
+
+      &:hover {
+         background-color: $blueColorHover;
+      }
+   }
+
+   &__cancel {
+      background-color: #fff;
+      border: 1px solid $blackColor1;
+      transition: all .5s;
+
+      &:hover {
+         background-color: $blackColor1;
+         color: #fff;
+      }
+   }
+}
+
+.element {
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
+   margin: 0 0 15px 0;
+
+   &__title {
+      color: $blackColor1;
+      font-size: 19px;
+      font-weight: 600;
+   }
+
+   &__input {
+      border: $blackColor2 solid 1px;
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #79767C;
+      font-size: 16px;
+      font-family: $inter;
+   }
+
+   &__error {
+      color: red;
+   }
+
+   &__descr {
+      height: 150px;
+      vertical-align: top;
+   }
+
+   &__checkbox {
+      width: 17px;
+      height: 17px;
+   }
+
 }

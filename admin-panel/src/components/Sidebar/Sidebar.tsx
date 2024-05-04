@@ -6,7 +6,8 @@ function Sidebar() {
          <div className={styles['sidebar__logo']}>Логотип</div>
          <div className={styles['sidebar__menu']}>
             <div className={styles['sidebar__item']}>Главная</div>
-            <div className={styles['sidebar__item']}>Меню</div>
+            <div className={styles['sidebar__item']}>Позиции меню</div>
+            <div className={styles['sidebar__item']}>Разделы меню</div>
             <div className={styles['sidebar__item']}>Заказы на вынос</div>
             <div className={styles['sidebar__item']}>Клиенты</div>
          </div>
