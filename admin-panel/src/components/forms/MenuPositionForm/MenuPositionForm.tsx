@@ -1,8 +1,9 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import styles from './AddMenuPositionForm.module.scss'
+import styles from './MenuPositionForm.module.scss'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import Modal from '../../Modal/Modal'
 
 type FormFields = {
    name: string,
@@ -13,42 +14,51 @@ type FormFields = {
    availability: boolean
 }
 
-interface AddMenuPositionFormProps {
+interface MenuPositionFormProps {
    increaseUpdateKey: () => void
 }
 
-function AddMenuPositionForm({ increaseUpdateKey }: AddMenuPositionFormProps) {
+function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
 
    const navigate = useNavigate()
-   const onCancelButtonClick = () => {
-      navigate('/admin-panel/menu-positions')
-   }
+   const location = useLocation()
 
    const [menuSections, setMenuSections] = useState<any[]>([])
+   const [currentMenuPosition, setCurrentMenuPosition] = useState<string | null>('')
+   const [currentQueryString, setCurrentQueryString] = useState<string>(location.search)
+   const [deleteModal, setDeleteModal] = useState<boolean>(false)
+   const [cancelModal, setCancelModal] = useState<boolean>(false)
 
    const {
-      register, handleSubmit, setError, formState: { errors, isValid }
+      register, handleSubmit, formState: { errors, isValid }, setValue
    } = useForm<FormFields>({
       mode: "onBlur"
    })
 
    const onSubmit = (data: FormFields) => {
-      console.log(data)
 
-      if (!data.menuSection) {
-         setError('menuSection', {
-            type: 'manual',
-            message: 'Поле обязательно к заполнению'
-         })
+      // в зависимости от того, есть query string или нет, отправлять разные запросы
+      if (currentQueryString === "") {
+         axios.post('http://127.0.0.1:8080/api/menu-positions', data)
+            .then(response => {
+               console.log(response.data)
+               increaseUpdateKey()
+               navigate('/admin-panel/menu-positions')
+            })
+            .catch(error => console.log(error))
       }
-
-      axios.post('http://127.0.0.1:8080/api/menu-positions', data)
-         .then(response => {
-            increaseUpdateKey()
-            navigate('/admin-panel/menu-positions')
-            console.log(response.data)
+      else {
+         axios.put('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, data, {
+            headers: {
+               'Content-Type': 'application/json'
+            }
          })
-         .catch(error => console.log(error))
+            .then(response => {
+               console.log(response.data)
+               increaseUpdateKey()
+               navigate('/admin-panel/menu-positions')
+            })
+      }
    }
 
    const getAllMenuSections = (): void => {
@@ -64,11 +74,54 @@ function AddMenuPositionForm({ increaseUpdateKey }: AddMenuPositionFormProps) {
       getAllMenuSections()
    }, [])
 
+   useEffect(() => {
+      setCurrentQueryString(location.search)
+
+      if (location.search !== "") {
+         const searchParams = new URLSearchParams(location.search)
+         const positionId = searchParams.get('positionId')
+         setCurrentMenuPosition(positionId)
+
+         axios.get('http://127.0.0.1:8080/api/menu-positions/' + positionId)
+            .then(response => {
+               setValue('name', response.data['name'])
+               setValue('descr', response.data['descr'])
+               setValue('menuSection', response.data['menuSection']['id'])
+               setValue('portion', response.data['portion'])
+               setValue('price', response.data['price'])
+               setValue('availability', response.data['availability'])
+            })
+            .catch(error => console.log(error))
+      }
+
+   }, [location])
+
+   const pressModalCancel = (): void => {
+      setDeleteModal(false)
+      setCancelModal(false)
+   }
+
+   const pressModalDiscardChanges = (): void => {
+      navigate('/admin-panel/menu-positions')
+   }
+
+   const pressModalDelete = (): void => {
+      console.log("delete триггер")
+      axios.delete('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition)
+         .then(response => {
+            console.log(response.data)
+            increaseUpdateKey()
+            navigate('/admin-panel/menu-positions')
+         })
+         .catch(error => console.log(error.response.data))
+   }
+
    return (
       <div className={styles['main-area']}>
-
+         {cancelModal && <Modal modalText='Вы точно хотите отменить все изменения?' buttonConfirmText='Да' confirmHandler={pressModalDiscardChanges} cancelHandler={pressModalCancel} />}
+         {deleteModal && <Modal modalText='Вы точно хотите удалить эту позицию меню?' buttonConfirmText='Удалить' confirmHandler={pressModalDelete} cancelHandler={pressModalCancel} />}
          <div className={styles['title']}>
-            Добавить новую позицию меню
+            {currentQueryString === "" ? <>Добавить новую позицию меню</> : <>Редактировать позицию меню</>}
          </div>
 
          <form onSubmit={handleSubmit(onSubmit)} className={styles["form"]}>
@@ -107,9 +160,11 @@ function AddMenuPositionForm({ increaseUpdateKey }: AddMenuPositionFormProps) {
 
                   <div className={styles['element']}>
                      <div className={styles['element__title']}>Раздел меню</div>
-                     <select className={styles['element__input']} {...register('menuSection', {
-                        required: 'Пожалуйста, выберите раздел меню!'
-                     })}>
+                     <select
+                        className={styles['element__input']}
+                        {...register('menuSection', {
+                           required: 'Пожалуйста, выберите раздел меню!'
+                        })}>
                         <option value=''>Выбрать раздел меню</option>
                         {menuSections.map((section) => (
                            <option key={section.id} value={section.id}>{section.name}</option>
@@ -152,8 +207,9 @@ function AddMenuPositionForm({ increaseUpdateKey }: AddMenuPositionFormProps) {
             </div>
 
             <div className={styles['form__buttons']}>
-               <input type='submit' className={styles['form__confirm']} value='Добавить' disabled={!isValid} />
-               <button className={styles['form__cancel']} onClick={onCancelButtonClick}>Отмена</button>
+               <input type='submit' className={styles['form__confirm']} value={currentQueryString === "" ? 'Добавить' : 'Сохранить изменения'} disabled={!isValid} />
+               {currentQueryString !== "" && <button type='button' className={styles['form__cancel']} onClick={() => { setDeleteModal(true) }}>Удалить</button>}
+               <button type='button' className={styles['form__cancel']} onClick={() => { setCancelModal(true) }}>Отмена</button>
             </div>
 
          </form>
@@ -161,4 +217,4 @@ function AddMenuPositionForm({ increaseUpdateKey }: AddMenuPositionFormProps) {
    )
 }
 
-export default AddMenuPositionForm
+export default MenuPositionForm

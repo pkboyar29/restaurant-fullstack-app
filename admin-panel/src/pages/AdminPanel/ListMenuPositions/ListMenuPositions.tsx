@@ -63,6 +63,11 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
          .catch(error => console.log(error.response.data))
    }
 
+   const editHandler = (id: number | string): void => {
+      // переходить на страницу редактирования, id у нас есть (вроде)
+      navigate('/admin-panel/menu-position?positionId=' + id)
+   }
+
    const getAllMenuPositions = (): void => {
       axios.get('http://127.0.0.1:8080/api/menu-positions')
          .then(response => {
@@ -108,7 +113,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
       if (sectionNameElement) {
 
          if (id === 0) {
-            sectionNameElement.textContent = "Все разделы меню"
+            sectionNameElement.textContent = 'Все разделы меню'
             getAllMenuPositions()
          }
          else {
@@ -122,7 +127,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
    }
 
    const onAddButtonClick = (): void => {
-      navigate('/admin-panel/add-menu-position')
+      navigate('/admin-panel/menu-position')
    }
 
    return (
@@ -156,7 +161,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
                </div>
             </div>
 
-            {menuPositions.length > 0 ? (<Table deleteHandler={deleteHandler} data={menuPositions} columns={columns} />) : (<div style={{ marginTop: '15px' }}>Результатов не было найдено</div>)}
+            {menuPositions.length > 0 ? (<Table deleteHandler={deleteHandler} editHandler={editHandler} data={menuPositions} columns={columns} />) : (<div style={{ marginTop: '15px' }}>Результатов не было найдено</div>)}
 
          </div>
       </>

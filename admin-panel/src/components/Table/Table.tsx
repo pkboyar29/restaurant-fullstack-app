@@ -4,15 +4,16 @@ import { useEffect, useState } from 'react'
 import styles from './Table.module.scss'
 import editButtonIcon from '../../assets/edit-button.svg'
 import deleteButtonIcon from '../../assets/delete-button.svg'
-import DeleteModal from '../Modal/Modal'
+import Modal from '../Modal/Modal'
 
 interface TableProps {
    data: any[],
    columns: any[],
-   deleteHandler: (id: number | string) => void
+   deleteHandler: (id: number | string) => void,
+   editHandler: (id: number | string) => void
 }
 
-function Table({ data, columns, deleteHandler }: TableProps) {
+function Table({ data, columns, deleteHandler, editHandler }: TableProps) {
 
    useEffect(() => {
       console.log(data)
@@ -26,24 +27,33 @@ function Table({ data, columns, deleteHandler }: TableProps) {
       getCoreRowModel: getCoreRowModel()
    })
 
-   const [modal, setModal] = useState<boolean>(false)
+   const [deleteModal, setDeleteModal] = useState<boolean>(false)
+   const [editModal, setEditModal] = useState<boolean>(false)
 
    const [selectedCell, setSelectedCell] = useState<number>(0)
 
-   const pressDelete = (): void => {
+   const pressModalDelete = (): void => {
       deleteHandler(selectedCell)
-      setModal(false)
+      setDeleteModal(false)
       setSelectedCell(0)
    }
 
-   const pressCancel = (): void => {
-      setModal(false)
+   const pressModalEdit = (): void => {
+      editHandler(selectedCell)
+      setEditModal(false)
+      setSelectedCell(0)
+   }
+
+   const pressModalCancel = (): void => {
+      setDeleteModal(false)
+      setEditModal(false)
       setSelectedCell(0)
    }
 
    return (
       <table className={styles['table']}>
-         {modal && <DeleteModal modalText='Вы точно хотите удалить эту позицию меню?' buttonConfirmText='Удалить' confirmHandler={pressDelete} cancelHandler={pressCancel} />}
+         {deleteModal && <Modal modalText='Вы точно хотите удалить эту позицию меню?' buttonConfirmText='Удалить' confirmHandler={pressModalDelete} cancelHandler={pressModalCancel} />}
+         {editModal && <Modal modalText='Перейти на страницу редактирования меню?' buttonConfirmText='Да' confirmHandler={pressModalEdit} cancelHandler={pressModalCancel} />}
          <thead className={styles['table-header']}>
             {table.getHeaderGroups().map((headerGroup) => (
                <tr key={headerGroup.id} className={styles['table-header__row']}>
@@ -65,12 +75,15 @@ function Table({ data, columns, deleteHandler }: TableProps) {
                      </td>
                   ))}
                   <td className={styles['table-body__icons']}>
-                     <button className={styles['table-body__icon']}>
+                     <button onClick={() => {
+                        setSelectedCell(row.getVisibleCells()[0].getValue() as number)
+                        setEditModal(true)
+                     }} className={styles['table-body__icon']}>
                         <img src={editButtonIcon} alt="Edit button" />
                      </button>
                      <button onClick={() => {
                         setSelectedCell(row.getVisibleCells()[0].getValue() as number)
-                        setModal(true)
+                        setDeleteModal(true)
                      }} className={styles['table-body__icon']}>
                         <img src={deleteButtonIcon} alt="Delete button" />
                      </button>
