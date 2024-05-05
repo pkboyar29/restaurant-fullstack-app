@@ -34,7 +34,7 @@ public class MenuPositionController {
                 menuPositions = menuPositionService.getMenuPositionsBySectionId(sectionId);
             }
             catch (ObjectNotFoundException e) {
-//                Map <String, String> body = new HashMap<>();
+//                Map <String, String> responseBody = new HashMap<>();
 //                body.put("message", e.getMessage());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -44,6 +44,21 @@ public class MenuPositionController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(menuPositions);
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<MenuPosition> getMenuPositionById(@PathVariable Long id) {
+
+        try {
+            MenuPosition menuPosition = menuPositionService.getMenuPositionById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(menuPosition);
+        }
+        catch (ObjectNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping

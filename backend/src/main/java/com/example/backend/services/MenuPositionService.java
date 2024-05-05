@@ -52,6 +52,16 @@ public class MenuPositionService {
         return menuPositionRepository.findByMenuSection(menuSection);
     }
 
+    public MenuPosition getMenuPositionById(Long id) throws ObjectNotFoundException {
+        Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
+
+        if (optionalMenuPosition.isEmpty()) {
+            throw new ObjectNotFoundException("Menu position doesn't exist");
+        }
+
+        return optionalMenuPosition.get();
+    }
+
     public void addMenuPosition(MenuPositionRequestDTO menuPositionRequestDTO) {
         MenuPosition newMenuPosition = new MenuPosition();
 

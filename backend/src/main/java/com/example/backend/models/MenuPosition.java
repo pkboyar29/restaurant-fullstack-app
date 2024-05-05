@@ -63,7 +63,6 @@ public class MenuPosition {
         return portion;
     }
 
-    @JsonIgnore
     public MenuSection getMenuSection() {
         return menuSection;
     }
@@ -73,7 +72,7 @@ public class MenuPosition {
     }
 
     // геттер, который будет возвращать список изображений для этой позиции меню, там где нет изображений, null?
-    
+
     public void setName(String name) {
         this.name = name;
     }
