@@ -54,28 +54,51 @@ public class MenuPositionController {
             menuPositionService.addMenuPosition(menuPositionRequestDTO);
             responseBody.put("message", "Successful");
         }
+        catch (ObjectNotFoundException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        }
         catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<Map<String, String>> updateMenuPosition(@RequestBody MenuPositionRequestDTO menuPositionRequestDTO, @PathVariable Long id) {
+        Map <String, String> responseBody = new HashMap<>();
+        try {
+            menuPositionService.updateMenuPosition(id, menuPositionRequestDTO);
+        }
+        catch (ObjectNotFoundException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        }
+        catch (RuntimeException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+        responseBody.put("message", "Successful");
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Map<String, String>> deleteMenuPosition(@PathVariable Long id) {
-        Map <String, String> body = new HashMap<>();
+        Map <String, String> responseBody = new HashMap<>();
         try {
             menuPositionService.deleteMenuPosition(id);
         }
         catch (ObjectNotFoundException e) {
-            body.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
         }
         catch (IOException e) {
-            body.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseBody);
         }
-        body.put("message", "Menu position successfully deleted");
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+        responseBody.put("message", "Menu position successfully deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

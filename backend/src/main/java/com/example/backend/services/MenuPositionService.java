@@ -76,6 +76,34 @@ public class MenuPositionService {
         }
     }
 
+    public void updateMenuPosition(Long id, MenuPositionRequestDTO menuPositionRequestDTO) {
+
+        Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
+        if (optionalMenuPosition.isEmpty()) {
+            throw new ObjectNotFoundException("Menu position doesn't exist");
+        }
+
+        Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(menuPositionRequestDTO.getMenuSection());
+        if (optionalMenuSection.isEmpty()) {
+            throw new ObjectNotFoundException("Menu section doesn't exist");
+        }
+
+        MenuPosition updatedMenuPosition = optionalMenuPosition.get();
+        updatedMenuPosition.setName(menuPositionRequestDTO.getName());
+        updatedMenuPosition.setDescr(menuPositionRequestDTO.getDescr());
+        updatedMenuPosition.setPortion(menuPositionRequestDTO.getPortion());
+        updatedMenuPosition.setPrice(menuPositionRequestDTO.getPrice());
+        updatedMenuPosition.setAvailability(menuPositionRequestDTO.isAvailability());
+        updatedMenuPosition.setMenuSection(optionalMenuSection.get());
+
+        try {
+            menuPositionRepository.save(updatedMenuPosition);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to add menu position: " + e.getMessage());
+        }
+    }
+
     public void deleteMenuPosition(Long id) throws ObjectNotFoundException, IOException {
         Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
         if (optionalMenuPosition.isEmpty()) {

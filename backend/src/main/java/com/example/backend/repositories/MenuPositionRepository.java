@@ -16,4 +16,6 @@ public interface MenuPositionRepository extends JpaRepository<MenuPosition, Long
     void deleteById(Long id);
 
     Optional<MenuPosition> findById(Long id);
+
+    boolean existsById(Long id);
 }

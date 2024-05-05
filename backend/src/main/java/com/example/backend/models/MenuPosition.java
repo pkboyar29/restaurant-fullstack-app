@@ -23,7 +23,7 @@ public class MenuPosition {
     private Boolean availability = true;
 
     @Column(name = "date_entered_in_menu", nullable = false)
-    private LocalDate dateEnteredInMenu = LocalDate.now();;
+    private LocalDate dateEnteredInMenu;
 
     @Column(name = "price", nullable = false)
     private int price;
@@ -73,7 +73,7 @@ public class MenuPosition {
     }
 
     // геттер, который будет возвращать список изображений для этой позиции меню, там где нет изображений, null?
-
+    
     public void setName(String name) {
         this.name = name;
     }
