@@ -244,7 +244,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
 
                   <div className={styles['element']}>
                      <div className={styles['element__title']}>Цена (в ₽)</div>
-                     <input className={styles['element__input']} type='number' placeholder='Введите цену здесь'
+                     <input className={styles['element__input']} type='number' placeholder='Введите цену здесь' min='0' max='1000000'
                         {...register('price', {
                            required: 'Поле обязательно к заполнению'
                         })} />
