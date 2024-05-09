@@ -10,11 +10,14 @@ import com.example.backend.repositories.MenuPositionRepository;
 import com.example.backend.repositories.MenuSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,19 +45,17 @@ public class MenuPositionService {
     public List<MenuPosition> getMenuPositionsBySectionId(Long sectionId) throws ObjectNotFoundException {
 
         Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(sectionId);
-
         if (optionalMenuSection.isEmpty()) {
             throw new ObjectNotFoundException("Menu section doesn't exist");
         }
 
         MenuSection menuSection = optionalMenuSection.get();
-
         return menuPositionRepository.findByMenuSection(menuSection);
     }
 
     public MenuPosition getMenuPositionById(Long id) throws ObjectNotFoundException {
-        Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
 
+        Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
         if (optionalMenuPosition.isEmpty()) {
             throw new ObjectNotFoundException("Menu position doesn't exist");
         }
@@ -79,7 +80,68 @@ public class MenuPositionService {
         newMenuPosition.setMenuSection(optionalMenuSection.get());
 
         try {
-            menuPositionRepository.save(newMenuPosition);
+            MenuPosition menuPositionWithId = menuPositionRepository.save(newMenuPosition);
+            Long menuPositionId = menuPositionWithId.getId();
+
+            createMenuPositionDirectory(menuPositionId);
+
+            // добавляем изображения в папку и БД
+            Resource menuPositionResource = new ClassPathResource("static/menu-position-images/" + menuPositionId);
+            System.out.println(menuPositionResource.getFile().getAbsolutePath());
+            Path menuPositionResourcePath = Paths.get(menuPositionResource.getURI());
+
+            MultipartFile imageFile1 = menuPositionRequestDTO.getImage1();
+            MultipartFile imageFile2 = menuPositionRequestDTO.getImage2();
+            MultipartFile imageFile3 = menuPositionRequestDTO.getImage3();
+            MultipartFile imageFile4 = menuPositionRequestDTO.getImage4();
+
+            if (imageFile1 != null && !imageFile1.isEmpty()) {
+                Path image1Path = menuPositionResourcePath.resolve(imageFile1.getOriginalFilename());
+                Files.copy(imageFile1.getInputStream(), image1Path);
+
+                MenuPositionImage image1 = new MenuPositionImage();
+                image1.setLink("static/menu-position-images/" + menuPositionId + "/" + imageFile1.getOriginalFilename());
+                image1.setOrderNumber(1);
+                image1.setMenuPosition(menuPositionWithId);
+
+                menuPositionImageRepository.save(image1);
+            }
+
+            if (imageFile2 != null && !imageFile2.isEmpty()) {
+                Path image2Path = menuPositionResourcePath.resolve(imageFile2.getOriginalFilename());
+                Files.copy(imageFile2.getInputStream(), image2Path);
+
+                MenuPositionImage image2 = new MenuPositionImage();
+                image2.setLink("static/menu-position-images/" + menuPositionId + "/" + imageFile2.getOriginalFilename());
+                image2.setOrderNumber(2);
+                image2.setMenuPosition(menuPositionWithId);
+
+                menuPositionImageRepository.save(image2);
+            }
+
+            if (imageFile3 != null && !imageFile3.isEmpty()) {
+                Path image3Path = menuPositionResourcePath.resolve(imageFile3.getOriginalFilename());
+                Files.copy(imageFile3.getInputStream(), image3Path);
+
+                MenuPositionImage image3 = new MenuPositionImage();
+                image3.setLink("static/menu-position-images/" + menuPositionId + "/" + imageFile3.getOriginalFilename());
+                image3.setOrderNumber(3);
+                image3.setMenuPosition(menuPositionWithId);
+
+                menuPositionImageRepository.save(image3);
+            }
+
+            if (imageFile4 != null && !imageFile4.isEmpty()) {
+                Path image4Path = menuPositionResourcePath.resolve(imageFile4.getOriginalFilename());
+                Files.copy(imageFile4.getInputStream(), image4Path);
+
+                MenuPositionImage image4 = new MenuPositionImage();
+                image4.setLink("static/menu-position-images/" + menuPositionId + "/" + imageFile4.getOriginalFilename());
+                image4.setOrderNumber(4);
+                image4.setMenuPosition(menuPositionWithId);
+
+                menuPositionImageRepository.save(image4);
+            }
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to add menu position: " + e.getMessage());
@@ -107,7 +169,11 @@ public class MenuPositionService {
         updatedMenuPosition.setMenuSection(optionalMenuSection.get());
 
         try {
-            menuPositionRepository.save(updatedMenuPosition);
+            MenuPosition menuPositionWithId = menuPositionRepository.save(updatedMenuPosition);
+            Long menuPositionId = menuPositionWithId.getId();
+
+            // если директории еще не существует, то создаем ее
+            createMenuPositionDirectory(menuPositionId);
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to add menu position: " + e.getMessage());
@@ -143,5 +209,26 @@ public class MenuPositionService {
         menuPositionImageRepository.deleteAllInBatch(images);
 
         menuPositionRepository.deleteById(id);
+    }
+
+    public void createMenuPositionDirectory(Long menuPositionId) {
+        try {
+            // получаем путь к директории ресурсов
+            Resource resource = new ClassPathResource("static/menu-position-images");
+            Path resourcePath = Paths.get(resource.getURI());
+            System.out.println(resourcePath);
+
+            // создаем новую директорию
+            Path newFolderPath = resourcePath.resolve(String.valueOf(menuPositionId));
+            if (!Files.exists(newFolderPath)) {
+                Files.createDirectory(newFolderPath);
+            }
+            else {
+                System.out.println("Папка уже существует");
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Ошибка при создании папки: " + e.getMessage());
+        }
     }
 }

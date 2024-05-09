@@ -6,6 +6,7 @@ import com.example.backend.models.MenuPosition;
 import com.example.backend.services.MenuPositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,8 +62,9 @@ public class MenuPositionController {
         }
     }
 
+    // (consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}) может пригодится для MultiPart файлов
     @PostMapping
-    public ResponseEntity<Map<String, String>> addMenuPosition(@RequestBody MenuPositionRequestDTO menuPositionRequestDTO) {
+    public ResponseEntity<Map<String, String>> addMenuPosition(@ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO) {
         Map <String, String> responseBody = new HashMap<>();
 
         try {
@@ -73,7 +75,7 @@ public class MenuPositionController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
         }
-        catch (RuntimeException e) {
+        catch (Exception e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
@@ -81,8 +83,9 @@ public class MenuPositionController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    // (consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}) может пригодится для MultiPart файлов
     @PutMapping(path = "/{id}")
-    public ResponseEntity<Map<String, String>> updateMenuPosition(@RequestBody MenuPositionRequestDTO menuPositionRequestDTO, @PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> updateMenuPosition(@ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO, @PathVariable Long id) {
         Map <String, String> responseBody = new HashMap<>();
         try {
             menuPositionService.updateMenuPosition(id, menuPositionRequestDTO);

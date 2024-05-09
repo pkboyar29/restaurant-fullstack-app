@@ -12,6 +12,10 @@ type FormFields = {
    portion: string,
    price: number,
    availability: boolean
+   image1: FileList
+   image2: FileList
+   image3: FileList
+   image4: FileList
 }
 
 interface MenuPositionFormProps {
@@ -28,6 +32,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    const [currentQueryString, setCurrentQueryString] = useState<string>(location.search)
    const [deleteModal, setDeleteModal] = useState<boolean>(false)
    const [cancelModal, setCancelModal] = useState<boolean>(false)
+   // const [dragOver, setDragOver] = useState<boolean>(false)
 
    const {
       register, handleSubmit, formState: { errors, isValid }, setValue
@@ -37,9 +42,36 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
 
    const onSubmit = (data: FormFields) => {
 
-      // в зависимости от того, есть query string или нет, отправлять разные запросы
+      const formData = new FormData()
+      formData.append('name', data.name)
+      formData.append('descr', data.descr)
+      formData.append('menuSection', data.menuSection.toString())
+      formData.append('portion', data.portion)
+      formData.append('price', data.price.toString())
+      formData.append('availability', data.availability.toString())
+      if (data.image1.length > 0) {
+         formData.append('image1', data.image1[0])
+      }
+      if (data.image2.length > 0) {
+         formData.append('image2', data.image2[0])
+      }
+      if (data.image3.length > 0) {
+         formData.append('image3', data.image3[0])
+      }
+      if (data.image4.length > 0) {
+         formData.append('image4', data.image4[0])
+      }
+
+      formData.forEach((value, key) => {
+         console.log(key, value)
+      })
+
       if (currentQueryString === "") {
-         axios.post('http://127.0.0.1:8080/api/menu-positions', data)
+         axios.post('http://127.0.0.1:8080/api/menu-positions', formData, {
+            headers: {
+               'Content-Type': 'multipart/form-data'
+            }
+         })
             .then(response => {
                console.log(response.data)
                increaseUpdateKey()
@@ -48,16 +80,13 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
             .catch(error => console.log(error))
       }
       else {
-         axios.put('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, data, {
-            headers: {
-               'Content-Type': 'application/json'
-            }
-         })
+         axios.put('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, formData)
             .then(response => {
                console.log(response.data)
                increaseUpdateKey()
                navigate('/admin-panel/menu-positions')
             })
+            .catch(error => console.log(error))
       }
    }
 
@@ -115,6 +144,33 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
          })
          .catch(error => console.log(error.response.data))
    }
+
+   // const handleDrop = (e: React.DragEvent): void => {
+   //    e.preventDefault()
+
+   //    const files = e.dataTransfer.files
+   //    console.log(files)
+   // }
+
+   // const handleDragOver = (e: React.DragEvent): void => {
+   //    e.preventDefault()
+   // }
+
+   // const handleImage1Change = (e: ChangeEvent<HTMLInputElement>): void => {
+   //    const files = e.target.files
+
+   //    if (files && files.length > 0) {
+   //       const file = files[0]
+
+   //       const reader = new FileReader()
+
+   //       reader.onload = function (e: ProgressEvent<FileReader>) {
+   //          const 
+   //       }
+
+   //       reader.readAsDataURL(file)
+   //    }
+   // }
 
    return (
       <div className={styles['main-area']}>
@@ -202,8 +258,44 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                   </div>
 
                </div>
-               <div className={styles['form__column']}>Колонка 2</div>
-               <div className={styles['form__column']}>Колонка 3</div>
+               <div className={styles['form__column']}>
+                  <div className={styles['element__title']}>Галерея позиции меню</div>
+
+                  <div className={styles['images']}>
+                     <input type="file" {...register('image1')} />
+                     <input type="file" {...register('image2')} />
+                     <input type="file" {...register('image3')} />
+                     <input type="file" {...register('image4')} />
+                  </div>
+
+                  {/* <div id='main-image' className={styles['main-image']}>
+                     <img src={image1} alt='нет' />
+                  </div> */}
+               </div>
+               <div className={styles['form__column']}>
+
+
+                  {/* <div onDrop={handleDrop} onDragOver={handleDragOver} className={styles['image']}>
+                        <div className={styles['image__before-dragdrop']}>
+                           <div className={styles['image__before-dragdrop__img']}>
+                              <img src='/img/before__image.svg' alt='' />
+                           </div>
+                           <div className={styles['image__before-dragdrop__text']}>Drop your imager here, or browse Jpeg, png are allowed</div>
+                        </div>
+                     </div>
+
+                     <div className={styles['image']}>
+
+                     </div>
+
+                     <div className={styles['image']}>
+
+                     </div>
+                     <div className={styles['image']}>
+
+                     </div> */}
+
+               </div>
             </div>
 
             <div className={styles['form__buttons']}>
