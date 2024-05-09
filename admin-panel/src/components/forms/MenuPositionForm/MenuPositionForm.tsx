@@ -262,10 +262,10 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                   <div className={styles['element__title']}>Галерея позиции меню</div>
 
                   <div className={styles['images']}>
-                     <input type="file" {...register('image1')} />
-                     <input type="file" {...register('image2')} />
-                     <input type="file" {...register('image3')} />
-                     <input type="file" {...register('image4')} />
+                     <input type="file" accept='image/*' {...register('image1')} />
+                     <input type="file" accept='image/*' {...register('image2')} />
+                     <input type="file" accept='image/*' {...register('image3')} />
+                     <input type="file" accept='image/*' {...register('image4')} />
                   </div>
 
                   {/* <div id='main-image' className={styles['main-image']}>
