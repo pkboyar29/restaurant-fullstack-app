@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import styles from './MenuPositionForm.module.scss'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from '../../Modal/Modal'
 
@@ -20,7 +20,7 @@ type FormFields = {
 
 type FormImageFile = {
    fileName: string
-   fileURL: string
+   fileURL: string | undefined
 }
 
 interface MenuPositionFormProps {
@@ -43,7 +43,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    const [image4, setImage4] = useState<FormImageFile | null>(null)
 
    const {
-      register, handleSubmit, formState: { errors, isValid }, setValue
+      register, handleSubmit, formState: { errors, isValid }, setValue, resetField
    } = useForm<FormFields>({
       mode: "onBlur"
    })
@@ -129,20 +129,47 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
       switch (orderNumber) {
          case 1:
             setImage1(null)
-            setValue('image1', [] as unknown as FileList)
+            resetField('image1')
             break
          case 2:
             setImage2(null)
-            setValue('image2', [] as unknown as FileList)
+            resetField('image2')
             break
          case 3:
             setImage3(null)
-            setValue('image3', [] as unknown as FileList)
+            resetField('image3')
             break
          case 4:
             setImage4(null)
-            setValue('image4', [] as unknown as FileList)
+            resetField('image4')
             break
+      }
+   }
+
+   const onChangeFileInput = (e: ChangeEvent<HTMLInputElement>, orderNumber: number) => {
+
+      if (e.target.files && e.target.files.length > 0) {
+         const file = e.target.files[0]
+         const imageFromInput: FormImageFile = {
+            fileURL: undefined,
+            fileName: file.name
+         }
+         switch (orderNumber) {
+            case 1:
+               setImage1(imageFromInput)
+               break
+            case 2:
+               setImage2(imageFromInput)
+               break
+            case 3:
+               setImage3(imageFromInput)
+               break
+            case 4:
+               setImage4(imageFromInput)
+               break
+            default:
+               break
+         }
       }
    }
 
@@ -343,7 +370,9 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                            <button onClick={() => deleteImageHandler(1)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
-                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image1')} />
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image1', {
+                              onChange: (e) => onChangeFileInput(e, 1)
+                           })} />
                         </div>}
                      {image2
                         ? <div className={styles['images__filled']}>
@@ -352,7 +381,9 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                            <button onClick={() => deleteImageHandler(2)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
-                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image2')} />
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image2', {
+                              onChange: (e) => onChangeFileInput(e, 2)
+                           })} />
                         </div>}
                      {image3
                         ? <div className={styles['images__filled']}>
@@ -361,7 +392,9 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                            <button onClick={() => deleteImageHandler(3)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
-                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image3')} />
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image3', {
+                              onChange: (e) => onChangeFileInput(e, 3)
+                           })} />
                         </div>}
                      {image4
                         ? <div className={styles['images__filled']}>
@@ -370,32 +403,11 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                            <button onClick={() => deleteImageHandler(4)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
-                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image4')} />
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image4', {
+                              onChange: (e) => onChangeFileInput(e, 4)
+                           })} />
                         </div>}
                   </div>
-
-               </div>
-               <div className={styles['form__column']}>
-
-                  {/* <div onDrop={handleDrop} onDragOver={handleDragOver} className={styles['image']}>
-                        <div className={styles['image__before-dragdrop']}>
-                           <div className={styles['image__before-dragdrop__img']}>
-                              <img src='/img/before__image.svg' alt='' />
-                           </div>
-                           <div className={styles['image__before-dragdrop__text']}>Drop your imager here, or browse Jpeg, png are allowed</div>
-                        </div>
-                     </div>
-
-                     <div className={styles['image']}>
-
-                     </div>
-
-                     <div className={styles['image']}>
-
-                     </div>
-                     <div className={styles['image']}>
-
-                     </div> */}
 
                </div>
             </div>
