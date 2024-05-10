@@ -125,6 +125,27 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
       })
    }
 
+   const deleteImageHandler = (orderNumber: number) => {
+      switch (orderNumber) {
+         case 1:
+            setImage1(null)
+            setValue('image1', [] as unknown as FileList)
+            break
+         case 2:
+            setImage2(null)
+            setValue('image2', [] as unknown as FileList)
+            break
+         case 3:
+            setImage3(null)
+            setValue('image3', [] as unknown as FileList)
+            break
+         case 4:
+            setImage4(null)
+            setValue('image4', [] as unknown as FileList)
+            break
+      }
+   }
+
    useEffect(() => {
       getAllMenuSections()
    }, [])
@@ -319,7 +340,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                         ? <div className={styles['images__filled']}>
                            <img src={image1.fileURL} alt='' className={styles['filled__image']} />
                            <div className={styles['filled__text']}>{image1.fileName}</div>
-                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                           <button onClick={() => deleteImageHandler(1)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
                            <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image1')} />
@@ -328,7 +349,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                         ? <div className={styles['images__filled']}>
                            <img src={image2.fileURL} alt='' className={styles['filled__image']} />
                            <div className={styles['filled__text']}>{image2.fileName}</div>
-                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                           <button onClick={() => deleteImageHandler(2)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
                            <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image2')} />
@@ -337,7 +358,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                         ? <div className={styles['images__filled']}>
                            <img src={image3.fileURL} alt='' className={styles['filled__image']} />
                            <div className={styles['filled__text']}>{image3.fileName}</div>
-                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                           <button onClick={() => deleteImageHandler(3)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
                            <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image3')} />
@@ -346,7 +367,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                         ? <div className={styles['images__filled']}>
                            <img src={image4.fileURL} alt='' className={styles['filled__image']} />
                            <div className={styles['filled__text']}>{image4.fileName}</div>
-                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                           <button onClick={() => deleteImageHandler(4)} type='button'><img src='/img/delete-button.svg' alt='' /></button>
                         </div>
                         : <div className={styles['images__notfilled']}>
                            <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image4')} />
