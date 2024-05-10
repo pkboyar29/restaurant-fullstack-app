@@ -110,9 +110,9 @@ public class MenuPositionController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
         }
-        catch (IOException e) {
+        catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseBody);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
         responseBody.put("message", "Menu position successfully deleted");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);

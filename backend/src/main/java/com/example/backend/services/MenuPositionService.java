@@ -17,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -213,34 +214,35 @@ public class MenuPositionService {
         }
     }
 
-    public void deleteMenuPosition(Long id) throws ObjectNotFoundException, IOException {
+    public void deleteMenuPosition(Long id) {
         Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
         if (optionalMenuPosition.isEmpty()) {
             throw new ObjectNotFoundException("Menu position doesn't exist");
         }
 
         MenuPosition menuPosition = optionalMenuPosition.get();
+
+        try {
+            Path menuPositionResourcePath = Paths.get(imagesPath + menuPosition.getId());
+            Files.walk(menuPositionResourcePath)
+                    .sorted((p1, p2) -> -p1.compareTo(p2))
+                    .forEach(p -> {
+                        try {
+                            Files.delete(p);
+                        } catch (IOException e) {
+                            System.err.println("Не удалось удалить файл: " + p);
+                            e.printStackTrace();
+                        }
+                    });
+
+            System.out.println("Папка успешно удалена: " + menuPositionResourcePath);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
         List<MenuPositionImage> images = menuPositionImageRepository.findByMenuPosition(menuPosition);
-
-//        for (MenuPositionImage image : images) {
-//            String imagePath = "img/" + image.getLink();
-//            System.out.println(imagePath);
-//            Resource resource = new ClassPathResource(imagePath);
-//
-//            if (!resource.exists()) {
-//                throw new IOException("Image " + image.getLink() + " doesn't exists");
-//            }
-//
-//            URI uri = resource.getURI();
-//            System.out.println(uri);
-//            System.out.println(uri.getScheme());
-//
-//            Path path = Paths.get(uri);
-//            Files.deleteIfExists(path);
-//        }
-
         menuPositionImageRepository.deleteAllInBatch(images);
-
         menuPositionRepository.deleteById(id);
     }
 

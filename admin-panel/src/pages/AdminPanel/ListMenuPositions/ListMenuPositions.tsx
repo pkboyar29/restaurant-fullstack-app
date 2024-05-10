@@ -61,7 +61,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
             console.log(response.data)
             getAllMenuPositions()
          })
-         .catch(error => console.log(error.response.data))
+         .catch(error => console.log(error))
    }
 
    const editHandler = (id: number | string): void => {
