@@ -83,11 +83,8 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
    const getMenuPositionsBySectionId = (id: number): void => {
       axios.get('http://127.0.0.1:8080/api/menu-positions?sectionId=' + id)
          .then(response => {
-            const menuPositions: MenuPosition[] = response.data
-            menuPositions.map((position) => {
-               position.priceText = position.price + "₽"
-            })
-            console.log("menu = ")
+            const menuPositionsFromServer: MenuPositionResponseFromServer[] = response.data
+            const menuPositions: MenuPosition[] = transformMenuPosition(menuPositionsFromServer)
             console.log(menuPositions)
             setMenuPositions(menuPositions)
          })
