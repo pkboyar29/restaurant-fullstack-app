@@ -1,39 +1,23 @@
-package com.example.backend.models;
+package com.example.backend.dto.MenuPosition;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import com.example.backend.models.MenuSection;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "menu_positions")
-public class MenuPosition {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+public class MenuPositionResponseDTO {
+
     private Long id;
-
-    @Column(name = "name", length = 100, nullable = false)
     private String name;
-
-    @Column(name = "descr", length = 400)
     private String descr;
-
-    @Column(name = "availability", nullable = false)
-    private Boolean availability = true;
-
-    @Column(name = "date_entered_in_menu", nullable = false)
+    private boolean availability;
     private LocalDate dateEnteredInMenu;
-
-    @Column(name = "price", nullable = false)
     private int price;
-
-    @Column(name = "portion", length = 40, nullable = false)
     private String portion;
-
-    @ManyToOne
-    @JoinColumn(name = "menu_section", nullable = false)
     private MenuSection menuSection;
+    private String image1;
+    private String image2;
+    private String image3;
+    private String image4;
 
     public Long getId() {
         return id;
@@ -47,12 +31,12 @@ public class MenuPosition {
         return descr;
     }
 
-    public Boolean getAvailability() {
-        return availability;
-    }
-
     public LocalDate getDateEnteredInMenu() {
         return dateEnteredInMenu;
+    }
+
+    public boolean isAvailability() {
+        return availability;
     }
 
     public int getPrice() {
@@ -67,6 +51,26 @@ public class MenuPosition {
         return menuSection;
     }
 
+    public String getImage1() {
+        return image1;
+    }
+
+    public String getImage2() {
+        return image2;
+    }
+
+    public String getImage3() {
+        return image3;
+    }
+
+    public String getImage4() {
+        return image4;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -75,7 +79,7 @@ public class MenuPosition {
         this.descr = descr;
     }
 
-    public void setAvailability(Boolean availability) {
+    public void setAvailability(boolean availability) {
         this.availability = availability;
     }
 
@@ -93,5 +97,21 @@ public class MenuPosition {
 
     public void setMenuSection(MenuSection menuSection) {
         this.menuSection = menuSection;
+    }
+
+    public void setImage1(String image1) {
+        this.image1 = image1;
+    }
+
+    public void setImage2(String image2) {
+        this.image2 = image2;
+    }
+
+    public void setImage3(String image3) {
+        this.image3 = image3;
+    }
+
+    public void setImage4(String image4) {
+        this.image4 = image4;
     }
 }

@@ -6,6 +6,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import Table from '../../../components/Table/Table'
 import downIcon from '../../../assets/down.svg'
 import { useNavigate } from 'react-router-dom'
+import transformMenuPosition, { MenuPositionResponseFromServer } from '../../../ts/interfaces/MenuPositionResponseFromServer'
 
 interface ListMenuPositionsProps {
    updateKey: number
@@ -71,11 +72,8 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
    const getAllMenuPositions = (): void => {
       axios.get('http://127.0.0.1:8080/api/menu-positions')
          .then(response => {
-            const menuPositions: MenuPosition[] = response.data
-            menuPositions.map((position) => {
-               position.priceText = position.price + "₽"
-            })
-            console.log("menu = ")
+            const menuPositionsFromServer: MenuPositionResponseFromServer[] = response.data
+            const menuPositions: MenuPosition[] = transformMenuPosition(menuPositionsFromServer)
             console.log(menuPositions)
             setMenuPositions(menuPositions)
          })

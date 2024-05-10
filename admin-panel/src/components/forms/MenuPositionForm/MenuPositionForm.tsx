@@ -18,6 +18,11 @@ type FormFields = {
    image4: FileList
 }
 
+type FormImageFile = {
+   fileName: string
+   fileURL: string
+}
+
 interface MenuPositionFormProps {
    increaseUpdateKey: () => void
 }
@@ -32,7 +37,10 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    const [currentQueryString, setCurrentQueryString] = useState<string>(location.search)
    const [deleteModal, setDeleteModal] = useState<boolean>(false)
    const [cancelModal, setCancelModal] = useState<boolean>(false)
-   // const [dragOver, setDragOver] = useState<boolean>(false)
+   const [image1, setImage1] = useState<FormImageFile | null>(null)
+   const [image2, setImage2] = useState<FormImageFile | null>(null)
+   const [image3, setImage3] = useState<FormImageFile | null>(null)
+   const [image4, setImage4] = useState<FormImageFile | null>(null)
 
    const {
       register, handleSubmit, formState: { errors, isValid }, setValue
@@ -99,6 +107,24 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
          .catch(error => console.log(error))
    }
 
+   const loadImageAsFile = (imageURL: string): Promise<File> => {
+      return new Promise((resolve, reject) => {
+         axios.get(imageURL, { responseType: 'blob' })
+            .then(
+               response => {
+                  const parts = imageURL.split('/')
+                  const fileName = parts[parts.length - 1]
+
+                  const file = new File([response.data], fileName)
+                  resolve(file)
+               }
+            )
+            .catch(error => {
+               reject(error)
+            })
+      })
+   }
+
    useEffect(() => {
       getAllMenuSections()
    }, [])
@@ -113,12 +139,67 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
 
          axios.get('http://127.0.0.1:8080/api/menu-positions/' + positionId)
             .then(response => {
+               console.log(response.data)
                setValue('name', response.data['name'])
                setValue('descr', response.data['descr'])
                setValue('menuSection', response.data['menuSection']['id'])
                setValue('portion', response.data['portion'])
                setValue('price', response.data['price'])
                setValue('availability', response.data['availability'])
+
+               // устанавливаем изображения
+               if (response.data['image1'] !== null) {
+                  loadImageAsFile(response.data['image1'])
+                     .then(file => {
+                        setValue('image1', [file] as unknown as FileList)
+
+                        const image1: FormImageFile = {
+                           fileURL: response.data['image1'],
+                           fileName: response.data['image1'].split('/')[response.data['image1'].split('/').length - 1]
+                        };
+                        setImage1(image1)
+                     })
+                     .catch(error => console.log(error))
+               }
+               if (response.data['image2'] !== null) {
+                  loadImageAsFile(response.data['image2'])
+                     .then(file => {
+                        setValue('image2', [file] as unknown as FileList)
+
+                        const image2: FormImageFile = {
+                           fileURL: response.data['image2'],
+                           fileName: response.data['image2'].split('/')[response.data['image2'].split('/').length - 1]
+                        };
+                        setImage2(image2)
+                     })
+                     .catch(error => console.log(error))
+               }
+               if (response.data['image3'] !== null) {
+                  loadImageAsFile(response.data['image3'])
+                     .then(file => {
+                        setValue('image3', [file] as unknown as FileList)
+
+                        const image3: FormImageFile = {
+                           fileURL: response.data['image3'],
+                           fileName: response.data['image3'].split('/')[response.data['image3'].split('/').length - 1]
+                        };
+                        setImage3(image3)
+                     })
+                     .catch(error => console.log(error))
+               }
+               if (response.data['image4'] !== null) {
+                  loadImageAsFile(response.data['image4'])
+                     .then(file => {
+                        setValue('image4', [file] as unknown as FileList)
+
+                        const image4: FormImageFile = {
+                           fileURL: response.data['image4'],
+                           fileName: response.data['image4'].split('/')[response.data['image4'].split('/').length - 1]
+                        };
+                        setImage4(image4)
+                     })
+                     .catch(error => console.log(error))
+               }
             })
             .catch(error => console.log(error))
       }
@@ -135,7 +216,6 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    }
 
    const pressModalDelete = (): void => {
-      console.log("delete триггер")
       axios.delete('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition)
          .then(response => {
             console.log(response.data)
@@ -144,33 +224,6 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
          })
          .catch(error => console.log(error.response.data))
    }
-
-   // const handleDrop = (e: React.DragEvent): void => {
-   //    e.preventDefault()
-
-   //    const files = e.dataTransfer.files
-   //    console.log(files)
-   // }
-
-   // const handleDragOver = (e: React.DragEvent): void => {
-   //    e.preventDefault()
-   // }
-
-   // const handleImage1Change = (e: ChangeEvent<HTMLInputElement>): void => {
-   //    const files = e.target.files
-
-   //    if (files && files.length > 0) {
-   //       const file = files[0]
-
-   //       const reader = new FileReader()
-
-   //       reader.onload = function (e: ProgressEvent<FileReader>) {
-   //          const 
-   //       }
-
-   //       reader.readAsDataURL(file)
-   //    }
-   // }
 
    return (
       <div className={styles['main-area']}>
@@ -262,18 +315,46 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                   <div className={styles['element__title']}>Галерея позиции меню</div>
 
                   <div className={styles['images']}>
-                     <input type="file" accept='image/*' {...register('image1')} />
-                     <input type="file" accept='image/*' {...register('image2')} />
-                     <input type="file" accept='image/*' {...register('image3')} />
-                     <input type="file" accept='image/*' {...register('image4')} />
+                     {image1
+                        ? <div className={styles['images__filled']}>
+                           <img src={image1.fileURL} alt='' className={styles['filled__image']} />
+                           <div className={styles['filled__text']}>{image1.fileName}</div>
+                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                        </div>
+                        : <div className={styles['images__notfilled']}>
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image1')} />
+                        </div>}
+                     {image2
+                        ? <div className={styles['images__filled']}>
+                           <img src={image2.fileURL} alt='' className={styles['filled__image']} />
+                           <div className={styles['filled__text']}>{image2.fileName}</div>
+                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                        </div>
+                        : <div className={styles['images__notfilled']}>
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image2')} />
+                        </div>}
+                     {image3
+                        ? <div className={styles['images__filled']}>
+                           <img src={image3.fileURL} alt='' className={styles['filled__image']} />
+                           <div className={styles['filled__text']}>{image3.fileName}</div>
+                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                        </div>
+                        : <div className={styles['images__notfilled']}>
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image3')} />
+                        </div>}
+                     {image4
+                        ? <div className={styles['images__filled']}>
+                           <img src={image4.fileURL} alt='' className={styles['filled__image']} />
+                           <div className={styles['filled__text']}>{image4.fileName}</div>
+                           <button type='button'><img src='/img/delete-button.svg' alt='' /></button>
+                        </div>
+                        : <div className={styles['images__notfilled']}>
+                           <input className={styles['notfilled__input']} type='file' accept='image/*' {...register('image4')} />
+                        </div>}
                   </div>
 
-                  {/* <div id='main-image' className={styles['main-image']}>
-                     <img src={image1} alt='нет' />
-                  </div> */}
                </div>
                <div className={styles['form__column']}>
-
 
                   {/* <div onDrop={handleDrop} onDragOver={handleDragOver} className={styles['image']}>
                         <div className={styles['image__before-dragdrop']}>

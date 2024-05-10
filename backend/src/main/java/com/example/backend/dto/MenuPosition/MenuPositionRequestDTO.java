@@ -1,6 +1,5 @@
-package com.example.backend.dto;
+package com.example.backend.dto.MenuPosition;
 
-import com.example.backend.models.MenuSection;
 import org.springframework.web.multipart.MultipartFile;
 
 public class MenuPositionRequestDTO {

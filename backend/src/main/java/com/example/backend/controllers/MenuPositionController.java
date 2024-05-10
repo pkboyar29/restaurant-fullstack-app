@@ -1,12 +1,12 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dto.MenuPositionRequestDTO;
+import com.example.backend.dto.MenuPosition.MenuPositionRequestDTO;
+import com.example.backend.dto.MenuPosition.MenuPositionResponseDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuPosition;
 import com.example.backend.services.MenuPositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,11 +48,11 @@ public class MenuPositionController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<MenuPosition> getMenuPositionById(@PathVariable Long id) {
+    public ResponseEntity<MenuPositionResponseDTO> getMenuPositionById(@PathVariable Long id) {
 
         try {
-            MenuPosition menuPosition = menuPositionService.getMenuPositionById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(menuPosition);
+            MenuPositionResponseDTO menuPositionResponseDTO = menuPositionService.getMenuPositionById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(menuPositionResponseDTO);
         }
         catch (ObjectNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -62,7 +62,6 @@ public class MenuPositionController {
         }
     }
 
-    // (consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}) может пригодится для MultiPart файлов
     @PostMapping
     public ResponseEntity<Map<String, String>> addMenuPosition(@ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO) {
         Map <String, String> responseBody = new HashMap<>();
@@ -83,7 +82,6 @@ public class MenuPositionController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    // (consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}) может пригодится для MultiPart файлов
     @PutMapping(path = "/{id}")
     public ResponseEntity<Map<String, String>> updateMenuPosition(@ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO, @PathVariable Long id) {
         Map <String, String> responseBody = new HashMap<>();
