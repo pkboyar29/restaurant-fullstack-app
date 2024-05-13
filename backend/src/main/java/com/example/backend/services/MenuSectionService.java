@@ -6,6 +6,7 @@ import com.example.backend.repositories.MenuSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,15 @@ public class MenuSectionService {
 
     public List<MenuSection> getAllMenuSections() {
         return menuSectionRepository.findAll();
+    }
+
+    public MenuSection getMenuSectionById(Long sectionId) {
+        Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(sectionId);
+        if (optionalMenuSection.isEmpty()) {
+            throw new ObjectNotFoundException("Menu section doesn't exist");
+        }
+
+        return optionalMenuSection.get();
     }
 
     public void addMenuSection(MenuSection menuSectionDTO) {

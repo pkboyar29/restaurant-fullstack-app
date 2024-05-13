@@ -30,6 +30,20 @@ public class MenuSectionController {
         return ResponseEntity.status(HttpStatus.OK).body(menuSections);
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<MenuSection> getMenuSectionById(@PathVariable Long id) {
+        try {
+            MenuSection menuSection = menuSectionService.getMenuSectionById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(menuSection);
+        }
+        catch (ObjectNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Map<String, String>> addMenuSection(@RequestBody MenuSection menuSectionDTO) {
         Map <String, String> responseBody = new HashMap<>();
