@@ -8,9 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MenuPositionImageRepository extends JpaRepository<MenuPositionImage, Long> {
-    List<MenuPositionImage> findAll();
-
     List<MenuPositionImage> findByMenuPosition(MenuPosition menuPosition);
-
-    void deleteAllInBatch(Iterable<MenuPositionImage> menuPositionImages);
 }

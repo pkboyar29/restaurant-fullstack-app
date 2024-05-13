@@ -10,12 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface MenuPositionRepository extends JpaRepository<MenuPosition, Long> {
-    List<MenuPosition> findAll();
     List<MenuPosition> findByMenuSection(MenuSection menuSection);
-
-    void deleteById(Long id);
-
-    Optional<MenuPosition> findById(Long id);
-
-    boolean existsById(Long id);
 }

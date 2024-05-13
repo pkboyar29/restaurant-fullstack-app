@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuSection;
 import com.example.backend.services.MenuSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,33 @@ public class MenuSectionController {
 
         try {
             menuSectionService.addMenuSection(menuSectionDTO);
-            responseBody.put("message", "Successful");
         }
         catch (Exception e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
 
+        responseBody.put("message", "Menu section successfully added");
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Map<String, String>> deleteMenuSection(@PathVariable Long id) {
+        Map <String, String> responseBody = new HashMap<>();
+
+        try {
+            menuSectionService.deleteMenuSection(id);
+        }
+        catch (ObjectNotFoundException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        }
+        catch (RuntimeException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+
+        responseBody.put("message", "Menu section successfully deleted");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

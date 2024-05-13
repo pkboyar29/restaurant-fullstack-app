@@ -31,4 +31,8 @@ public class MenuSectionService {
             throw new RuntimeException("Failed to add menu section");
         }
     }
+
+    public void deleteMenuSection(Long id) {
+
+    }
 }
