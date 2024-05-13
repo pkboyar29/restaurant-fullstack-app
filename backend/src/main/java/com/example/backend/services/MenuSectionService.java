@@ -1,11 +1,13 @@
 package com.example.backend.services;
 
+import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuSection;
 import com.example.backend.repositories.MenuSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MenuSectionService {
@@ -34,5 +36,15 @@ public class MenuSectionService {
 
     public void deleteMenuSection(Long id) {
 
+        Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(id);
+        if (optionalMenuSection.isEmpty()) {
+            throw new ObjectNotFoundException("Menu section doesnt't exist");
+        }
+
+        try {
+            menuSectionRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete menu section");
+        }
     }
 }

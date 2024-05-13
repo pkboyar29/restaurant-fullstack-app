@@ -191,8 +191,13 @@ public class MenuPositionService {
         }
 
         List<MenuPositionImage> images = menuPositionImageRepository.findByMenuPosition(menuPosition);
-        menuPositionImageRepository.deleteAllInBatch(images);
-        menuPositionRepository.deleteById(id);
+        try {
+            menuPositionImageRepository.deleteAllInBatch(images);
+            menuPositionRepository.deleteById(id);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public void createMenuPositionDirectory(Long menuPositionId) {
