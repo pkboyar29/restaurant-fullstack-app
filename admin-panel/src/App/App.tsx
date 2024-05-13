@@ -6,6 +6,7 @@ import NotFoundPage from '../pages/NotFoundPage/NotFoundPage'
 import ListMenuPositions from '../pages/AdminPanel/ListMenuPositions/ListMenuPositions'
 import MenuPositionForm from '../components/forms/MenuPositionForm/MenuPositionForm'
 import { useState } from 'react'
+import ListMenuSections from '../pages/AdminPanel/ListMenuSections/ListMenuSection'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route path='/admin-panel' element={<AdminPanel />} >
           <Route path='menu-positions' element={<ListMenuPositions updateKey={updateKey} />} />
+          <Route path='menu-sections' element={<ListMenuSections />} />
           <Route path='menu-position' element={<MenuPositionForm increaseUpdateKey={increaseUpdateKey} />} />
         </Route>
         <Route path='/sign-in' element={< SignInPage />} />
