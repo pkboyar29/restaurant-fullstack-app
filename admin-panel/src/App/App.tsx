@@ -6,7 +6,7 @@ import NotFoundPage from '../pages/NotFoundPage/NotFoundPage'
 import ListMenuPositions from '../pages/AdminPanel/ListMenuPositions/ListMenuPositions'
 import MenuPositionForm from '../components/forms/MenuPositionForm/MenuPositionForm'
 import { useState } from 'react'
-import ListMenuSections from '../pages/AdminPanel/ListMenuSections/ListMenuSection'
+import ListMenuSections from '../pages/AdminPanel/ListMenuSections/ListMenuSections'
 
 function App() {
 

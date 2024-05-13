@@ -7,6 +7,7 @@ import Table from '../../../components/Table/Table'
 import downIcon from '../../../assets/down.svg'
 import { useNavigate } from 'react-router-dom'
 import transformMenuPosition, { MenuPositionResponseFromServer } from '../../../ts/interfaces/MenuPositionResponseFromServer'
+import { MenuSection } from '../../../ts/types/MenuSection'
 
 interface ListMenuPositionsProps {
    updateKey: number
@@ -17,7 +18,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
    const navigate = useNavigate()
 
    const [menuPositions, setMenuPositions] = useState<MenuPosition[]>([])
-   const [menuSections, setMenuSections] = useState<any[]>([])
+   const [menuSections, setMenuSections] = useState<MenuSection[]>([])
    const [dropdownVisible, setDropdownVisible] = useState<boolean>(false)
 
    const columnHelper = createColumnHelper<MenuPosition>()
@@ -65,7 +66,6 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
    }
 
    const editHandler = (id: number | string): void => {
-      // переходить на страницу редактирования, id у нас есть (вроде)
       navigate('/admin-panel/menu-position?positionId=' + id)
    }
 
@@ -156,7 +156,9 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
                </div>
             </div>
 
-            {menuPositions.length > 0 ? (<Table deleteHandler={deleteHandler} editHandler={editHandler} data={menuPositions} columns={columns} />) : (<div style={{ marginTop: '15px' }}>Результатов не было найдено</div>)}
+            {menuPositions.length > 0 ? (<Table deleteHandler={deleteHandler} editHandler={editHandler} data={menuPositions}
+               columns={columns} modalDeleteText='Вы точно хотите удалить позицию меню' modalEditText='Перейти на страницу редактирования позиции меню?' />)
+               : (<div style={{ marginTop: '15px' }}>Результатов не было найдено</div>)}
 
          </div>
       </>

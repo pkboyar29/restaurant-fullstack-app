@@ -4,6 +4,7 @@ import styles from './MenuPositionForm.module.scss'
 import { ChangeEvent, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from '../../Modal/Modal'
+import { MenuSection } from '../../../ts/types/MenuSection'
 
 type FormFields = {
    name: string,
@@ -32,7 +33,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    const navigate = useNavigate()
    const location = useLocation()
 
-   const [menuSections, setMenuSections] = useState<any[]>([])
+   const [menuSections, setMenuSections] = useState<MenuSection[]>([])
    const [currentMenuPosition, setCurrentMenuPosition] = useState<string | null>('')
    const [currentQueryString, setCurrentQueryString] = useState<string>(location.search)
    const [deleteModal, setDeleteModal] = useState<boolean>(false)

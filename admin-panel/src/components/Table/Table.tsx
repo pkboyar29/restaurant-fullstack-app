@@ -10,15 +10,12 @@ interface TableProps {
    data: any[],
    columns: any[],
    deleteHandler: (id: number | string) => void,
-   editHandler: (id: number | string) => void
+   editHandler: (id: number | string) => void,
+   modalDeleteText: string,
+   modalEditText: string
 }
 
-function Table({ data, columns, deleteHandler, editHandler }: TableProps) {
-
-   useEffect(() => {
-      console.log(data)
-      console.log(columns)
-   }, [])
+function Table({ data, columns, deleteHandler, editHandler, modalDeleteText, modalEditText }: TableProps) {
 
    const table = useReactTable({
       data,
@@ -53,8 +50,8 @@ function Table({ data, columns, deleteHandler, editHandler }: TableProps) {
    return (
       <div className={styles['table__container']}>
          <table className={styles['table']}>
-            {deleteModal && <Modal modalText={`Вы точно хотите удалить позицию меню ${selectedCell}?`} buttonConfirmText='Удалить' confirmHandler={pressModalDelete} cancelHandler={pressModalCancel} />}
-            {editModal && <Modal modalText='Перейти на страницу редактирования меню?' buttonConfirmText='Да' confirmHandler={pressModalEdit} cancelHandler={pressModalCancel} />}
+            {deleteModal && <Modal modalText={`${modalDeleteText} ${selectedCell}?`} buttonConfirmText='Удалить' confirmHandler={pressModalDelete} cancelHandler={pressModalCancel} />}
+            {editModal && <Modal modalText={modalEditText} buttonConfirmText='Да' confirmHandler={pressModalEdit} cancelHandler={pressModalCancel} />}
             <thead className={styles['table-header']}>
                {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id} className={styles['table-header__row']}>
@@ -95,7 +92,6 @@ function Table({ data, columns, deleteHandler, editHandler }: TableProps) {
             </tbody>
          </table>
       </div>
-
    )
 }
 
