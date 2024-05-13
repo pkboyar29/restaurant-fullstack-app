@@ -35,16 +35,32 @@ public class MenuSectionService {
     }
 
     public void deleteMenuSection(Long id) {
-
         Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(id);
         if (optionalMenuSection.isEmpty()) {
-            throw new ObjectNotFoundException("Menu section doesnt't exist");
+            throw new ObjectNotFoundException("Menu section doesn't exist");
         }
 
         try {
             menuSectionRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete menu section");
+        }
+    }
+
+    public void updateMenuSection(Long id, MenuSection menuSectionDTO) {
+        Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(id);
+        if (optionalMenuSection.isEmpty()) {
+            throw new ObjectNotFoundException("Menu section doesn't exist");
+        }
+
+        MenuSection updatedMenuSection = optionalMenuSection.get();
+        updatedMenuSection.setName(menuSectionDTO.getName());
+        updatedMenuSection.setDescr(menuSectionDTO.getDescr());
+
+        try {
+            menuSectionRepository.save(updatedMenuSection);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update menu section");
         }
     }
 }

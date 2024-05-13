@@ -65,4 +65,24 @@ public class MenuSectionController {
         responseBody.put("message", "Menu section successfully deleted");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<Map<String, String>> updateMenuSection(@PathVariable Long id, @RequestBody MenuSection menuSectionDTO) {
+        Map <String, String> responseBody = new HashMap<>();
+
+        try {
+            menuSectionService.updateMenuSection(id, menuSectionDTO);
+        }
+        catch (ObjectNotFoundException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        }
+        catch (RuntimeException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+
+        responseBody.put("message", "Menu section successfully updated");
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
 }
