@@ -42,7 +42,7 @@ function ListMenuSections() {
    }
 
    const editHandler = (id: number | string): void => {
-      navigate('/admin-panel/menu-section?positionId=' + id)
+      navigate('/admin-panel/menu-section?sectionId=' + id)
    }
 
    const getAllMenuSections = (): void => {
@@ -61,7 +61,7 @@ function ListMenuSections() {
                   Список разделов меню
                </div>
                <div className={styles['list-header__buttons']}>
-                  <button className={styles['list-header-button']}>
+                  <button onClick={() => navigate('/admin-panel/menu-section')} className={styles['list-header-button']}>
                      <div className={styles['list-header-button__icon']}>+</div>
                      <div className={styles['list-header-button__text']}>Новый раздел меню</div>
                   </button>

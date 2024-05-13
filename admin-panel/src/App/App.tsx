@@ -7,6 +7,7 @@ import ListMenuPositions from '../pages/AdminPanel/ListMenuPositions/ListMenuPos
 import MenuPositionForm from '../components/forms/MenuPositionForm/MenuPositionForm'
 import { useState } from 'react'
 import ListMenuSections from '../pages/AdminPanel/ListMenuSections/ListMenuSections'
+import MenuSectionForm from '../components/forms/MenuSectionForm/MenuSectionForm'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           <Route path='menu-positions' element={<ListMenuPositions updateKey={updateKey} />} />
           <Route path='menu-sections' element={<ListMenuSections />} />
           <Route path='menu-position' element={<MenuPositionForm increaseUpdateKey={increaseUpdateKey} />} />
+          <Route path='menu-section' element={<MenuSectionForm />} />
         </Route>
         <Route path='/sign-in' element={< SignInPage />} />
         <Route path='/' element={<Navigate to='/admin-panel' />} />

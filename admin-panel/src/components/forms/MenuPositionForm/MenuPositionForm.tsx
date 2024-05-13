@@ -46,7 +46,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    const {
       register, handleSubmit, formState: { errors, isValid }, setValue, resetField
    } = useForm<FormFields>({
-      mode: "onBlur"
+      mode: 'onBlur'
    })
 
    const onSubmit = (data: FormFields) => {
@@ -75,7 +75,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
          console.log(key, value)
       })
 
-      if (currentQueryString === "") {
+      if (currentQueryString === '') {
          axios.post('http://127.0.0.1:8080/api/menu-positions', formData, {
             headers: {
                'Content-Type': 'multipart/form-data'
@@ -181,7 +181,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    useEffect(() => {
       setCurrentQueryString(location.search)
 
-      if (location.search !== "") {
+      if (location.search !== '') {
          const searchParams = new URLSearchParams(location.search)
          const positionId = searchParams.get('positionId')
          setCurrentMenuPosition(positionId)

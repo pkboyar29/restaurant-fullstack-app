@@ -121,10 +121,6 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
       }
    }
 
-   const onAddButtonClick = (): void => {
-      navigate('/admin-panel/menu-position')
-   }
-
    return (
       <>
          <div className={styles['main-area']}>
@@ -134,7 +130,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
                   Список позиций меню
                </div>
                <div className={styles['list-header__buttons']}>
-                  <button onClick={onAddButtonClick} className={styles['list-header-button']}>
+                  <button onClick={() => navigate('/admin-panel/menu-position')} className={styles['list-header-button']}>
                      <div className={styles['list-header-button__icon']}>+</div>
                      <div className={styles['list-header-button__text']}>Новая позиция меню</div>
                   </button>
