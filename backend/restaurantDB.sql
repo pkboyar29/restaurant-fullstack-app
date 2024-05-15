@@ -55,3 +55,28 @@ VALUES ('1.jpg', 1, 1),
 ('3.jpg', 3, 1),
 ('o1.jpg', 1, 2),
 ('forg.jpg', 2, 2)
+
+CREATE TABLE order_discounts (
+	id SERIAL PRIMARY KEY,
+	required_number_orders INT NOT NULL,
+	discount INT NOT NULL
+)
+
+INSERT INTO order_discounts (required_number_orders, discount) VALUES
+(0, 5), (10, 15), (30, 25), (60, 35)
+
+CREATE TABLE clients (
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(20) NOT NULL UNIQUE,
+	first_name VARCHAR(30) NOT NULL,
+	last_name VARCHAR(30) NOT NULL,
+	patronymic VARCHAR(30) NOT NULL,
+	gender CHAR(3) NOT NULL CHECK (gender IN ('жен', 'муж')),
+	phone VARCHAR(12) NOT NULL UNIQUE CHECK (LENGTH(phone) = 11),
+	email VARCHAR(60) NOT NULL UNIQUE,
+	password VARCHAR(255) NOT NULL,
+	date_last_login TIMESTAMP NULL,
+	number_orders INT DEFAULT 0 NOT NULL,
+	order_discount INT DEFAULT 1 NOT NULL,
+	CONSTRAINT fk_order_discount FOREIGN KEY (order_discount) REFERENCES order_discounts(id) -- добавить скидку
+)
