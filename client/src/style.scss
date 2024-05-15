@@ -124,6 +124,7 @@ h6 {
 body {
    background-color: $bgColor;
    font-family: $dmsans;
+   font-size: 16px;
 }
 
 .form {
@@ -135,4 +136,9 @@ body {
    padding: 50px;
    width: 800px;
    border-radius: 14px;
+}
+
+.container {
+   max-width: 1298px;
+   margin: 0 auto;
 }

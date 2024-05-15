@@ -1,0 +1,42 @@
+@import '../../style.scss';
+
+.header {
+   background-color: #fff;
+   padding: 30px 0;
+
+   &__container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+   }
+
+   &__img {}
+
+   &__item {
+      color: $blackColor;
+      font-weight: 500;
+   }
+
+   &__nav {
+      display: flex;
+      gap: 16px;
+   }
+
+   &__cart {
+      display: flex;
+   }
+
+   &__signin {
+      color: #182226;
+      border: 1px $blackColor solid;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 16px;
+   }
+
+   &__right {
+      display: flex;
+      gap: 40px;
+   }
+}
