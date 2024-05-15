@@ -3,6 +3,8 @@ package com.example.backend.services;
 import com.example.backend.dto.Client.ClientSignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
+import com.example.backend.exceptions.ObjectNotFoundException;
+import com.example.backend.exceptions.UserException;
 import com.example.backend.models.Client;
 import com.example.backend.repositories.ClientRepository;
 import com.example.backend.repositories.OrderDiscountRepository;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -66,5 +69,18 @@ public class ClientService {
     }
 
     public void signIn(ClientSignInRequestDTO clientSignInRequestDTO) {
+        Optional<Client> optionalClient = clientRepository.findByUsername(clientSignInRequestDTO.getUsername());
+
+        if (optionalClient.isEmpty()) {
+            throw new ObjectNotFoundException("Client with this username doesn't exist");
+        }
+
+        Client client = optionalClient.get();
+        String passwordFromDB = client.getPassword();
+        String passwordFromRequest = clientSignInRequestDTO.getPassword();
+
+        if (!passwordEncoder.matches(passwordFromRequest, passwordFromDB)) {
+            throw new UserException("Password doesn't match");
+        }
     }
 }

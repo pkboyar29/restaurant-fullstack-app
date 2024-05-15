@@ -1,7 +1,10 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.Client.ClientSignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
+import com.example.backend.exceptions.ObjectNotFoundException;
+import com.example.backend.exceptions.UserException;
 import com.example.backend.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5172")
 @RestController
 @RequestMapping(path = "/api/clients")
 public class ClientController {
@@ -44,8 +47,25 @@ public class ClientController {
     }
 
     @PostMapping(path = "/sign-in")
-    public ResponseEntity<Map<String, String>> clientSignIn() {
+    public ResponseEntity<Map<String, String>> clientSignIn(@RequestBody ClientSignInRequestDTO clientSignInRequestDTO) {
+        Map <String, String> responseBody = new HashMap<>();
+
+        try {
+            clientService.signIn(clientSignInRequestDTO);
+        } catch (ObjectNotFoundException e ){
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        }
+        catch (UserException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
+        catch (RuntimeException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+
+        responseBody.put("message", "Successful");
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
-
 }
