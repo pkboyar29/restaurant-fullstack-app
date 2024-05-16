@@ -23,6 +23,7 @@ public class MenuSectionController {
         this.menuSectionService = menuSectionService;
     }
 
+    @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5172"})
     @GetMapping
     public ResponseEntity<List<MenuSection>> getAllMenuSections() {
         List<MenuSection> menuSections = menuSectionService.getAllMenuSections();

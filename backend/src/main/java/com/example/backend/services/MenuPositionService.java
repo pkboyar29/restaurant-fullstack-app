@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,19 +43,19 @@ public class MenuPositionService {
         this.imagesPathClient = imagesPathClient;
     }
 
-    public List<MenuPosition> getAllMenuPositions() {
-        return menuPositionRepository.findAll();
+    public List<MenuPositionResponseDTO> getAllMenuPositions() {
+        return createListMenuPositionResponseDTO(menuPositionRepository.findAll());
     }
 
-    public List<MenuPosition> getAvailableMenuPositions() {
-        List<MenuPosition> allMenuPositions = getAllMenuPositions();
-        List<MenuPosition> availableMenuPositions = allMenuPositions.stream().
-                                                    filter(MenuPosition::getAvailability).
+    public List<MenuPositionResponseDTO> getAvailableMenuPositions() {
+        List<MenuPositionResponseDTO> allMenuPositions = getAllMenuPositions();
+        List<MenuPositionResponseDTO> availableMenuPositions = allMenuPositions.stream().
+                                                    filter(MenuPositionResponseDTO::isAvailability).
                                                     collect(Collectors.toList());
         return availableMenuPositions;
     }
 
-    public List<MenuPosition> getMenuPositionsBySectionId(Long sectionId) {
+    public List<MenuPositionResponseDTO> getMenuPositionsBySectionId(Long sectionId) {
 
         Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(sectionId);
         if (optionalMenuSection.isEmpty()) {
@@ -62,13 +63,13 @@ public class MenuPositionService {
         }
 
         MenuSection menuSection = optionalMenuSection.get();
-        return menuPositionRepository.findByMenuSection(menuSection);
+        return createListMenuPositionResponseDTO(menuPositionRepository.findByMenuSection(menuSection));
     }
 
-    public List<MenuPosition> getAvailableMenuPositionsBySectionId(Long sectionId) {
-        List<MenuPosition> allMenuPositions = getMenuPositionsBySectionId(sectionId);
-        List<MenuPosition> availableMenuPositions = allMenuPositions.stream().
-                                                                        filter(MenuPosition::getAvailability).
+    public List<MenuPositionResponseDTO> getAvailableMenuPositionsBySectionId(Long sectionId) {
+        List<MenuPositionResponseDTO> allMenuPositions = getMenuPositionsBySectionId(sectionId);
+        List<MenuPositionResponseDTO> availableMenuPositions = allMenuPositions.stream().
+                                                                        filter(MenuPositionResponseDTO::isAvailability).
                                                                         collect(Collectors.toList());
         return availableMenuPositions;
     }
@@ -81,6 +82,18 @@ public class MenuPositionService {
         }
         MenuPosition menuPosition = optionalMenuPosition.get();
 
+        return createMenuPositionResponseDTO(menuPosition);
+    }
+
+    public List<MenuPositionResponseDTO> createListMenuPositionResponseDTO(List<MenuPosition> menuPositionList) {
+        List<MenuPositionResponseDTO> menuPositionResponseDTOList = new ArrayList<>();
+        for (MenuPosition menuPosition : menuPositionList) {
+            menuPositionResponseDTOList.add(createMenuPositionResponseDTO(menuPosition));
+        }
+        return menuPositionResponseDTOList;
+    }
+
+    public MenuPositionResponseDTO createMenuPositionResponseDTO(MenuPosition menuPosition) {
         MenuPositionResponseDTO menuPositionResponseDTO = new MenuPositionResponseDTO();
         menuPositionResponseDTO.setId(menuPosition.getId());
         menuPositionResponseDTO.setName(menuPosition.getName());
@@ -90,7 +103,14 @@ public class MenuPositionService {
         menuPositionResponseDTO.setPrice(menuPosition.getPrice());
         menuPositionResponseDTO.setDateEnteredInMenu(menuPosition.getDateEnteredInMenu());
         menuPositionResponseDTO.setAvailability(menuPosition.getAvailability());
+        menuPositionResponseDTO = addImagesToMenuPositionResponseDTO(menuPositionResponseDTO);
 
+        return menuPositionResponseDTO;
+    }
+
+    public MenuPositionResponseDTO addImagesToMenuPositionResponseDTO(MenuPositionResponseDTO menuPositionResponseDTO) {
+        Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(menuPositionResponseDTO.getId());
+        MenuPosition menuPosition = optionalMenuPosition.get();
         List<MenuPositionImage> menuPositionImageList = menuPositionImageRepository.findByMenuPosition(menuPosition);
         for (MenuPositionImage image : menuPositionImageList) {
             switch (image.getOrderNumber()) {

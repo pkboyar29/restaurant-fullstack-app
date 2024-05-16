@@ -25,11 +25,12 @@ public class MenuPositionController {
         this.menuPositionService = menuPositionService;
     }
 
+    @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5172"})
     @GetMapping
-    public ResponseEntity<List<MenuPosition>> getAllMenuPositions(@RequestParam(required = false) Long sectionId,
+    public ResponseEntity<List<MenuPositionResponseDTO>> getAllMenuPositions(@RequestParam(required = false) Long sectionId,
                                                                   @RequestParam(required = false, defaultValue = "false") boolean onlyAvailable) {
-        System.out.println("привет");
-        List<MenuPosition> menuPositions;
+
+        List<MenuPositionResponseDTO> menuPositions;
         if (sectionId != null) {
             try {
                 if (onlyAvailable) {
