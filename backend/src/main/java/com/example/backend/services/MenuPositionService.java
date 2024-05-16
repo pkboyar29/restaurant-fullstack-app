@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuPositionService {
@@ -45,7 +46,15 @@ public class MenuPositionService {
         return menuPositionRepository.findAll();
     }
 
-    public List<MenuPosition> getMenuPositionsBySectionId(Long sectionId) throws ObjectNotFoundException {
+    public List<MenuPosition> getAvailableMenuPositions() {
+        List<MenuPosition> allMenuPositions = getAllMenuPositions();
+        List<MenuPosition> availableMenuPositions = allMenuPositions.stream().
+                                                    filter(MenuPosition::getAvailability).
+                                                    collect(Collectors.toList());
+        return availableMenuPositions;
+    }
+
+    public List<MenuPosition> getMenuPositionsBySectionId(Long sectionId) {
 
         Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(sectionId);
         if (optionalMenuSection.isEmpty()) {
@@ -54,6 +63,14 @@ public class MenuPositionService {
 
         MenuSection menuSection = optionalMenuSection.get();
         return menuPositionRepository.findByMenuSection(menuSection);
+    }
+
+    public List<MenuPosition> getAvailableMenuPositionsBySectionId(Long sectionId) {
+        List<MenuPosition> allMenuPositions = getMenuPositionsBySectionId(sectionId);
+        List<MenuPosition> availableMenuPositions = allMenuPositions.stream().
+                                                                        filter(MenuPosition::getAvailability).
+                                                                        collect(Collectors.toList());
+        return availableMenuPositions;
     }
 
     public MenuPositionResponseDTO getMenuPositionById(Long id) throws ObjectNotFoundException {

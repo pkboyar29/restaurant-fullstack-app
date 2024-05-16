@@ -26,12 +26,17 @@ public class MenuPositionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MenuPosition>> getAllMenuPositions(@RequestParam(required = false) Long sectionId) {
-
+    public ResponseEntity<List<MenuPosition>> getAllMenuPositions(@RequestParam(required = false) Long sectionId,
+                                                                  @RequestParam(required = false, defaultValue = "false") boolean onlyAvailable) {
+        System.out.println("привет");
         List<MenuPosition> menuPositions;
         if (sectionId != null) {
             try {
-                menuPositions = menuPositionService.getMenuPositionsBySectionId(sectionId);
+                if (onlyAvailable) {
+                    menuPositions = menuPositionService.getAvailableMenuPositionsBySectionId(sectionId);
+                } else {
+                    menuPositions = menuPositionService.getMenuPositionsBySectionId(sectionId);
+                }
             }
             catch (ObjectNotFoundException e) {
 //                Map <String, String> responseBody = new HashMap<>();
@@ -40,7 +45,11 @@ public class MenuPositionController {
             }
         }
         else {
-            menuPositions = menuPositionService.getAllMenuPositions();
+            if (onlyAvailable) {
+                menuPositions = menuPositionService.getAvailableMenuPositions();
+            } else {
+                menuPositions = menuPositionService.getAllMenuPositions();
+            }
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(menuPositions);
