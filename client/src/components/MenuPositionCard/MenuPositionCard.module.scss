@@ -1,0 +1,40 @@
+@import '../../style.scss';
+
+.card {
+   width: 306px;
+   background-color: #fff;
+   border-radius: 16px;
+   text-align: center;
+   cursor: pointer;
+
+   &__image {
+      img {
+         width: 100%;
+         border-radius: 16px 16px 0 0;
+         height: 230px;
+         object-fit: cover;
+      }
+      margin: 0 0 30px;
+   }
+
+   &__price {
+      color: $redColor;
+      font-weight: 700;
+      font-size: 24px;
+      margin: 0 0 15px;
+   }
+
+   &__name {
+      color: $blackColor;
+      font-weight: 700;
+      font-size: 20px;
+      margin: 0 0 15px;
+   }
+
+   &__portion {
+      font-weight: 400;
+      font-size: 16px;
+      color: #414536;
+      margin: 0 0 50px;
+   }
+}

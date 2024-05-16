@@ -1,1 +1,10 @@
 @import '../../style.scss';
+
+.menu {
+   &__cards {
+      margin-top: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+   }
+}

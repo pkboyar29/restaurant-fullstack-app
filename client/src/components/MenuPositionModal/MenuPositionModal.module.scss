@@ -1,0 +1,75 @@
+@import '../../style.scss';
+
+.menu-modal {
+   width: 100%;
+   height: 100%;
+   top: 0;
+   left: 0;
+   position: fixed;
+   background-color: rgba(49, 49, 49, .8);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.modal {
+   &__content {
+      background-color: #fff;
+      width: 600px;
+      border-radius: 6px;
+      padding: 10px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      color: #414536;
+   }
+
+   &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+   }
+
+   &__title {
+      color: #000;
+      font-size: 20px;
+      font-weight: 700;
+   }
+
+   &__close {
+      cursor: pointer;
+   }
+
+   &__image {
+      img {
+         height: 400px;
+         width: 100%;
+         object-fit: cover;
+         border-radius: 16px;
+      }
+   }
+
+   &__price,
+   &__portion {
+      color: $redColor;
+      font-size: 16px;
+      font-weight: 700;
+   }
+
+   &__button {
+      color: #fff;
+      background-color: $redColor;
+      border-radius: 14px;
+      padding: 10px;
+      width: 200px;
+      font-weight: 700;
+      font-size: 16px;
+      justify-content: right;
+      margin-left: auto;
+      transition: all .5s;
+
+      &:hover {
+         background-color: $redColorHover;
+      }
+   }
+}

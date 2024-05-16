@@ -142,3 +142,7 @@ body {
    max-width: 1298px;
    margin: 0 auto;
 }
+
+body.menu-modal-open {
+   overflow: hidden;
+}
