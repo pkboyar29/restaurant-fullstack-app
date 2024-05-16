@@ -82,5 +82,8 @@ public class ClientService {
         if (!passwordEncoder.matches(passwordFromRequest, passwordFromDB)) {
             throw new UserException("Password doesn't match");
         }
+
+        client.setDateLastLogin(LocalDateTime.now());
+        clientRepository.save(client);
     }
 }

@@ -27,15 +27,18 @@ public class MenuPositionService {
     private final MenuPositionRepository menuPositionRepository;
     private final MenuSectionRepository menuSectionRepository;
     private final MenuPositionImageRepository menuPositionImageRepository;
-    private final String imagesPath;
+    private final String imagesPathAdmin;
+    private final String imagesPathClient;
 
     @Autowired
     public MenuPositionService(MenuPositionRepository menuPositionRepository, MenuSectionRepository menuSectionRepository,
-                               MenuPositionImageRepository menuPositionImageRepository, @Value("${images.path}") String imagesPath) {
+                               MenuPositionImageRepository menuPositionImageRepository,
+                               @Value("${images.path1}") String imagesPathAdmin, @Value("${images.path2}") String imagesPathClient) {
         this.menuPositionRepository = menuPositionRepository;
         this.menuSectionRepository = menuSectionRepository;
         this.menuPositionImageRepository = menuPositionImageRepository;
-        this.imagesPath = imagesPath;
+        this.imagesPathAdmin = imagesPathAdmin;
+        this.imagesPathClient = imagesPathClient;
     }
 
     public List<MenuPosition> getAllMenuPositions() {
@@ -115,9 +118,13 @@ public class MenuPositionService {
             Long menuPositionId = menuPositionWithId.getId();
 
             // создаем директорию и добавляем туда изображения
-            createMenuPositionDirectory(menuPositionId);
-            Path menuPositionResourcePath = Paths.get(imagesPath + menuPositionId);
-            addFilesToMenuPositionDirectory(menuPositionResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
+            createMenuPositionDirectory(imagesPathAdmin, menuPositionId);
+            createMenuPositionDirectory(imagesPathClient, menuPositionId);
+            Path menuPositionAdminResourcePath = Paths.get(imagesPathAdmin + menuPositionId);
+            Path menuPositionClientResourcePath = Paths.get(imagesPathClient + menuPositionId);
+            addFilesToMenuPositionDirectory(menuPositionAdminResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
+                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
+            addFilesToMenuPositionDirectory(menuPositionClientResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
                     menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
 
             // добавляем изображения в БД
@@ -153,10 +160,18 @@ public class MenuPositionService {
             Long menuPositionId = menuPositionWithId.getId();
 
             // создаем директорию (если ее нету), очищаем ее и добавляем туда изображения
-            Path menuPositionResourcePath = Paths.get(imagesPath + menuPositionId);
-            deleteMenuPositionDirectory(menuPositionResourcePath);
-            createMenuPositionDirectory(menuPositionId);
-            addFilesToMenuPositionDirectory(menuPositionResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
+            Path menuPositionAdminResourcePath = Paths.get(imagesPathAdmin + menuPositionId);
+            Path menuPositionClientResourcePath = Paths.get(imagesPathClient + menuPositionId);
+
+            deleteMenuPositionDirectory(menuPositionAdminResourcePath);
+            deleteMenuPositionDirectory(menuPositionClientResourcePath);
+
+            createMenuPositionDirectory(imagesPathAdmin, menuPositionId);
+            createMenuPositionDirectory(imagesPathClient, menuPositionId);
+
+            addFilesToMenuPositionDirectory(menuPositionAdminResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
+                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
+            addFilesToMenuPositionDirectory(menuPositionClientResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
                     menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
 
             // удаляем все изображения из БД
@@ -179,8 +194,11 @@ public class MenuPositionService {
 
         MenuPosition menuPosition = optionalMenuPosition.get();
         try {
-            Path menuPositionResourcePath = Paths.get(imagesPath + menuPosition.getId());
-            deleteMenuPositionDirectory(menuPositionResourcePath);
+            Path menuPositionAdminResourcePath = Paths.get(imagesPathAdmin + menuPosition.getId());
+            deleteMenuPositionDirectory(menuPositionAdminResourcePath);
+
+            Path menuPositionClientResourcePath = Paths.get(imagesPathClient + menuPosition.getId());
+            deleteMenuPositionDirectory(menuPositionClientResourcePath);
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -196,7 +214,7 @@ public class MenuPositionService {
         }
     }
 
-    public void createMenuPositionDirectory(Long menuPositionId) {
+    public void createMenuPositionDirectory(String imagesPath, Long menuPositionId) {
         try {
             // получаем путь к директории ресурсов
             Path resourcePath = Paths.get(imagesPath);

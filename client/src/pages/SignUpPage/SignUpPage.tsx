@@ -1,5 +1,6 @@
 import styles from './SignUpPage.module.scss'
 import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
 import validator from 'email-validator'
 import axios from 'axios'
 
@@ -22,6 +23,8 @@ type ClientSignUpFields = {
 
 function SignUpPage() {
 
+   const navigate = useNavigate()
+
    const { register, handleSubmit, getValues, setError, formState: { errors } } = useForm<ClientSignUpFields>({
       mode: 'onBlur'
    })
@@ -33,7 +36,11 @@ function SignUpPage() {
 
    const onSubmit = (data: ClientSignUpFields) => {
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/clients/sign-up', data)
-         .then(response => console.log(response.data))
+         .then(response => {
+            console.log(response.data)
+            alert('Вы успешно зарегестрировались!')
+            navigate('/menu')
+         })
          .catch(error => {
             if (error.response) {
                switch (error.response.data.errorCode) {
@@ -259,6 +266,8 @@ function SignUpPage() {
                validationRules={{
                   validate: (value: string) => getValues('password') === value || "Пароли не совпадают"
                }} />
+
+            <Link to='/sign-in'>Уже зарегестрированы?</Link>
 
             <Button text='Зарегестрироваться' onClick={() => console.log('hello')} />
 

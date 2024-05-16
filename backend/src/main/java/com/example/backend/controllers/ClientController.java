@@ -42,7 +42,7 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
 
-        responseBody.put("message", "Client register successful");
+        responseBody.put("message", "Client sign up successful");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
@@ -65,7 +65,7 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
 
-        responseBody.put("message", "Successful");
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        responseBody.put("message", "Client sign in successful");
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

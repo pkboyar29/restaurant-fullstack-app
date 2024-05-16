@@ -1,10 +1,11 @@
 import styles from './SignInPage.module.scss'
 import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 import Title from '../../components/Title/Title'
 import TextInput from '../../components/TextInput/TextInput'
 import Button from '../../components/Button/Button'
-import axios from 'axios'
 
 type ClientsSignInFields = {
    username: string,
@@ -13,15 +14,19 @@ type ClientsSignInFields = {
 
 function SignInPage() {
 
+   const navigate = useNavigate()
+
    const { handleSubmit, register, setError, formState: { errors } } = useForm<ClientsSignInFields>({
       mode: 'onBlur'
    })
 
    const onSubmit = (data: ClientsSignInFields) => {
-      console.log(data)
-
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/clients/sign-in', data)
-         .then(response => console.log(response.data))
+         .then(response => {
+            console.log(response.data)
+            alert('Вы успешно авторизовались!')
+            navigate('/menu')
+         })
          .catch(error => {
             switch (error.response.status) {
                case 401:
@@ -68,7 +73,9 @@ function SignInPage() {
                register={register}
                validationRules={{ required: 'Поле обязательно к заполнению' }} />
 
-            <Button text='Войти' onClick={() => console.log('hello')} />
+            <Link to='/sign-up'>Еще не зарегестрированы?</Link>
+
+            <Button text='Войти' onClick={() => console.log('')} />
 
          </form>
       </>
