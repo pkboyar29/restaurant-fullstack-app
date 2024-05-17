@@ -80,3 +80,27 @@ CREATE TABLE clients (
 	order_discount INT DEFAULT 1 NOT NULL,
 	CONSTRAINT fk_order_discount FOREIGN KEY (order_discount) REFERENCES order_discounts(id) -- добавить скидку
 )
+
+CREATE TABLE takeaway_orders (
+	id SERIAL PRIMARY KEY,
+	client_name VARCHAR(30) NOT NULL,
+	client_phone VARCHAR(12) NOT NULL,
+	client_username VARCHAR(20) NULL DEFAULT NULL,
+	requirements VARCHAR(100) NULL,
+	cost INT NOT NULL DEFAULT 0 CHECK (cost >= 0),
+	discounted_cost INT NOT NULL DEFAULT 0 CHECK (discounted_cost >= 0),
+	payment_method VARCHAR(20) NOT NULL CHECK (payment_method IN ('безналичный расчет', 'наличный расчет')),
+	order_date TIMESTAMP NOT NULL,
+	receipt_date TIMESTAMP NOT NULL,
+	receipt_option VARCHAR(10) NOT NULL CHECK (receipt_option IN ('самовывоз', 'доставка'))
+)
+
+CREATE TABLE takeaway_order_positions (
+	id SERIAL PRIMARY KEY,
+	menu_position INT NOT NULL,
+	number INT NOT NULL CHECK (number >= 0),
+	total_price INT NOT NULL DEFAULT 0,
+	takeaway_order INT NOT NULL,
+	CONSTRAINT fk_menu_position FOREIGN KEY (menu_position) REFERENCES menu_positions(id),
+	CONSTRAINT fk_takeaway_order FOREIGN KEY (takeaway_order) REFERENCES takeaway_orders(id)
+)
