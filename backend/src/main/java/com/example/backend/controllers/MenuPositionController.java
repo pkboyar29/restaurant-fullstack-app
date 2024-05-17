@@ -3,7 +3,6 @@ package com.example.backend.controllers;
 import com.example.backend.dto.MenuPosition.MenuPositionRequestDTO;
 import com.example.backend.dto.MenuPosition.MenuPositionResponseDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
-import com.example.backend.models.MenuPosition;
 import com.example.backend.services.MenuPositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,51 +1,18 @@
-package com.example.backend.models;
-
-import jakarta.persistence.*;
+package com.example.backend.dto.TakeawayOrder;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "takeaway_orders")
-public class TakeawayOrder {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
-    private Long id;
-
-    @Column(name = "client_name", nullable = false)
+public class TakeawayOrderRequestDTO {
     private String clientName;
-
-    @Column(name = "client_phone", nullable = false)
     private String clientPhone;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = true)
-    private Client client;
-
-    @Column(name = "requirements", nullable = true)
+    private Long clientId;
     private String requirements;
-
-    @Column(name = "cost", nullable = false)
     private int cost;
-
-    @Column(name = "discounted_cost", nullable = false)
     private int discountedCost;
-
-    @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
-
-    @Column(name = "order_date", nullable = false)
-    private LocalDateTime orderDate;
-
-    @Column(name = "receipt_date", nullable = false)
     private LocalDateTime receiptDate;
-
-    @Column(name = "receipt_option", nullable = false)
     private String receiptOption;
-
-    public Long getId() {
-        return id;
-    }
+    private TakeawayOrderPositionRequestDTO[] takeawayOrderPositionList;
 
     public String getClientName() {
         return clientName;
@@ -55,8 +22,8 @@ public class TakeawayOrder {
         return clientPhone;
     }
 
-    public Client getClient() {
-        return client;
+    public Long getClientId() {
+        return clientId;
     }
 
     public String getRequirements() {
@@ -75,10 +42,6 @@ public class TakeawayOrder {
         return paymentMethod;
     }
 
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
     public LocalDateTime getReceiptDate() {
         return receiptDate;
     }
@@ -87,8 +50,8 @@ public class TakeawayOrder {
         return receiptOption;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public TakeawayOrderPositionRequestDTO[] getTakeawayOrderPositionList() {
+        return takeawayOrderPositionList;
     }
 
     public void setClientName(String clientName) {
@@ -99,8 +62,8 @@ public class TakeawayOrder {
         this.clientPhone = clientPhone;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientUsername(Long clientId) {
+        this.clientId = clientId;
     }
 
     public void setRequirements(String requirements) {
@@ -119,15 +82,15 @@ public class TakeawayOrder {
         this.paymentMethod = paymentMethod;
     }
 
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-
     public void setReceiptDate(LocalDateTime receiptDate) {
         this.receiptDate = receiptDate;
     }
 
     public void setReceiptOption(String receiptOption) {
         this.receiptOption = receiptOption;
+    }
+
+    public void setTakeawayOrderPositionList(TakeawayOrderPositionRequestDTO[] takeawayOrderPositionList) {
+        this.takeawayOrderPositionList = takeawayOrderPositionList;
     }
 }

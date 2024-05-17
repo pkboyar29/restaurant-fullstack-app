@@ -23,4 +23,44 @@ public class TakeawayOrderPosition {
     @ManyToOne
     @JoinColumn(name = "takeaway_order", nullable = false)
     TakeawayOrder takeawayOrder;
+
+    public Long getId() {
+        return id;
+    }
+
+    public MenuPosition getMenuPosition() {
+        return menuPosition;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public TakeawayOrder getTakeawayOrder() {
+        return takeawayOrder;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setMenuPosition(MenuPosition menuPosition) {
+        this.menuPosition = menuPosition;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setTakeawayOrder(TakeawayOrder takeawayOrder) {
+        this.takeawayOrder = takeawayOrder;
+    }
 }
