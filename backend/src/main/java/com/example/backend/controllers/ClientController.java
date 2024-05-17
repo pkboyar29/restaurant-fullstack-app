@@ -27,16 +27,17 @@ public class ClientController {
     }
 
     @PostMapping(path = "/sign-up")
-    public ResponseEntity<Map<String, String>> clientSignUp(@RequestBody ClientSignUpRequestDTO clientSignUpRequestDTO) {
-        Map <String, String> responseBody = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> clientSignUp(@RequestBody ClientSignUpRequestDTO clientSignUpRequestDTO) {
+        Map <String, Object> responseBody = new HashMap<>();
 
         try {
             ClientResponseDTO clientResponseDTO = clientService.signUp(clientSignUpRequestDTO);
-            responseBody.put("message", "Client sign up successful");
+
             responseBody.put("id", clientResponseDTO.getId().toString());
             responseBody.put("firstName", clientResponseDTO.getFirstName());
             responseBody.put("username", clientResponseDTO.getUsername());
             responseBody.put("phone", clientResponseDTO.getPhone());
+            responseBody.put("orderDiscount", clientResponseDTO.getOrderDiscount());
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         }
@@ -52,16 +53,16 @@ public class ClientController {
     }
 
     @PostMapping(path = "/sign-in")
-    public ResponseEntity<Map<String, String>> clientSignIn(@RequestBody ClientSignInRequestDTO clientSignInRequestDTO) {
-        Map <String, String> responseBody = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> clientSignIn(@RequestBody ClientSignInRequestDTO clientSignInRequestDTO) {
+        Map <String, Object> responseBody = new HashMap<>();
 
         try {
             ClientResponseDTO clientResponseDTO = clientService.signIn(clientSignInRequestDTO);
-            responseBody.put("message", "Client sign in successful");
             responseBody.put("id", clientResponseDTO.getId().toString());
             responseBody.put("firstName", clientResponseDTO.getFirstName());
             responseBody.put("username", clientResponseDTO.getUsername());
             responseBody.put("phone", clientResponseDTO.getPhone());
+            responseBody.put("orderDiscount", clientResponseDTO.getOrderDiscount());
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         } catch (ObjectNotFoundException e ){

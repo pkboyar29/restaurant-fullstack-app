@@ -67,6 +67,7 @@ public class ClientService {
             clientResponseDTO.setFirstName(client.getFirstName());
             clientResponseDTO.setPhone(client.getPhone());
             clientResponseDTO.setUsername(client.getUsername());
+            clientResponseDTO.setOrderDiscount(client.getOrderDiscount());
 
             return clientResponseDTO;
         }
@@ -98,6 +99,8 @@ public class ClientService {
         clientResponseDTO.setFirstName(client.getFirstName());
         clientResponseDTO.setPhone(client.getPhone());
         clientResponseDTO.setUsername(client.getUsername());
+        clientResponseDTO.setOrderDiscount(client.getOrderDiscount());
+        System.out.println();
 
         return clientResponseDTO;
     }

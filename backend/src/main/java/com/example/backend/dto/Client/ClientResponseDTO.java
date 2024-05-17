@@ -1,10 +1,13 @@
 package com.example.backend.dto.Client;
 
+import com.example.backend.models.OrderDiscount;
+
 public class ClientResponseDTO {
     private Long id;
     private String username;
     private String firstName;
     private String phone;
+    private OrderDiscount orderDiscount;
 
     public Long getId() {
         return id;
@@ -22,6 +25,10 @@ public class ClientResponseDTO {
         return phone;
     }
 
+    public OrderDiscount getOrderDiscount() {
+        return orderDiscount;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -36,5 +43,9 @@ public class ClientResponseDTO {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setOrderDiscount(OrderDiscount orderDiscount) {
+        this.orderDiscount = orderDiscount;
     }
 }
