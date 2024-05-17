@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.Client.ClientResponseDTO;
 import com.example.backend.dto.Client.ClientSignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
@@ -30,7 +31,14 @@ public class ClientController {
         Map <String, String> responseBody = new HashMap<>();
 
         try {
-            clientService.signUp(clientSignUpRequestDTO);
+            ClientResponseDTO clientResponseDTO = clientService.signUp(clientSignUpRequestDTO);
+            responseBody.put("message", "Client sign up successful");
+            responseBody.put("id", clientResponseDTO.getId().toString());
+            responseBody.put("firstName", clientResponseDTO.getFirstName());
+            responseBody.put("username", clientResponseDTO.getUsername());
+            responseBody.put("phone", clientResponseDTO.getPhone());
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         }
         catch (DuplicateClientException e) {
             responseBody.put("message", e.getMessage());
@@ -41,9 +49,6 @@ public class ClientController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-
-        responseBody.put("message", "Client sign up successful");
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @PostMapping(path = "/sign-in")
@@ -51,7 +56,14 @@ public class ClientController {
         Map <String, String> responseBody = new HashMap<>();
 
         try {
-            clientService.signIn(clientSignInRequestDTO);
+            ClientResponseDTO clientResponseDTO = clientService.signIn(clientSignInRequestDTO);
+            responseBody.put("message", "Client sign in successful");
+            responseBody.put("id", clientResponseDTO.getId().toString());
+            responseBody.put("firstName", clientResponseDTO.getFirstName());
+            responseBody.put("username", clientResponseDTO.getUsername());
+            responseBody.put("phone", clientResponseDTO.getPhone());
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         } catch (ObjectNotFoundException e ){
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
@@ -64,8 +76,5 @@ public class ClientController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-
-        responseBody.put("message", "Client sign in successful");
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

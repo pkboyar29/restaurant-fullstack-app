@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.dto.Client.ClientResponseDTO;
 import com.example.backend.dto.Client.ClientSignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
@@ -29,7 +30,7 @@ public class ClientService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public void signUp(ClientSignUpRequestDTO clientSignUpRequestDTO) {
+    public ClientResponseDTO signUp(ClientSignUpRequestDTO clientSignUpRequestDTO) {
 
         if (clientRepository.existsByUsername(clientSignUpRequestDTO.getUsername())) {
             throw new DuplicateClientException("DUPLICATE_USERNAME", "Client with this username already exists");
@@ -59,16 +60,22 @@ public class ClientService {
         newClient.setDateLastLogin(LocalDateTime.now());
 
         try {
-            clientRepository.save(newClient);
+            Client client = clientRepository.save(newClient);
+
+            ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
+            clientResponseDTO.setId(client.getId());
+            clientResponseDTO.setFirstName(client.getFirstName());
+            clientResponseDTO.setPhone(client.getPhone());
+            clientResponseDTO.setUsername(client.getUsername());
+
+            return clientResponseDTO;
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-
-        // возвращать id пользователю (на будущее?)
     }
 
-    public void signIn(ClientSignInRequestDTO clientSignInRequestDTO) {
+    public ClientResponseDTO signIn(ClientSignInRequestDTO clientSignInRequestDTO) {
         Optional<Client> optionalClient = clientRepository.findByUsername(clientSignInRequestDTO.getUsername());
 
         if (optionalClient.isEmpty()) {
@@ -85,5 +92,13 @@ public class ClientService {
 
         client.setDateLastLogin(LocalDateTime.now());
         clientRepository.save(client);
+
+        ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
+        clientResponseDTO.setId(client.getId());
+        clientResponseDTO.setFirstName(client.getFirstName());
+        clientResponseDTO.setPhone(client.getPhone());
+        clientResponseDTO.setUsername(client.getUsername());
+
+        return clientResponseDTO;
     }
 }

@@ -56,6 +56,7 @@ public class MenuPositionController {
         return ResponseEntity.status(HttpStatus.OK).body(menuPositions);
     }
 
+    @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5172"})
     @GetMapping(path = "/{id}")
     public ResponseEntity<MenuPositionResponseDTO> getMenuPositionById(@PathVariable Long id) {
 
