@@ -1,0 +1,54 @@
+@import '../../style.scss';
+
+.cart {
+
+   display: flex;
+   flex-direction: column;
+   gap: 30px;
+
+   &__item {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+   }
+
+   &__image {
+      width: 100px;
+      height: 100px;
+
+      img {
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+      }
+   }
+
+   &__name,
+   &__number {
+      font-weight: 700;
+      color: $blackColor;
+      font-size: 20px;
+   }
+
+   &__icon {
+      cursor: pointer;
+   }
+
+   &__plusminus {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+   }
+
+   &__number {}
+
+   &__totalPrice {
+      color: $redColor;
+      font-weight: 700;
+      font-size: 20px;
+   }
+
+   &__delete {
+      cursor: pointer;
+   }
+}

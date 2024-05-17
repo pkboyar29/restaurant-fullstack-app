@@ -28,12 +28,7 @@ function SignInPage({ setCurrentClient }: SignInProps) {
    const onSubmit = (data: ClientsSignInFields) => {
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/clients/sign-in', data)
          .then(response => {
-            const client: Client = {
-               id: response.data.id,
-               username: response.data.username,
-               phone: response.data.phone,
-               firstName: response.data.firstName
-            }
+            const client: Client = response.data
             setCurrentClient(client)
             localStorage.setItem('currentClient', JSON.stringify(client))
             alert('Вы успешно авторизовались!')

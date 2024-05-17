@@ -1,6 +1,7 @@
 import styles from './Header.module.scss'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import usericon from '../../assets/user.svg'
 import logo from '../../assets/logo.svg'
@@ -17,6 +18,8 @@ function Header({ numberCart, currentClient, signOut }: HeaderProps) {
 
    const [dropDown, setDropDown] = useState<boolean>(false)
 
+   const navigate = useNavigate()
+
    return (
       <header className={styles['header']}>
          <div className={`${styles['container']} ${styles['header__container']}`}>
@@ -29,7 +32,7 @@ function Header({ numberCart, currentClient, signOut }: HeaderProps) {
             </nav>
 
             <div className={styles['header__right']}>
-               <div className={styles['header__cart']}>
+               <div onClick={() => navigate('/order')} className={styles['header__cart']}>
                   <img src={cart} alt='cart' />
                   <div className={styles['header__cart_count']}>{numberCart}</div>
                </div>
