@@ -10,21 +10,23 @@ import 'slick-carousel/slick/slick-theme.css'
 interface MenuPositionModalProps {
    menuPosition: MenuPosition | null
    handleCloseModal: () => void
+   setCartItem: (menuPosition: MenuPosition) => void
 }
 
-function MenuPositionModal({ menuPosition, handleCloseModal }: MenuPositionModalProps) {
+function MenuPositionModal({ menuPosition, handleCloseModal, setCartItem }: MenuPositionModalProps) {
 
-   useEffect(() => {
-      console.log('привет как дела')
-      console.log(menuPosition?.name)
-   }, [menuPosition])
-
-   var settings = {
+   var sliderSettings = {
       dots: true,
       infinite: true,
       slidesToShow: 1,
       slidesToScroll: 1
    };
+
+   const onClick = () => {
+      if (menuPosition !== null) {
+         setCartItem(menuPosition)
+      }
+   }
 
    return (
       <div className={styles['menu-modal']}>
@@ -35,7 +37,7 @@ function MenuPositionModal({ menuPosition, handleCloseModal }: MenuPositionModal
             </div>
             <div className={styles['modal__image']}>
 
-               <Slider {...settings}>
+               <Slider {...sliderSettings}>
                   {menuPosition?.image1 ? <img src={menuPosition?.image1} alt={menuPosition?.name} /> : <img src={nullimage} alt='null image' />}
                   {menuPosition?.image2 ? <img src={menuPosition?.image2} alt={menuPosition?.name} /> : <img src={nullimage} alt='null image' />}
                   {menuPosition?.image3 ? <img src={menuPosition?.image3} alt={menuPosition?.name} /> : <img src={nullimage} alt='null image' />}
@@ -47,7 +49,7 @@ function MenuPositionModal({ menuPosition, handleCloseModal }: MenuPositionModal
             <div style={{ display: 'flex', gap: '15px' }}>Цена <div className={styles['modal__price']}>{menuPosition?.price} ₽</div></div>
             <div style={{ display: 'flex', gap: '15px' }}>Порция <div className={styles['modal__portion']}>{menuPosition?.portion}</div></div>
 
-            <button className={styles['modal__button']} type='button'>Заказать</button>
+            <button onClick={onClick} className={styles['modal__button']} type='button'>Заказать</button>
          </div>
       </div>
    )

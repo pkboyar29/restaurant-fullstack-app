@@ -9,7 +9,11 @@ import Title from '../../components/Title/Title'
 import MenuPositionCard from '../../components/MenuPositionCard/MenuPositionCard'
 import MenuPositionModal from '../../components/MenuPositionModal/MenuPositionModal'
 
-function MenuPage() {
+interface MenuPageProps {
+   setCartItem: (menuPosition: MenuPosition) => void
+}
+
+function MenuPage({ setCartItem }: MenuPageProps) {
 
    const [menuPositions, setMenuPositions] = useState<MenuPosition[]>([])
    const [menuSections, setMenuSections] = useState<MenuSection[]>([])
@@ -52,13 +56,13 @@ function MenuPage() {
    return (
       <div className={`${styles['container']} ${styles['menu__container']}`}>
 
-         {menuPositionModal && <MenuPositionModal handleCloseModal={handleCloseModal} menuPosition={currentMenuPosition} />}
+         {menuPositionModal && <MenuPositionModal setCartItem={setCartItem} handleCloseModal={handleCloseModal} menuPosition={currentMenuPosition} />}
 
          <Title>Наше меню</Title>
 
          <div className={styles['menu__cards']}>
             {menuPositions.map((menuPosition) => (
-               <MenuPositionCard handleSetModal={handleSetModal} menuPositionId={menuPosition.id} />
+               <MenuPositionCard key={menuPosition.id} handleSetModal={handleSetModal} menuPositionId={menuPosition.id} />
             ))}
          </div>
 

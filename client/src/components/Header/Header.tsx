@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
 import cart from '../../assets/cart.svg'
 
-function Header() {
+interface HeaderProps {
+   numberCart: number
+}
+
+function Header({ numberCart }: HeaderProps) {
    return (
       <header className={styles['header']}>
          <div className={`${styles['container']} ${styles['header__container']}`}>
@@ -19,7 +23,7 @@ function Header() {
             <div className={styles['header__right']}>
                <div className={styles['header__cart']}>
                   <img src={cart} alt='cart' />
-                  <div className={styles['header__cart_count']}>0</div>
+                  <div className={styles['header__cart_count']}>{numberCart}</div>
                </div>
 
                <Link to='/sign-in' className={styles['header__signin']}>Войти</Link>
