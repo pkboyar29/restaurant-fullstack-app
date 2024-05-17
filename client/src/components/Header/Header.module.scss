@@ -39,4 +39,41 @@
       display: flex;
       gap: 40px;
    }
+
+   &__select {
+      cursor: pointer;
+      background-color: #F0F2F5;
+      padding: 10px;
+      border-radius: 14px;
+      display: flex;
+      gap: 10px;
+   }
+}
+
+.dropdown {
+   border: solid 1px #E8EDF2;
+   width: 200px;
+   bottom: -145%;
+   left: 0;
+   position: absolute;
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   z-index: 100;
+   background-color: #fff;
+   padding: 6px 14px;
+   border-radius: 14px;
+   &__item {
+      cursor: pointer;
+   }
+}
+
+.user__info {
+   user-select: none;
+   position: relative;
+   color: #0D141C;
+
+   a {
+      color: #0D141C;
+   }
 }

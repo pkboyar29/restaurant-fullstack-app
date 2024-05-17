@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import { MenuPosition } from "../ts/types/MenuPosition"
+import { Client } from '../ts/types/Client'
 import { useState, useEffect } from 'react'
 
 import SignInPage from '../pages/SignInPage/SignInPage'
@@ -16,9 +17,9 @@ type OrderPosition = {
 function App() {
 
   const [numberCart, setNumberCart] = useState<number>(0)
+  const [currentClient, setCurrentClient] = useState<Client | null>(null)
 
   const setCartItem = (menuPosition: MenuPosition) => {
-
     const cartLocalStorage = localStorage.getItem('cart')
 
     if (!cartLocalStorage) {
@@ -53,6 +54,12 @@ function App() {
     }
   }
 
+  const signOut = () => {
+    console.log('вышел, хорош')
+    setCurrentClient(null)
+    localStorage.removeItem('currentClient')
+  }
+
   useEffect(() => {
     const cartLocalStorage = localStorage.getItem('cart')
     if (cartLocalStorage) {
@@ -67,14 +74,22 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    const currentClientLocalStorage = localStorage.getItem('currentClient')
+    if (currentClientLocalStorage) {
+      const currentClient: Client = JSON.parse(currentClientLocalStorage)
+      setCurrentClient(currentClient)
+    }
+  }, [])
+
   return (
     <div className='App'>
 
-      <Header numberCart={numberCart} />
+      <Header currentClient={currentClient} numberCart={numberCart} signOut={signOut} />
 
       <Routes>
-        <Route path='/sign-in' element={<SignInPage />} />
-        <Route path='/sign-up' element={<SignUpPage />} />
+        <Route path='/sign-in' element={<SignInPage setCurrentClient={setCurrentClient} />} />
+        <Route path='/sign-up' element={<SignUpPage setCurrentClient={setCurrentClient} />} />
         <Route path='/menu' element={<MenuPage setCartItem={setCartItem} />} />
         <Route path='/' element={<Navigate to='menu' />} />
       </Routes>

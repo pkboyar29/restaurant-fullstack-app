@@ -2,6 +2,7 @@ import styles from './SignInPage.module.scss'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Client } from '../../ts/types/Client'
 
 import Title from '../../components/Title/Title'
 import TextInput from '../../components/TextInput/TextInput'
@@ -12,7 +13,11 @@ type ClientsSignInFields = {
    password: string
 }
 
-function SignInPage() {
+interface SignInProps {
+   setCurrentClient: (currentClient: Client) => void
+}
+
+function SignInPage({ setCurrentClient }: SignInProps) {
 
    const navigate = useNavigate()
 
@@ -23,7 +28,14 @@ function SignInPage() {
    const onSubmit = (data: ClientsSignInFields) => {
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/clients/sign-in', data)
          .then(response => {
-            console.log(response.data)
+            const client: Client = {
+               id: response.data.id,
+               username: response.data.username,
+               phone: response.data.phone,
+               firstName: response.data.firstName
+            }
+            setCurrentClient(client)
+            localStorage.setItem('currentClient', JSON.stringify(client))
             alert('Вы успешно авторизовались!')
             navigate('/menu')
          })
