@@ -20,6 +20,24 @@ interface TakeawayOrderPageProps {
 
 function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCartItem }: TakeawayOrderPageProps) {
 
+   const [cost, setCost] = useState<number>(0)
+   const [discountedCost, setDiscountedCost] = useState<number>(0)
+
+   useEffect(() => {
+      let totalCost = 0
+      let discountedTotalCost = 0
+
+      cart.map((item: OrderPosition) => {
+         totalCost += item.totalPrice
+      })
+      setCost(totalCost)
+
+      if (currentClient) {
+         discountedTotalCost = totalCost - ((totalCost * currentClient.orderDiscount.discount) / 100)
+         setDiscountedCost(discountedTotalCost)
+      }
+   }, [cart])
+
    if (cart.length === 0) {
       return (
          <>
@@ -50,6 +68,12 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
                      <img onClick={() => deleteCartItem(item.menuPositon.id)} className={styles['cart__delete']} src={deleteIcon} alt='delete icon' />
                   </div>
                ))}
+
+               <div className={styles['cart__cost']}>Общая стоимость: {cost} ₽</div>
+               {currentClient
+                  ? (<div className={styles['cart__discountedcost']}>Общая стоимость со скидкой: {discountedCost} ₽. Оформляйте больше заказов, чтобы иметь большую скидку</div>)
+                  : (<Link className={styles['link']} to='/sign-in'>Войдите или создайте аккаунт, чтобы получить скидку</Link>)}
+
 
             </div>
          </div>

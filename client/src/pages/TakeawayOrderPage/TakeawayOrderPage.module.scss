@@ -51,4 +51,24 @@
    &__delete {
       cursor: pointer;
    }
+
+   &__cost {}
+
+   &__discountedcost {}
+
+   &__cost,
+   &__discountedcost,
+   .link {
+      color: $blackColor;
+      font-size: 20px;
+      font-weight: 700;
+   }
+
+}
+
+.link {
+   transition: all .5s;
+   &:hover {
+      color: $redColor;
+   }
 }
