@@ -2,12 +2,13 @@ import styles from './Button.module.scss'
 
 interface ButtonProps {
    text: string,
-   onClick: React.MouseEventHandler<HTMLButtonElement>
+   onClick: React.MouseEventHandler<HTMLButtonElement>,
+   buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
-function Button({ text, onClick }: ButtonProps) {
+function Button({ text, onClick, buttonProps }: ButtonProps) {
    return (
-      <button className={styles['button']} onClick={onClick}>
+      <button {...buttonProps} className={styles['button']} onClick={onClick}>
          {text}
       </button>
    )

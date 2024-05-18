@@ -6,7 +6,7 @@ interface TextInputProps {
    placeholder: string
    errorMessage: string
    register: any
-   validationRules: Record<string, any>
+   validationRules?: Record<string, any>
    inputProps?: React.InputHTMLAttributes<HTMLInputElement>
 }
 

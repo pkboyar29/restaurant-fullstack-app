@@ -101,6 +101,12 @@ function App() {
     updateNumberCart(updatedCart)
   }
 
+  const clearCart = () => {
+    setCart([])
+    setNumberCart(0)
+    localStorage.removeItem('cart')
+  }
+
   useEffect(() => {
     const cartLocalStorage = localStorage.getItem('cart')
     if (cartLocalStorage) {
@@ -133,7 +139,7 @@ function App() {
         <Route path='/sign-in' element={<SignInPage setCurrentClient={setCurrentClient} />} />
         <Route path='/sign-up' element={<SignUpPage setCurrentClient={setCurrentClient} />} />
         <Route path='/menu' element={<MenuPage setCartItem={setCartItem} />} />
-        <Route path='/order' element={<TakeawayOrderPage cart={cart} deleteCartItem={deleteCartItem} changeNumberCartItem={changeNumberCartItem} currentClient={currentClient} />} />
+        <Route path='/order' element={<TakeawayOrderPage cart={cart} deleteCartItem={deleteCartItem} changeNumberCartItem={changeNumberCartItem} clearCart={clearCart} currentClient={currentClient} />} />
         <Route path='/' element={<Navigate to='menu' />} />
       </Routes>
     </div>

@@ -68,7 +68,25 @@
 
 .link {
    transition: all .5s;
+
    &:hover {
       color: $redColor;
    }
+}
+
+.takeaway__form {
+   display: flex;
+   flex-direction: column;
+   gap: 30px;
+   margin-bottom: 30px;
+}
+
+.input__date {
+   width: 700px;
+   padding: 10px;
+   border: #DBDFD0 1px solid;
+   padding: 16px 24px;
+   border-radius: 30px;
+   color: #737865;
+   font-size: 16px;
 }

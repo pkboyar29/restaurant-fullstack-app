@@ -10,15 +10,16 @@ interface SelectInputProps {
    fieldName: string
    register: any
    selectOptions: SelectOption[]
+   inputProps?: React.InputHTMLAttributes<HTMLInputElement>
 }
 
-function SelectInput({ selectTitle, selectOptions, fieldName, register }: SelectInputProps) {
+function SelectInput({ selectTitle, selectOptions, fieldName, register, inputProps }: SelectInputProps) {
 
    return (
       <div className={styles['select']}>
          <div className={styles['select__title']}>{selectTitle}</div>
 
-         <select {...register(fieldName)} className={styles['select__select']}>
+         <select {...inputProps} {...register(fieldName)} className={styles['select__select']}>
 
             {selectOptions.map(option => (
                <option className={styles['select__option']} key={option.value} value={option.value}>
