@@ -53,6 +53,7 @@ public class TakeawayOrderService {
                 }
 
             } else {
+                System.out.println("ты null");
                 newTakeawayOrder.setClient(null);
             }
             newTakeawayOrder.setClientName(takeawayOrderRequestDTO.getClientName());

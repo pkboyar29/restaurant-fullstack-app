@@ -36,9 +36,9 @@ public class TakeawayOrderController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
         }
-        catch (Exception e) {
-            responseBody.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
-        }
+//        catch (Exception e) {
+//            responseBody.put("message", e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+//        }
     }
 }
