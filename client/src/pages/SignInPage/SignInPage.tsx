@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Client } from '../../ts/types/Client'
+import { useState } from 'react'
 
 import Title from '../../components/Title/Title'
 import TextInput from '../../components/TextInput/TextInput'
 import Button from '../../components/Button/Button'
+import Modal from '../../components/Modal/Modal'
 
 type ClientsSignInFields = {
    username: string,
@@ -20,6 +22,7 @@ interface SignInProps {
 function SignInPage({ setCurrentClient }: SignInProps) {
 
    const navigate = useNavigate()
+   const [modal, setModal] = useState<boolean>(false)
 
    const { handleSubmit, register, setError, formState: { errors } } = useForm<ClientsSignInFields>({
       mode: 'onBlur'
@@ -31,8 +34,7 @@ function SignInPage({ setCurrentClient }: SignInProps) {
             const client: Client = response.data
             setCurrentClient(client)
             localStorage.setItem('currentClient', JSON.stringify(client))
-            alert('Вы успешно авторизовались!')
-            navigate('/menu')
+            setModal(true)
          })
          .catch(error => {
             switch (error.response.status) {
@@ -50,6 +52,12 @@ function SignInPage({ setCurrentClient }: SignInProps) {
 
    return (
       <>
+
+         {modal && <Modal modalText='Вы успешно авторизовались!' buttonConfirmText='Ок' confirmHandler={() => {
+            setModal(false)
+            navigate('/menu')
+         }} />}
+
          <Title>Авторизация</Title>
 
          <form autoComplete='off' className={styles['form']} onSubmit={handleSubmit(onSubmit)}>

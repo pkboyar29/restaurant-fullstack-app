@@ -40,7 +40,9 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
    const [cost, setCost] = useState<number>(0)
    const [discountedCost, setDiscountedCost] = useState<number>(0)
-   const [modal, setModal] = useState<boolean>(false)
+   const [submitModal, setSubmitModal] = useState<boolean>(false)
+   const [deleteModal, setDeleteModal] = useState<boolean>(false)
+   const [itemIdToDelete, setItemIdToDelete] = useState<number>(0)
 
    const navigate = useNavigate()
 
@@ -81,7 +83,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/takeaway-orders', requestData)
          .then(response => {
             console.log(response.data)
-            setModal(true)
+            setSubmitModal(true)
          })
          .catch(error => console.log(error))
    }
@@ -113,10 +115,15 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
    return (
       <>
-         {modal && <Modal modalText='Заказ успешно создан!' buttonConfirmText='Ок' confirmHandler={() => {
-            setModal(false)
+         {submitModal && <Modal modalText='Заказ успешно создан!' buttonConfirmText='Ок' confirmHandler={() => {
+            setSubmitModal(false)
             navigate('/menu')
             clearCart()
+         }} />}
+
+         {deleteModal && <Modal modalText='Вы уверены, что хотите удалить этот товар?' buttonConfirmText='Да' confirmHandler={() => {
+            setDeleteModal(false)
+            deleteCartItem(itemIdToDelete)
          }} />}
 
          <Title>Ваш заказ</Title>
@@ -126,15 +133,22 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
                {cart.map((item: OrderPosition, index: number) => (
                   <div key={index} className={styles['cart__item']}>
-                     <div className={styles['cart__image']}>{item.menuPositon.image1 ? <img src={item.menuPositon.image1} alt='image' /> : <img src={nullimage} alt='null image' />}</div>
-                     <div className={styles['cart__name']}>{item.menuPositon.name}</div>
-                     <div className={styles['cart__plusminus']}>
-                        <img onClick={() => changeNumberCartItem(item.menuPositon.id, true)} className={styles['cart__icon']} src={plusIcon} alt='plus icon' />
-                        <div className={styles['cart__number']}>{item.number}</div>
-                        <img onClick={() => changeNumberCartItem(item.menuPositon.id, false)} className={styles['cart__icon']} src={minusIcon} alt='minus icon' />
+                     <div className={styles['cart__left']}>
+                        <div className={styles['cart__image']}>{item.menuPositon.image1 ? <img src={item.menuPositon.image1} alt='image' /> : <img src={nullimage} alt='null image' />}</div>
+                        <div className={styles['cart__name']}>{item.menuPositon.name}</div>
                      </div>
-                     <div className={styles['cart__totalPrice']}>{item.totalPrice} ₽</div>
-                     <img onClick={() => deleteCartItem(item.menuPositon.id)} className={styles['cart__delete']} src={deleteIcon} alt='delete icon' />
+                     <div className={styles['cart__right']}>
+                        <div className={styles['cart__plusminus']}>
+                           <img onClick={() => changeNumberCartItem(item.menuPositon.id, true)} className={styles['cart__icon']} src={plusIcon} alt='plus icon' />
+                           <div className={styles['cart__number']}>{item.number}</div>
+                           <img onClick={() => changeNumberCartItem(item.menuPositon.id, false)} className={styles['cart__icon']} src={minusIcon} alt='minus icon' />
+                        </div>
+                        <div className={styles['cart__totalPrice']}>{item.totalPrice} ₽</div>
+                        <img onClick={() => {
+                           setDeleteModal(true)
+                           setItemIdToDelete(item.menuPositon.id)
+                        }} className={styles['cart__delete']} src={deleteIcon} alt='delete icon' />
+                     </div>
                   </div>
                ))}
 
@@ -170,7 +184,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
                         type: 'text',
                         autoComplete: 'off',
                         maxLength: 30,
-                        style: { width: '700px' }
+                        style: { maxWidth: '700px' }
                      }}
                   />
 
@@ -190,7 +204,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
                      inputProps={{
                         type: 'text',
                         autoComplete: 'off',
-                        style: { width: '700px' }
+                        style: { maxWidth: '700px' }
                      }}
                   />
 
@@ -203,7 +217,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
                      inputProps={{
                         type: 'text',
                         autoComplete: 'off',
-                        style: { height: '120px', width: '700px' }
+                        style: { height: '120px', maxWidth: '700px' }
                      }}
                   />
 
@@ -211,7 +225,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
                   <SelectInput
                      inputProps={{
-                        style: { width: '700px' }
+                        style: { maxWidth: '700px' }
                      }}
                      selectTitle='Способ получения заказ'
                      selectOptions={[
@@ -230,7 +244,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
                   <SelectInput
                      inputProps={{
-                        style: { width: '700px' }
+                        style: { maxWidth: '700px' }
                      }}
                      selectTitle='Способ оплаты при получении'
                      selectOptions={[
@@ -248,7 +262,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
                   />
 
                   <Button buttonProps={{
-                     style: { width: '700px' }
+                     style: { maxWidth: '700px' }
                   }} text='Оформить заказ' onClick={() => console.log('hello')}></Button>
 
                </form>

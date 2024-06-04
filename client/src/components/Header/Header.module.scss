@@ -8,9 +8,33 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      @media(max-width: $md) {
+         display: block;
+      }
    }
 
-   &__img {}
+   &__img {
+      @media(max-width: $md) {
+         width: 80px;
+      }
+   }
+
+   &__left {
+      display: flex;
+      gap: 160px;
+      align-items: center;
+
+      @media(max-width: $lg) {
+         gap: 80px;
+      }
+
+      @media(max-width: $md) {
+         gap: 20px;
+         justify-content: space-between;
+         margin-bottom: 20px;
+      }
+   }
 
    &__item {
       color: $blackColor;
@@ -39,6 +63,7 @@
    &__right {
       display: flex;
       gap: 40px;
+      justify-content: space-between;
    }
 
    &__select {
@@ -64,6 +89,7 @@
    background-color: #fff;
    padding: 6px 14px;
    border-radius: 14px;
+
    &__item {
       cursor: pointer;
    }

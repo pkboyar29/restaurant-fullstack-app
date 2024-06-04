@@ -22,6 +22,14 @@
       flex-direction: column;
       gap: 26px;
       color: #414536;
+
+      @media(max-width: $lg) {
+         width: 400px;
+      }
+
+      @media(max-width: $md) {
+         width: 300px;
+      }
    }
 
    &__header {
@@ -40,12 +48,16 @@
       cursor: pointer;
    }
 
-   &__image {
+   &__slider {
       img {
          height: 400px;
          width: 100%;
          object-fit: cover;
          border-radius: 16px;
+
+         @media(max-width: $md) {
+            height: 200px;
+         }
       }
    }
 

@@ -1,6 +1,5 @@
 import { MenuPosition } from '../../ts/types/MenuPosition'
 import styles from './MenuPositionModal.module.scss'
-import { useEffect } from 'react'
 import closemodal from '../../assets/closemodal.svg'
 import nullimage from '../../assets/nullimage.jpeg'
 import Slider from 'react-slick'
@@ -9,7 +8,7 @@ import 'slick-carousel/slick/slick-theme.css'
 
 interface MenuPositionModalProps {
    menuPosition: MenuPosition | null
-   handleCloseModal: () => void
+   handleCloseModal: (result: boolean) => void
    setCartItem: (menuPosition: MenuPosition) => void
 }
 
@@ -26,6 +25,7 @@ function MenuPositionModal({ menuPosition, handleCloseModal, setCartItem }: Menu
       if (menuPosition !== null) {
          setCartItem(menuPosition)
       }
+      handleCloseModal(true)
    }
 
    return (
@@ -33,9 +33,9 @@ function MenuPositionModal({ menuPosition, handleCloseModal, setCartItem }: Menu
          <div className={styles['modal__content']}>
             <div className={styles['modal__header']}>
                <div className={styles['modal__title']}>{menuPosition?.name}</div>
-               <img onClick={handleCloseModal} className={styles['modal__close']} src={closemodal} />
+               <img onClick={() => handleCloseModal(false)} className={styles['modal__close']} src={closemodal} />
             </div>
-            <div className={styles['modal__image']}>
+            <div className={styles['modal__slider']}>
 
                <Slider {...sliderSettings}>
                   {menuPosition?.image1 ? <img src={menuPosition?.image1} alt={menuPosition?.name} /> : <img src={nullimage} alt='null image' />}

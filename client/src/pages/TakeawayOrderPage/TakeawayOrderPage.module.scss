@@ -2,6 +2,18 @@
 
 .cart {
 
+   &__left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+   }
+
+   &__right {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+   }
+
    display: flex;
    flex-direction: column;
    gap: 30px;
@@ -10,6 +22,10 @@
       display: flex;
       align-items: center;
       gap: 40px;
+
+      @media(max-width: $md) {
+         flex-direction: column;
+      }
    }
 
    &__image {
@@ -82,7 +98,7 @@
 }
 
 .input__date {
-   width: 700px;
+   max-width: 700px;
    padding: 10px;
    border: #DBDFD0 1px solid;
    padding: 16px 24px;

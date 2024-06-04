@@ -23,13 +23,17 @@ function Header({ numberCart, currentClient, signOut }: HeaderProps) {
    return (
       <header className={styles['header']}>
          <div className={`${styles['container']} ${styles['header__container']}`}>
-            <img className={styles['header__img']} src={logo} alt='logo' />
 
-            <nav className={styles['header__nav']}>
-               <Link to='/menu' className={styles['header__item']}>Меню</Link>
-               <Link to='/' className={styles['header__item']}>Новости</Link>
-               <Link to='/' className={styles['header__item']}>О нас</Link>
-            </nav>
+            <div className={styles['header__left']}>
+               <img className={styles['header__img']} src={logo} alt='logo' />
+
+               <nav className={styles['header__nav']}>
+                  <Link to='/menu' className={styles['header__item']}>Меню</Link>
+                  <Link to='/' className={styles['header__item']}>Новости</Link>
+                  <Link to='/' className={styles['header__item']}>О нас</Link>
+               </nav>
+            </div>
+
 
             <div className={styles['header__right']}>
                <div onClick={() => navigate('/order')} className={styles['header__cart']}>

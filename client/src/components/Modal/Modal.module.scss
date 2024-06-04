@@ -12,6 +12,7 @@
    justify-content: center;
 
    &__content {
+      overflow: hidden;
       background-color: #fff;
       max-width: 600px;
       border-radius: 6px;

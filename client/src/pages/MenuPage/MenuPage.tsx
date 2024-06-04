@@ -8,6 +8,7 @@ import { MenuSection } from '../../ts/types/MenuSection'
 import Title from '../../components/Title/Title'
 import MenuPositionCard from '../../components/MenuPositionCard/MenuPositionCard'
 import MenuPositionModal from '../../components/MenuPositionModal/MenuPositionModal'
+import Modal from '../../components/Modal/Modal'
 
 interface MenuPageProps {
    setCartItem: (menuPosition: MenuPosition) => void
@@ -18,6 +19,7 @@ function MenuPage({ setCartItem }: MenuPageProps) {
    const [menuPositions, setMenuPositions] = useState<MenuPosition[]>([])
    const [menuSections, setMenuSections] = useState<MenuSection[]>([])
    const [menuPositionModal, setMenuPositionModal] = useState<boolean>(false)
+   const [resultModal, setResultModal] = useState<boolean>(false)
    const [currentMenuPosition, setCurrentMenuPostion] = useState<MenuPosition | null>(null)
 
    const getMenuPositions = () => {
@@ -47,16 +49,25 @@ function MenuPage({ setCartItem }: MenuPageProps) {
       document.body.classList.add('menu-modal-open')
    }
 
-   const handleCloseModal = () => {
+   const handleCloseModal = (result: boolean) => {
       setCurrentMenuPostion(null)
       setMenuPositionModal(false)
       document.body.classList.remove('menu-modal-open')
+
+      if (result) {
+         setResultModal(true)
+         document.body.classList.add('menu-modal-open')
+      }
    }
 
    return (
       <div className={`${styles['container']} ${styles['menu__container']}`}>
 
          {menuPositionModal && <MenuPositionModal setCartItem={setCartItem} handleCloseModal={handleCloseModal} menuPosition={currentMenuPosition} />}
+         {resultModal && <Modal modalText='Товар успешно добавлен в корзину!' buttonConfirmText='Ок' confirmHandler={() => {
+            document.body.classList.remove('menu-modal-open')
+            setResultModal(false)
+         }} />}
 
          <Title>Наше меню</Title>
 
