@@ -7,8 +7,6 @@ public class TakeawayOrderRequestDTO {
     private String clientPhone;
     private Long clientId;
     private String requirements;
-    private int cost;
-    private int discountedCost;
     private String paymentMethod;
     private LocalDateTime receiptDate;
     private String receiptOption;
@@ -28,14 +26,6 @@ public class TakeawayOrderRequestDTO {
 
     public String getRequirements() {
         return requirements;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public int getDiscountedCost() {
-        return discountedCost;
     }
 
     public String getPaymentMethod() {
@@ -68,14 +58,6 @@ public class TakeawayOrderRequestDTO {
 
     public void setRequirements(String requirements) {
         this.requirements = requirements;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
-
-    public void setDiscountedCost(int discountedCost) {
-        this.discountedCost = discountedCost;
     }
 
     public void setPaymentMethod(String paymentMethod) {

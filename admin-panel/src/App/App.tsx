@@ -27,7 +27,7 @@ function App() {
           <Route path='menu-section' element={<MenuSectionForm />} />
         </Route>
         <Route path='/sign-in' element={< SignInPage />} />
-        <Route path='/' element={<Navigate to='/admin-panel' />} />
+        <Route path='/' element={<Navigate to='/admin-panel/menu-positions' />} />
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </div>

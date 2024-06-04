@@ -72,8 +72,6 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
          clientPhone: data.clientPhone,
          clientId: currentClient ? Number(currentClient.id) : null,
          requirements: data.requirements,
-         cost: cost,
-         discountedCost: discountedCost,
          paymentMethod: data.paymentMethod,
          receiptDate: data.receiptDate,
          receiptOption: data.receiptOption,

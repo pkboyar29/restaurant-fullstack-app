@@ -33,34 +33,32 @@ public class TakeawayOrderService {
     public void addTakeawayOrder(TakeawayOrderRequestDTO takeawayOrderRequestDTO) {
         try {
             TakeawayOrder newTakeawayOrder = new TakeawayOrder();
+            int clientDiscount = 0;
 
             if (takeawayOrderRequestDTO.getClientId() != null) {
                 Optional<Client> optionalClient = clientRepository.findById(takeawayOrderRequestDTO.getClientId());
                 if (optionalClient.isEmpty()) {
                     throw new ObjectNotFoundException("Client with this id doesn't exist");
                 }
-
                 Client client = optionalClient.get();
 
                 newTakeawayOrder.setClient(client);
 
                 client.setNumberOrders(client.getNumberOrders() + 1);
 
-                for(OrderDiscount orderDiscount: orderDiscountRepository.findAll()) {
+                for (OrderDiscount orderDiscount: orderDiscountRepository.findAll()) {
                     if (client.getNumberOrders() >= orderDiscount.getRequiredNumberOrders() && client.getOrderDiscount() != orderDiscount) {
                         client.setOrderDiscount(orderDiscount);
+                        clientDiscount = orderDiscount.getDiscount();
                     }
                 }
 
             } else {
-                System.out.println("ты null");
                 newTakeawayOrder.setClient(null);
             }
             newTakeawayOrder.setClientName(takeawayOrderRequestDTO.getClientName());
             newTakeawayOrder.setClientPhone(takeawayOrderRequestDTO.getClientPhone());
             newTakeawayOrder.setRequirements(takeawayOrderRequestDTO.getRequirements());
-            newTakeawayOrder.setCost(takeawayOrderRequestDTO.getCost());
-            newTakeawayOrder.setDiscountedCost(takeawayOrderRequestDTO.getDiscountedCost());
             newTakeawayOrder.setOrderDate(LocalDateTime.now());
             newTakeawayOrder.setReceiptDate(takeawayOrderRequestDTO.getReceiptDate());
             newTakeawayOrder.setReceiptOption(takeawayOrderRequestDTO.getReceiptOption());
@@ -68,6 +66,8 @@ public class TakeawayOrderService {
 
             newTakeawayOrder = takeawayOrderRepository.save(newTakeawayOrder);
 
+            double cost = 0;
+            double discountedCost = 0;
             // создать сущности TakeawayOrderPosition
             for (TakeawayOrderPositionRequestDTO takeawayOrderPositionRequestDTO : takeawayOrderRequestDTO.getTakeawayOrderPositionList()) {
 
@@ -75,15 +75,27 @@ public class TakeawayOrderService {
                 if (optionalMenuPosition.isEmpty()) {
                     throw new ObjectNotFoundException("Menu position with this id doesn't exist");
                 }
+                MenuPosition menuPosition = optionalMenuPosition.get();
+                int menuPositionPrice = menuPosition.getPrice();
 
                 TakeawayOrderPosition newTakeawayOrderPosition = new TakeawayOrderPosition();
                 newTakeawayOrderPosition.setMenuPosition(optionalMenuPosition.get());
                 newTakeawayOrderPosition.setNumber(takeawayOrderPositionRequestDTO.getNumber());
-                newTakeawayOrderPosition.setTotalPrice(takeawayOrderPositionRequestDTO.getTotalPrice());
+                newTakeawayOrderPosition.setTotalPrice(menuPositionPrice * takeawayOrderPositionRequestDTO.getNumber());
                 newTakeawayOrderPosition.setTakeawayOrder(newTakeawayOrder);
-
                 takeawayOrderPositionRepository.save(newTakeawayOrderPosition);
+
+                cost += newTakeawayOrderPosition.getTotalPrice();
             }
+            if (clientDiscount == 0) {
+                discountedCost = cost;
+            } else {
+                discountedCost = cost  * (1 - (clientDiscount / 100.0));
+            }
+            newTakeawayOrder.setCost((int) cost);
+            newTakeawayOrder.setDiscountedCost((int) discountedCost);
+            takeawayOrderRepository.save(newTakeawayOrder);
+
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
