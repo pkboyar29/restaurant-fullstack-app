@@ -3,6 +3,7 @@ package com.example.backend.services;
 import com.example.backend.dto.Client.ClientResponseDTO;
 import com.example.backend.dto.Client.ClientSignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
+import com.example.backend.dto.Client.ClientUpdateContactRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserException;
@@ -62,14 +63,7 @@ public class ClientService {
         try {
             Client client = clientRepository.save(newClient);
 
-            ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
-            clientResponseDTO.setId(client.getId());
-            clientResponseDTO.setFirstName(client.getFirstName());
-            clientResponseDTO.setPhone(client.getPhone());
-            clientResponseDTO.setUsername(client.getUsername());
-            clientResponseDTO.setOrderDiscount(client.getOrderDiscount());
-
-            return clientResponseDTO;
+            return convertClientToClientResponseDTO(client);
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -78,7 +72,6 @@ public class ClientService {
 
     public ClientResponseDTO signIn(ClientSignInRequestDTO clientSignInRequestDTO) {
         Optional<Client> optionalClient = clientRepository.findByUsername(clientSignInRequestDTO.getUsername());
-
         if (optionalClient.isEmpty()) {
             throw new ObjectNotFoundException("Client with this username doesn't exist");
         }
@@ -94,13 +87,43 @@ public class ClientService {
         client.setDateLastLogin(LocalDateTime.now());
         clientRepository.save(client);
 
+        return convertClientToClientResponseDTO(client);
+    }
+
+    public ClientResponseDTO updateClientContact(ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
+        System.out.println("id из dto = " + clientUpdateContactRequestDTO.getId());
+        Optional<Client> optionalClient = clientRepository.findById(clientUpdateContactRequestDTO.getId());
+        if (optionalClient.isEmpty()) {
+            throw new ObjectNotFoundException("Client with this id doesn't exist");
+        }
+        Client client = optionalClient.get();
+
+        try {
+            client.setFirstName(clientUpdateContactRequestDTO.getFirstName());
+            client.setLastName(clientUpdateContactRequestDTO.getLastName());
+            client.setPatronymic(clientUpdateContactRequestDTO.getPatronymic());
+            client.setPhone(clientUpdateContactRequestDTO.getPhone());
+            client.setEmail(clientUpdateContactRequestDTO.getEmail());
+            clientRepository.save(client);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return convertClientToClientResponseDTO(client);
+    }
+
+    private ClientResponseDTO convertClientToClientResponseDTO(Client client) {
         ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
         clientResponseDTO.setId(client.getId());
         clientResponseDTO.setFirstName(client.getFirstName());
+        clientResponseDTO.setLastName(client.getLastName());
+        clientResponseDTO.setPatronymic(client.getPatronymic());
         clientResponseDTO.setPhone(client.getPhone());
+        clientResponseDTO.setEmail(client.getEmail());
         clientResponseDTO.setUsername(client.getUsername());
         clientResponseDTO.setOrderDiscount(client.getOrderDiscount());
-        System.out.println();
+        clientResponseDTO.setNumberOrders(client.getNumberOrders());
 
         return clientResponseDTO;
     }

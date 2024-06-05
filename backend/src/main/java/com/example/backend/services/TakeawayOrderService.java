@@ -6,6 +6,7 @@ import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.*;
 import com.example.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -46,7 +47,7 @@ public class TakeawayOrderService {
 
                 client.setNumberOrders(client.getNumberOrders() + 1);
 
-                for (OrderDiscount orderDiscount: orderDiscountRepository.findAll()) {
+                for (OrderDiscount orderDiscount: orderDiscountRepository.findAll(Sort.by(Sort.Direction.ASC, "id"))) {
                     if (client.getNumberOrders() >= orderDiscount.getRequiredNumberOrders() && client.getOrderDiscount() != orderDiscount) {
                         client.setOrderDiscount(orderDiscount);
                         clientDiscount = orderDiscount.getDiscount();

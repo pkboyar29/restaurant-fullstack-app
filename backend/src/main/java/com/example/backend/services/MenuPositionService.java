@@ -11,6 +11,7 @@ import com.example.backend.repositories.MenuPositionRepository;
 import com.example.backend.repositories.MenuSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,7 +45,7 @@ public class MenuPositionService {
     }
 
     public List<MenuPositionResponseDTO> getAllMenuPositions() {
-        return createListMenuPositionResponseDTO(menuPositionRepository.findAll());
+        return createListMenuPositionResponseDTO(menuPositionRepository.findAll(Sort.by(Sort.Direction.ASC, "id")));
     }
 
     public List<MenuPositionResponseDTO> getAvailableMenuPositions() {

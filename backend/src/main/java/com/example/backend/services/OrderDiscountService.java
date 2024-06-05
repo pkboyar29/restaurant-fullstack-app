@@ -3,6 +3,7 @@ package com.example.backend.services;
 import com.example.backend.models.OrderDiscount;
 import com.example.backend.repositories.OrderDiscountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,6 @@ public class OrderDiscountService {
     }
 
     public List<OrderDiscount> getAllOrderDiscounts() {
-        return orderDiscountRepository.findAll();
+        return orderDiscountRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 }

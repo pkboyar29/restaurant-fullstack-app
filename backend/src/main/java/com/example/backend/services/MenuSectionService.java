@@ -4,6 +4,7 @@ import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuSection;
 import com.example.backend.repositories.MenuSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class MenuSectionService {
     }
 
     public List<MenuSection> getAllMenuSections() {
-        return menuSectionRepository.findAll();
+        return menuSectionRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public MenuSection getMenuSectionById(Long sectionId) {

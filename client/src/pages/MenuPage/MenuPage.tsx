@@ -2,7 +2,6 @@ import styles from './MenuPage.module.scss'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-
 import { MenuPosition } from '../../ts/types/MenuPosition'
 import { MenuSection } from '../../ts/types/MenuSection'
 import Title from '../../components/Title/Title'

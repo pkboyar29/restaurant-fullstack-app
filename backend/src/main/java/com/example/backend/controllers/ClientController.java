@@ -3,6 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.dto.Client.ClientResponseDTO;
 import com.example.backend.dto.Client.ClientSignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
+import com.example.backend.dto.Client.ClientUpdateContactRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserException;
@@ -32,12 +33,7 @@ public class ClientController {
 
         try {
             ClientResponseDTO clientResponseDTO = clientService.signUp(clientSignUpRequestDTO);
-
-            responseBody.put("id", clientResponseDTO.getId().toString());
-            responseBody.put("firstName", clientResponseDTO.getFirstName());
-            responseBody.put("username", clientResponseDTO.getUsername());
-            responseBody.put("phone", clientResponseDTO.getPhone());
-            responseBody.put("orderDiscount", clientResponseDTO.getOrderDiscount());
+            responseBody = convertClientResponseDTOToResponseBody(clientResponseDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         }
@@ -58,14 +54,10 @@ public class ClientController {
 
         try {
             ClientResponseDTO clientResponseDTO = clientService.signIn(clientSignInRequestDTO);
-            responseBody.put("id", clientResponseDTO.getId().toString());
-            responseBody.put("firstName", clientResponseDTO.getFirstName());
-            responseBody.put("username", clientResponseDTO.getUsername());
-            responseBody.put("phone", clientResponseDTO.getPhone());
-            responseBody.put("orderDiscount", clientResponseDTO.getOrderDiscount());
+            responseBody = convertClientResponseDTOToResponseBody(clientResponseDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-        } catch (ObjectNotFoundException e ){
+        } catch (ObjectNotFoundException e ) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
         }
@@ -77,5 +69,38 @@ public class ClientController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
+    }
+
+    @PatchMapping(path = "/update-contact")
+    public ResponseEntity<Map<String, Object>> updateClientContact(@RequestBody ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
+        Map <String, Object> responseBody = new HashMap<>();
+
+        try {
+            ClientResponseDTO clientResponseDTO = clientService.updateClientContact(clientUpdateContactRequestDTO);
+            responseBody = convertClientResponseDTOToResponseBody(clientResponseDTO);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        } catch (ObjectNotFoundException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        } catch (RuntimeException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+    }
+
+    private Map<String, Object> convertClientResponseDTOToResponseBody(ClientResponseDTO clientResponseDTO) {
+        Map <String, Object> responseBody = new HashMap<>();
+        responseBody.put("id", clientResponseDTO.getId().toString());
+        responseBody.put("firstName", clientResponseDTO.getFirstName());
+        responseBody.put("lastName", clientResponseDTO.getLastName());
+        responseBody.put("patronymic", clientResponseDTO.getPatronymic());
+        responseBody.put("username", clientResponseDTO.getUsername());
+        responseBody.put("phone", clientResponseDTO.getPhone());
+        responseBody.put("email", clientResponseDTO.getEmail());
+        responseBody.put("orderDiscount", clientResponseDTO.getOrderDiscount());
+        responseBody.put("numberOrders", clientResponseDTO.getNumberOrders());
+
+        return responseBody;
     }
 }

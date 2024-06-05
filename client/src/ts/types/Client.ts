@@ -4,6 +4,10 @@ export type Client = {
    id: number,
    username: string,
    phone: string,
+   email: string,
    firstName: string,
-   orderDiscount: OrderDiscount
+   lastName: string,
+   patronymic: string,
+   orderDiscount: OrderDiscount,
+   numberOrders: number
 }
