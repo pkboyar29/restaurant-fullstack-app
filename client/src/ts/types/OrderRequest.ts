@@ -1,9 +1,9 @@
 import { OrderPositionResponse } from './OrderPositionResponse'
 
-export type Order = {
+export type OrderRequest = {
    clientName: string,
    clientPhone: string,
-   clientId: number | null,
+   userId: number | null,
    requirements: string,
    paymentMethod: string,
    receiptDate: Date,

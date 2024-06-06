@@ -8,8 +8,12 @@ import com.example.backend.exceptions.DuplicateClientException;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserException;
 import com.example.backend.models.Client;
+import com.example.backend.models.Role;
+import com.example.backend.models.User;
 import com.example.backend.repositories.ClientRepository;
 import com.example.backend.repositories.OrderDiscountRepository;
+import com.example.backend.repositories.RoleRepository;
+import com.example.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,49 +25,60 @@ import java.util.Optional;
 @Service
 public class ClientService {
     private final ClientRepository clientRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final OrderDiscountRepository orderDiscountRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository, OrderDiscountRepository orderDiscountRepository) {
+    public ClientService(ClientRepository clientRepository, UserRepository userRepository, RoleRepository roleRepository, OrderDiscountRepository orderDiscountRepository) {
         this.clientRepository = clientRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.orderDiscountRepository = orderDiscountRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public ClientResponseDTO signUp(ClientSignUpRequestDTO clientSignUpRequestDTO) {
 
-        if (clientRepository.existsByUsername(clientSignUpRequestDTO.getUsername())) {
+        if (userRepository.existsByUsername(clientSignUpRequestDTO.getUsername())) {
             throw new DuplicateClientException("DUPLICATE_USERNAME", "Client with this username already exists");
         }
 
-        if (clientRepository.existsByPhone(clientSignUpRequestDTO.getPhone())) {
+        if (userRepository.existsByPhone(clientSignUpRequestDTO.getPhone())) {
             throw new DuplicateClientException("DUPLICATE_PHONE", "Client with this phone already exists");
         }
 
-        if (clientRepository.existsByEmail(clientSignUpRequestDTO.getEmail())) {
+        if (userRepository.existsByEmail(clientSignUpRequestDTO.getEmail())) {
             throw new DuplicateClientException("DUPLICATE_EMAIL", "Client with this email already exists");
         }
 
+        User newUser = new User();
         Client newClient = new Client();
 
-        newClient.setUsername(clientSignUpRequestDTO.getUsername());
-        newClient.setFirstName(clientSignUpRequestDTO.getFirstName());
-        newClient.setLastName(clientSignUpRequestDTO.getLastName());
-        newClient.setPatronymic(clientSignUpRequestDTO.getPatronymic());
+        newUser.setUsername(clientSignUpRequestDTO.getUsername());
+        newUser.setFirstName(clientSignUpRequestDTO.getFirstName());
+        newUser.setLastName(clientSignUpRequestDTO.getLastName());
+        newUser.setPatronymic(clientSignUpRequestDTO.getPatronymic());
         String encodedPassword = passwordEncoder.encode(clientSignUpRequestDTO.getPassword());
-        newClient.setPassword(encodedPassword);
-        newClient.setPhone(clientSignUpRequestDTO.getPhone());
-        newClient.setEmail(clientSignUpRequestDTO.getEmail());
-        newClient.setGender(clientSignUpRequestDTO.getGender());
+        newUser.setPassword(encodedPassword);
+        newUser.setPhone(clientSignUpRequestDTO.getPhone());
+        newUser.setEmail(clientSignUpRequestDTO.getEmail());
+        newUser.setGender(clientSignUpRequestDTO.getGender());
+        newUser.setDateLastLogin(LocalDateTime.now());
+
+        Optional<Role> optionalRole = roleRepository.findById(1L);
+        newUser.setRole(optionalRole.get());
+
+        newClient.setUser(newUser);
         newClient.setNumberOrders(0);
         newClient.setOrderDiscount(orderDiscountRepository.findById((long) 1).get());
-        newClient.setDateLastLogin(LocalDateTime.now());
 
         try {
+            User user = userRepository.save(newUser);
             Client client = clientRepository.save(newClient);
 
-            return convertClientToClientResponseDTO(client);
+            return createClientResponseDTO(user, client);
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -71,57 +86,66 @@ public class ClientService {
     }
 
     public ClientResponseDTO signIn(ClientSignInRequestDTO clientSignInRequestDTO) {
-        Optional<Client> optionalClient = clientRepository.findByUsername(clientSignInRequestDTO.getUsername());
-        if (optionalClient.isEmpty()) {
+        Optional<User> optionalUser = userRepository.findByUsername(clientSignInRequestDTO.getUsername());
+        if (optionalUser.isEmpty()) {
             throw new ObjectNotFoundException("Client with this username doesn't exist");
         }
 
-        Client client = optionalClient.get();
-        String passwordFromDB = client.getPassword();
+        User user = optionalUser.get();
+        String passwordFromDB = user.getPassword();
         String passwordFromRequest = clientSignInRequestDTO.getPassword();
 
         if (!passwordEncoder.matches(passwordFromRequest, passwordFromDB)) {
             throw new UserException("Password doesn't match");
         }
 
-        client.setDateLastLogin(LocalDateTime.now());
-        clientRepository.save(client);
+        user.setDateLastLogin(LocalDateTime.now());
+        userRepository.save(user);
 
-        return convertClientToClientResponseDTO(client);
+        Optional<Client> optionalClient = clientRepository.findByUser(user);
+        if (optionalClient.isEmpty()) {
+            throw new ObjectNotFoundException("Client with this user_id doesn't exist");
+        }
+
+        return createClientResponseDTO(user, optionalClient.get());
     }
 
     public ClientResponseDTO updateClientContact(ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
-        System.out.println("id из dto = " + clientUpdateContactRequestDTO.getId());
-        Optional<Client> optionalClient = clientRepository.findById(clientUpdateContactRequestDTO.getId());
-        if (optionalClient.isEmpty()) {
-            throw new ObjectNotFoundException("Client with this id doesn't exist");
+        Optional<User> optionalUser = userRepository.findById(clientUpdateContactRequestDTO.getId());
+        if (optionalUser.isEmpty()) {
+            throw new ObjectNotFoundException("User with this id doesn't exist");
         }
-        Client client = optionalClient.get();
+        User user = optionalUser.get();
 
         try {
-            client.setFirstName(clientUpdateContactRequestDTO.getFirstName());
-            client.setLastName(clientUpdateContactRequestDTO.getLastName());
-            client.setPatronymic(clientUpdateContactRequestDTO.getPatronymic());
-            client.setPhone(clientUpdateContactRequestDTO.getPhone());
-            client.setEmail(clientUpdateContactRequestDTO.getEmail());
-            clientRepository.save(client);
+            user.setFirstName(clientUpdateContactRequestDTO.getFirstName());
+            user.setLastName(clientUpdateContactRequestDTO.getLastName());
+            user.setPatronymic(clientUpdateContactRequestDTO.getPatronymic());
+            user.setPhone(clientUpdateContactRequestDTO.getPhone());
+            user.setEmail(clientUpdateContactRequestDTO.getEmail());
+            userRepository.save(user);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
 
-        return convertClientToClientResponseDTO(client);
+        Optional<Client> optionalClient = clientRepository.findByUser(user);
+        if (optionalClient.isEmpty()) {
+            throw new ObjectNotFoundException("Client with this user_id doesn't exist");
+        }
+
+        return createClientResponseDTO(user, optionalClient.get());
     }
 
-    private ClientResponseDTO convertClientToClientResponseDTO(Client client) {
+    private ClientResponseDTO createClientResponseDTO(User user, Client client) {
         ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
-        clientResponseDTO.setId(client.getId());
-        clientResponseDTO.setFirstName(client.getFirstName());
-        clientResponseDTO.setLastName(client.getLastName());
-        clientResponseDTO.setPatronymic(client.getPatronymic());
-        clientResponseDTO.setPhone(client.getPhone());
-        clientResponseDTO.setEmail(client.getEmail());
-        clientResponseDTO.setUsername(client.getUsername());
+        clientResponseDTO.setId(user.getId());
+        clientResponseDTO.setFirstName(user.getFirstName());
+        clientResponseDTO.setLastName(user.getLastName());
+        clientResponseDTO.setPatronymic(user.getPatronymic());
+        clientResponseDTO.setPhone(user.getPhone());
+        clientResponseDTO.setEmail(user.getEmail());
+        clientResponseDTO.setUsername(user.getUsername());
         clientResponseDTO.setOrderDiscount(client.getOrderDiscount());
         clientResponseDTO.setNumberOrders(client.getNumberOrders());
 

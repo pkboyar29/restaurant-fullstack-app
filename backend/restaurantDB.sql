@@ -65,27 +65,11 @@ CREATE TABLE order_discounts (
 INSERT INTO order_discounts (required_number_orders, discount) VALUES
 (0, 5), (10, 15), (30, 25), (60, 35)
 
-CREATE TABLE clients (
-	id SERIAL PRIMARY KEY,
-	username VARCHAR(20) NOT NULL UNIQUE,
-	first_name VARCHAR(30) NOT NULL,
-	last_name VARCHAR(30) NOT NULL,
-	patronymic VARCHAR(30) NOT NULL,
-	gender CHAR(3) NOT NULL CHECK (gender IN ('жен', 'муж')),
-	phone VARCHAR(12) NOT NULL UNIQUE CHECK (LENGTH(phone) = 11),
-	email VARCHAR(60) NOT NULL UNIQUE,
-	password VARCHAR(255) NOT NULL,
-	date_last_login TIMESTAMP NULL,
-	number_orders INT DEFAULT 0 NOT NULL,
-	order_discount INT DEFAULT 1 NOT NULL,
-	CONSTRAINT fk_order_discount FOREIGN KEY (order_discount) REFERENCES order_discounts(id) -- добавить скидку
-)
-
 CREATE TABLE takeaway_orders (
 	id SERIAL PRIMARY KEY,
 	client_name VARCHAR(30) NOT NULL,
 	client_phone VARCHAR(12) NOT NULL,
-	client_id INT NULL DEFAULT NULL,
+	user_id INT NULL DEFAULT NULL,
 	requirements VARCHAR(100) NULL,
 	cost INT NOT NULL DEFAULT 0 CHECK (cost >= 0),
 	discounted_cost INT NOT NULL DEFAULT 0 CHECK (discounted_cost >= 0),
@@ -93,7 +77,7 @@ CREATE TABLE takeaway_orders (
 	order_date TIMESTAMP NOT NULL,
 	receipt_date TIMESTAMP NOT NULL,
 	receipt_option VARCHAR(10) NOT NULL CHECK (receipt_option IN ('самовывоз', 'доставка')),
-	CONSTRAINT fk_order_client FOREIGN KEY (client_id) REFERENCES clients(id)
+	CONSTRAINT fk_order_client FOREIGN KEY (user_id) REFERENCES users(id)
 )
 
 CREATE TABLE takeaway_order_positions (
@@ -104,4 +88,41 @@ CREATE TABLE takeaway_order_positions (
 	takeaway_order INT NOT NULL,
 	CONSTRAINT fk_menu_position FOREIGN KEY (menu_position) REFERENCES menu_positions(id),
 	CONSTRAINT fk_takeaway_order FOREIGN KEY (takeaway_order) REFERENCES takeaway_orders(id)
+)
+
+CREATE TABLE roles (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(30) NOT NULL
+)
+
+INSERT INTO roles (name) VALUES ('client'), ('employer')
+
+CREATE TABLE users (
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(20) NOT NULL UNIQUE,
+	first_name VARCHAR(30) NOT NULL,
+	last_name VARCHAR(30) NOT NULL,
+	patronymic VARCHAR(30) NOT NULL,
+	gender CHAR(3) NOT NULL CHECK (gender IN ('жен', 'муж')),
+	phone VARCHAR(12) NOT NULL UNIQUE CHECK (LENGTH(phone) = 11),
+	email VARCHAR(60) NOT NULL UNIQUE,
+	password VARCHAR(255) NOT NULL,
+	date_last_login TIMESTAMP NULL,
+	role INT NOT NULL,
+	CONSTRAINT fk_role FOREIGN KEY (role) REFERENCES roles(id)
+)
+
+CREATE TABLE employers (
+	id SERIAL PRIMARY KEY,
+	user_id INT UNIQUE NOT NULL,
+	CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+)
+
+CREATE TABLE clients (
+	id SERIAL PRIMARY KEY,
+	user_id INT UNIQUE NOT NULL,
+	number_orders INT DEFAULT 0 NOT NULL,
+	order_discount INT DEFAULT 1 NOT NULL,
+	CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
+	CONSTRAINT fk_order_discount FOREIGN KEY (order_discount) REFERENCES order_discounts(id)
 )

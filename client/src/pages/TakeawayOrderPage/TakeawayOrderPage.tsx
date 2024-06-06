@@ -1,6 +1,6 @@
 import styles from './TakeawayOrderPage.module.scss'
 import { Client } from '../../ts/types/Client'
-import { Order } from '../../ts/types/Order'
+import { OrderRequest } from '../../ts/types/OrderRequest'
 import { OrderPosition } from '../../ts/types/OrderPosition'
 import { OrderPositionResponse } from '../../ts/types/OrderPositionResponse'
 import { useState, useEffect } from 'react'
@@ -69,16 +69,18 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
       const takeawayOrderPositionList: OrderPositionResponse[] = convertToOrderPositionResponse(cart)
 
-      const requestData: Order = {
+      const requestData: OrderRequest = {
          clientName: data.clientName,
          clientPhone: data.clientPhone,
-         clientId: currentClient ? Number(currentClient.id) : null,
+         userId: currentClient ? Number(currentClient.id) : null,
          requirements: data.requirements,
          paymentMethod: data.paymentMethod,
          receiptDate: data.receiptDate,
          receiptOption: data.receiptOption,
          takeawayOrderPositionList: takeawayOrderPositionList
       }
+
+      console.log('перед отправкой запроса: ', requestData)
 
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/takeaway-orders', requestData)
          .then(response => {

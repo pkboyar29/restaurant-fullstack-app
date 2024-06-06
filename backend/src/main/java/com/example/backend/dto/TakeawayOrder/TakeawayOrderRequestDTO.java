@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class TakeawayOrderRequestDTO {
     private String clientName;
     private String clientPhone;
-    private Long clientId;
+    private Long userId;
     private String requirements;
     private String paymentMethod;
     private LocalDateTime receiptDate;
@@ -20,8 +20,8 @@ public class TakeawayOrderRequestDTO {
         return clientPhone;
     }
 
-    public Long getClientId() {
-        return clientId;
+    public Long getUserId() {
+        return userId;
     }
 
     public String getRequirements() {
@@ -53,7 +53,7 @@ public class TakeawayOrderRequestDTO {
     }
 
     public void setClientUsername(Long clientId) {
-        this.clientId = clientId;
+        this.userId = clientId;
     }
 
     public void setRequirements(String requirements) {

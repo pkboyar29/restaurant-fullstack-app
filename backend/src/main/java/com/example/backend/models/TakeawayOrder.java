@@ -19,8 +19,8 @@ public class TakeawayOrder {
     private String clientPhone;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = true)
-    private Client client;
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
 
     @Column(name = "requirements", nullable = true)
     private String requirements;
@@ -55,8 +55,8 @@ public class TakeawayOrder {
         return clientPhone;
     }
 
-    public Client getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
     public String getRequirements() {
@@ -99,8 +99,8 @@ public class TakeawayOrder {
         this.clientPhone = clientPhone;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setRequirements(String requirements) {
