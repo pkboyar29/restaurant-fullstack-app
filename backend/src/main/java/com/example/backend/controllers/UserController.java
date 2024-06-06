@@ -1,13 +1,13 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dto.Client.ClientResponseDTO;
-import com.example.backend.dto.Client.ClientSignInRequestDTO;
+import com.example.backend.dto.SignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
 import com.example.backend.dto.Client.ClientUpdateContactRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserException;
-import com.example.backend.services.ClientService;
+import com.example.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5172")
 @RestController
-@RequestMapping(path = "/api/clients")
-public class ClientController {
-    private final ClientService clientService;
+@RequestMapping(path = "/api/users")
+public class UserController {
+    private final UserService userService;
 
     @Autowired
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping(path = "/sign-up")
@@ -32,8 +32,7 @@ public class ClientController {
         Map <String, Object> responseBody = new HashMap<>();
 
         try {
-            ClientResponseDTO clientResponseDTO = clientService.signUp(clientSignUpRequestDTO);
-            responseBody = convertClientResponseDTOToResponseBody(clientResponseDTO);
+            responseBody = userService.signUp(clientSignUpRequestDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         }
@@ -49,12 +48,11 @@ public class ClientController {
     }
 
     @PostMapping(path = "/sign-in")
-    public ResponseEntity<Map<String, Object>> clientSignIn(@RequestBody ClientSignInRequestDTO clientSignInRequestDTO) {
+    public ResponseEntity<Map<String, Object>> clientSignIn(@RequestBody SignInRequestDTO signInRequestDTO) {
         Map <String, Object> responseBody = new HashMap<>();
 
         try {
-            ClientResponseDTO clientResponseDTO = clientService.signIn(clientSignInRequestDTO);
-            responseBody = convertClientResponseDTOToResponseBody(clientResponseDTO);
+            responseBody = userService.signIn(signInRequestDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         } catch (ObjectNotFoundException e ) {
@@ -76,7 +74,7 @@ public class ClientController {
         Map <String, Object> responseBody = new HashMap<>();
 
         try {
-            ClientResponseDTO clientResponseDTO = clientService.updateClientContact(clientUpdateContactRequestDTO);
+            ClientResponseDTO clientResponseDTO = userService.updateClientContact(clientUpdateContactRequestDTO);
             responseBody = convertClientResponseDTOToResponseBody(clientResponseDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);

@@ -1,6 +1,6 @@
-package com.example.backend.dto.Client;
+package com.example.backend.dto;
 
-public class ClientSignInRequestDTO {
+public class SignInRequestDTO {
     private String username;
     private String password;
 

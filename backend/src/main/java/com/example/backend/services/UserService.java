@@ -1,7 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.Client.ClientResponseDTO;
-import com.example.backend.dto.Client.ClientSignInRequestDTO;
+import com.example.backend.dto.SignInRequestDTO;
 import com.example.backend.dto.Client.ClientSignUpRequestDTO;
 import com.example.backend.dto.Client.ClientUpdateContactRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
@@ -14,41 +14,51 @@ import com.example.backend.repositories.ClientRepository;
 import com.example.backend.repositories.OrderDiscountRepository;
 import com.example.backend.repositories.RoleRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.security.JWTCore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class ClientService {
+public class UserService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final OrderDiscountRepository orderDiscountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTCore jwtCore;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository, UserRepository userRepository, RoleRepository roleRepository, OrderDiscountRepository orderDiscountRepository) {
+    public UserService(ClientRepository clientRepository, UserRepository userRepository,
+                       RoleRepository roleRepository, OrderDiscountRepository orderDiscountRepository, JWTCore jwtCore, AuthenticationManager authenticationManager) {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.orderDiscountRepository = orderDiscountRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.jwtCore = jwtCore;
+        this.authenticationManager = authenticationManager;
     }
 
-    public ClientResponseDTO signUp(ClientSignUpRequestDTO clientSignUpRequestDTO) {
-
+    public Map<String, Object> signUp(ClientSignUpRequestDTO clientSignUpRequestDTO) {
         if (userRepository.existsByUsername(clientSignUpRequestDTO.getUsername())) {
             throw new DuplicateClientException("DUPLICATE_USERNAME", "Client with this username already exists");
         }
-
         if (userRepository.existsByPhone(clientSignUpRequestDTO.getPhone())) {
             throw new DuplicateClientException("DUPLICATE_PHONE", "Client with this phone already exists");
         }
-
         if (userRepository.existsByEmail(clientSignUpRequestDTO.getEmail())) {
             throw new DuplicateClientException("DUPLICATE_EMAIL", "Client with this email already exists");
         }
@@ -75,39 +85,38 @@ public class ClientService {
         newClient.setOrderDiscount(orderDiscountRepository.findById((long) 1).get());
 
         try {
-            User user = userRepository.save(newUser);
-            Client client = clientRepository.save(newClient);
+            userRepository.save(newUser);
+            clientRepository.save(newClient);
 
-            return createClientResponseDTO(user, client);
+            SignInRequestDTO signInRequestDTO = new SignInRequestDTO();
+            signInRequestDTO.setUsername(clientSignUpRequestDTO.getUsername());
+            signInRequestDTO.setPassword(clientSignUpRequestDTO.getPassword());
+
+            return signIn(signInRequestDTO);
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public ClientResponseDTO signIn(ClientSignInRequestDTO clientSignInRequestDTO) {
-        Optional<User> optionalUser = userRepository.findByUsername(clientSignInRequestDTO.getUsername());
-        if (optionalUser.isEmpty()) {
-            throw new ObjectNotFoundException("Client with this username doesn't exist");
+    public Map<String, Object> signIn(SignInRequestDTO signInRequestDTO) {
+        Authentication auth = null;
+        try {
+            auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(signInRequestDTO.getUsername(), signInRequestDTO.getPassword())
+            );
+        } catch (BadCredentialsException e) {
+            System.out.println("bad credentials exception error" + e);
+            throw new UserException("sad");
         }
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        String jwt = jwtCore.generateToken(auth);
+        System.out.println("generated token is " + jwt);
 
-        User user = optionalUser.get();
-        String passwordFromDB = user.getPassword();
-        String passwordFromRequest = clientSignInRequestDTO.getPassword();
-
-        if (!passwordEncoder.matches(passwordFromRequest, passwordFromDB)) {
-            throw new UserException("Password doesn't match");
-        }
-
-        user.setDateLastLogin(LocalDateTime.now());
-        userRepository.save(user);
-
-        Optional<Client> optionalClient = clientRepository.findByUser(user);
-        if (optionalClient.isEmpty()) {
-            throw new ObjectNotFoundException("Client with this user_id doesn't exist");
-        }
-
-        return createClientResponseDTO(user, optionalClient.get());
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("token", jwt);
+        System.out.println("responseBody " + responseBody);
+        return responseBody;
     }
 
     public ClientResponseDTO updateClientContact(ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
