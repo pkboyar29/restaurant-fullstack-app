@@ -5,4 +5,32 @@
    background-color: #FAFAFA;
    width: 100%;
    border-bottom: rgba(35, 35, 33, 0.2) solid 1px;
+
+   display: flex;
+   justify-content: flex-end;
+   align-items: center;
+   padding-right: 40px;
+
+   &__block {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+   }
+
+   &__button {
+      border-radius: 15px;
+      font-size: 16px;
+      padding: 10px;
+      background-color: $blueColor;
+      color: #fff;
+      transition: all .5s;
+
+      &:hover {
+         background-color: $blueColorHover;
+      }
+   }
+
+   &__username {
+      font-size: 18px;
+   }
 }

@@ -214,6 +214,18 @@ body {
    }
 }
 
+.sign-in__form {
+   display: flex;
+   flex-direction: column;
+   gap: 24px;
+   margin: 0 auto;
+   background-color: #fff;
+   padding: 50px;
+   max-width: 800px;
+   border-radius: 14px;
+   margin-top: 200px;
+}
+
 .element {
    display: flex;
    flex-direction: column;
