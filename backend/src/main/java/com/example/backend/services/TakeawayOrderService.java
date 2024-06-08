@@ -3,6 +3,7 @@ package com.example.backend.services;
 import com.example.backend.dto.TakeawayOrder.TakeawayOrderPositionRequestDTO;
 import com.example.backend.dto.TakeawayOrder.TakeawayOrderRequestDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
+import com.example.backend.exceptions.UserRoleException;
 import com.example.backend.models.*;
 import com.example.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class TakeawayOrderService {
                 Optional<User> optionalUser = userRepository.findByUsername(username);
                 if (optionalUser.isEmpty()) { throw new ObjectNotFoundException("User with this username doesn't exist"); }
                 User user = optionalUser.get();
+
+                if (!user.getRole().getName().equals("client")) { throw new UserRoleException("Permission denied"); }
+
                 newTakeawayOrder.setUser(user);
 
                 Optional<Client> optionalClient = clientRepository.findByUser(user);

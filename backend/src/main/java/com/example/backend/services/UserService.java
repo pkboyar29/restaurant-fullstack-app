@@ -7,6 +7,7 @@ import com.example.backend.dto.Client.ClientUpdateContactRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserException;
+import com.example.backend.exceptions.UserRoleException;
 import com.example.backend.models.Client;
 import com.example.backend.models.Role;
 import com.example.backend.models.User;
@@ -150,6 +151,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) { throw new ObjectNotFoundException("User with this username doesn't exist"); }
         User user = optionalUser.get();
+        if (!user.getRole().getName().equals("client")) { throw new UserRoleException("Permission denied"); }
 
         try {
             user.setFirstName(clientUpdateContactRequestDTO.getFirstName());
@@ -168,6 +170,7 @@ public class UserService {
     public ClientResponseDTO getClientData(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         User user = optionalUser.get();
+        if (!user.getRole().getName().equals("client")) { throw new UserRoleException("Permission denied"); }
         Optional<Client> optionalClient = clientRepository.findByUser(user);
         Client client = optionalClient.get();
         return createClientResponseDTO(user, client);

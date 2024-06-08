@@ -3,6 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.dto.MenuPosition.MenuPositionRequestDTO;
 import com.example.backend.dto.MenuPosition.MenuPositionResponseDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
+import com.example.backend.repositories.UserRepository;
 import com.example.backend.services.MenuPositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,18 +15,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping(path = "/api/menu-positions")
 public class MenuPositionController {
     private final MenuPositionService menuPositionService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public MenuPositionController(MenuPositionService menuPositionService) {
+    public MenuPositionController(MenuPositionService menuPositionService, UserRepository userRepository) {
         this.menuPositionService = menuPositionService;
+        this.userRepository = userRepository;
     }
 
-    @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5172"})
     @GetMapping
     public ResponseEntity<List<MenuPositionResponseDTO>> getAllMenuPositions(@RequestParam(required = false) Long sectionId,
                                                                   @RequestParam(required = false, defaultValue = "false") boolean onlyAvailable) {
@@ -54,7 +55,6 @@ public class MenuPositionController {
         return ResponseEntity.status(HttpStatus.OK).body(menuPositions);
     }
 
-    @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5172"})
     @GetMapping(path = "/{id}")
     public ResponseEntity<MenuPositionResponseDTO> getMenuPositionById(@PathVariable Long id) {
 
@@ -76,17 +76,18 @@ public class MenuPositionController {
             System.out.println("authentication is null");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
         Map <String, String> responseBody = new HashMap<>();
+        if (!userRepository.findByUsername(authentication.getName()).get().getRole().getName().equals("employee")) {
+            responseBody.put("message", "Permission denied");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
         try {
             menuPositionService.addMenuPosition(menuPositionRequestDTO);
             responseBody.put("message", "Successful");
-        }
-        catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
@@ -99,16 +100,17 @@ public class MenuPositionController {
             System.out.println("authentication is null");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
         Map <String, String> responseBody = new HashMap<>();
+        if (!userRepository.findByUsername(authentication.getName()).get().getRole().getName().equals("employee")) {
+            responseBody.put("message", "Permission denied");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
         try {
             menuPositionService.updateMenuPosition(id, menuPositionRequestDTO);
-        }
-        catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
@@ -122,16 +124,17 @@ public class MenuPositionController {
             System.out.println("authentication is null");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
         Map <String, String> responseBody = new HashMap<>();
+        if (!userRepository.findByUsername(authentication.getName()).get().getRole().getName().equals("employee")) {
+            responseBody.put("message", "Permission denied");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
         try {
             menuPositionService.deleteMenuPosition(id);
-        }
-        catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }

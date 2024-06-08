@@ -5,6 +5,7 @@ import { MenuSection } from "../../../ts/types/MenuSection"
 import { createColumnHelper } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
 import Table from "../../../components/Table/Table"
+import Cookies from "js-cookie"
 
 function ListMenuSections() {
 
@@ -33,12 +34,16 @@ function ListMenuSections() {
    }, [])
 
    const deleteHandler = (id: number | string): void => {
-      axios.delete('http://127.0.0.1:8080/api/menu-sections/' + id)
+      axios.delete('http://127.0.0.1:8080/api/menu-sections/' + id, {
+         headers: {
+            Authorization: `Bearer ${Cookies.get('token')}`
+         }
+      })
          .then(response => {
             console.log(response.data)
             getAllMenuSections()
          })
-         .catch(error => console.log(error))
+         .catch(error => console.log(error.response.data))
    }
 
    const editHandler = (id: number | string): void => {

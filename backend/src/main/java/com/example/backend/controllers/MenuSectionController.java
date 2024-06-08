@@ -2,6 +2,7 @@ package com.example.backend.controllers;
 
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.models.MenuSection;
+import com.example.backend.repositories.UserRepository;
 import com.example.backend.services.MenuSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,18 +14,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping(path = "/api/menu-sections")
 public class MenuSectionController {
     private final MenuSectionService menuSectionService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public MenuSectionController(MenuSectionService menuSectionService) {
+    public MenuSectionController(MenuSectionService menuSectionService, UserRepository userRepository) {
         this.menuSectionService = menuSectionService;
+        this.userRepository = userRepository;
     }
 
-    @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5172"})
     @GetMapping
     public ResponseEntity<List<MenuSection>> getAllMenuSections() {
         List<MenuSection> menuSections = menuSectionService.getAllMenuSections();
@@ -51,16 +52,17 @@ public class MenuSectionController {
             System.out.println("authentication is null");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
         Map <String, String> responseBody = new HashMap<>();
+        if (userRepository.findByUsername(authentication.getName()).get().getRole().getName().equals("client")) {
+            responseBody.put("message", "Permission denied");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
         try {
             menuSectionService.addMenuSection(menuSectionDTO);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-
         responseBody.put("message", "Menu section successfully added");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
@@ -71,16 +73,17 @@ public class MenuSectionController {
             System.out.println("authentication is null");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
         Map <String, String> responseBody = new HashMap<>();
+        if (userRepository.findByUsername(authentication.getName()).get().getRole().getName().equals("client")) {
+            responseBody.put("message", "Permission denied");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
         try {
             menuSectionService.deleteMenuSection(id);
-        }
-        catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
@@ -94,16 +97,17 @@ public class MenuSectionController {
             System.out.println("authentication is null");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-
         Map <String, String> responseBody = new HashMap<>();
+        if (userRepository.findByUsername(authentication.getName()).get().getRole().getName().equals("client")) {
+            responseBody.put("message", "Permission denied");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
         try {
             menuSectionService.updateMenuSection(id, menuSectionDTO);
-        }
-        catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }

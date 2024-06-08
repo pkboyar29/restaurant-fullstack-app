@@ -8,6 +8,7 @@ import downIcon from '../../../assets/down.svg'
 import { useNavigate } from 'react-router-dom'
 import transformMenuPosition, { MenuPositionResponseFromServer } from '../../../ts/interfaces/MenuPositionResponseFromServer'
 import { MenuSection } from '../../../ts/types/MenuSection'
+import Cookies from 'js-cookie'
 
 interface ListMenuPositionsProps {
    updateKey: number
@@ -57,12 +58,16 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
    }, [updateKey])
 
    const deleteHandler = (id: number | string): void => {
-      axios.delete('http://127.0.0.1:8080/api/menu-positions/' + id)
+      axios.delete('http://127.0.0.1:8080/api/menu-positions/' + id, {
+         headers: {
+            Authorization: `Bearer ${Cookies.get('token')}`
+         }
+      })
          .then(response => {
             console.log(response.data)
             getAllMenuPositions()
          })
-         .catch(error => console.log(error))
+         .catch(error => console.log(error.response.data))
    }
 
    const editHandler = (id: number | string): void => {

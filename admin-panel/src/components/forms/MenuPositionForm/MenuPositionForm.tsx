@@ -5,6 +5,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import axios from 'axios'
 import Modal from '../../Modal/Modal'
 import { MenuSection } from '../../../ts/types/MenuSection'
+import Cookies from 'js-cookie'
 
 type FormFields = {
    name: string,
@@ -78,7 +79,8 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
       if (currentQueryString === '') {
          axios.post('http://127.0.0.1:8080/api/menu-positions', formData, {
             headers: {
-               'Content-Type': 'multipart/form-data'
+               'Content-Type': 'multipart/form-data',
+               Authorization: `Bearer ${Cookies.get('token')}`
             }
          })
             .then(response => {
@@ -89,7 +91,11 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
             .catch(error => console.log(error))
       }
       else {
-         axios.put('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, formData)
+         axios.put('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, formData, {
+            headers: {
+               Authorization: `Bearer ${Cookies.get('token')}`
+            }
+         })
             .then(response => {
                console.log(response.data)
                increaseUpdateKey()
@@ -265,13 +271,19 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    }
 
    const pressModalDelete = (): void => {
-      axios.delete('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition)
+      axios.delete('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, {
+         headers: {
+            Authorization: `Bearer ${Cookies.get('token')}`
+         }
+      })
          .then(response => {
             console.log(response.data)
             increaseUpdateKey()
             navigate('/admin-panel/menu-positions')
          })
-         .catch(error => console.log(error.response.data))
+         .catch(error => {
+            console.log(error.response.data)
+         })
    }
 
    return (

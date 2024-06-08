@@ -11,7 +11,7 @@ import TextInput from '../../components/TextInput/TextInput'
 import Button from '../../components/Button/Button'
 import Modal from '../../components/Modal/Modal'
 
-type ClientsSignInFields = {
+type ClientSignInFields = {
    username: string,
    password: string
 }
@@ -25,12 +25,12 @@ function SignInPage({ setCurrentClient }: SignInProps) {
    const navigate = useNavigate()
    const [modal, setModal] = useState<boolean>(false)
 
-   const { handleSubmit, register, setError, formState: { errors } } = useForm<ClientsSignInFields>({
+   const { handleSubmit, register, setError, formState: { errors } } = useForm<ClientSignInFields>({
       mode: 'onBlur'
    })
 
-   const onSubmit = (data: ClientsSignInFields) => {
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/sign-in', data)
+   const onSubmit = (data: ClientSignInFields) => {
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/client-sign-in', data)
          .then(response => {
             console.log(response.data)
             Cookies.set('token', response.data.token)
@@ -42,7 +42,6 @@ function SignInPage({ setCurrentClient }: SignInProps) {
             })
                .then(response => {
                   const client: Client = response.data
-                  // localStorage.setItem('currentClient', JSON.stringify(client))
                   setCurrentClient(client)
                   setModal(true)
                })

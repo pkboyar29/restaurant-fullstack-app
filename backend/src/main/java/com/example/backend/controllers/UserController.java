@@ -7,6 +7,7 @@ import com.example.backend.dto.Client.ClientUpdateContactRequestDTO;
 import com.example.backend.exceptions.DuplicateClientException;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserException;
+import com.example.backend.exceptions.UserRoleException;
 import com.example.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5172")
 @RestController
 @RequestMapping(path = "/api/users")
 public class UserController {
@@ -92,7 +92,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/update-client-contact")
+    @PatchMapping(path = "/update-client-contact")
     public ResponseEntity<Map<String, Object>> updateClientContact(Authentication authentication, @RequestBody ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
         if (authentication == null) {
             System.out.println("authentication is null");
@@ -107,6 +107,9 @@ public class UserController {
         } catch (ObjectNotFoundException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        } catch (UserRoleException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
         } catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
@@ -120,9 +123,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         System.out.println(authentication);
-        ClientResponseDTO clientResponseDTO = userService.getClientData(authentication.getName());
 
-        Map <String, Object> responseBody = userService.convertClientResponseDTOToResponseBody(clientResponseDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        Map <String, Object> responseBody = new HashMap<>();
+        try {
+            ClientResponseDTO clientResponseDTO = userService.getClientData(authentication.getName());
+            responseBody = userService.convertClientResponseDTOToResponseBody(clientResponseDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        } catch (UserRoleException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
     }
 }

@@ -44,7 +44,7 @@ function SignUpPage({ setCurrentClient }: SignUpProps) {
    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]+$/
 
    const onSubmit = (data: ClientSignUpFields) => {
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/sign-up', data)
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/client-sign-up', data)
          .then(response => {
             console.log(response.data)
             Cookies.set('token', response.data.token)
@@ -56,7 +56,6 @@ function SignUpPage({ setCurrentClient }: SignUpProps) {
             })
                .then(response => {
                   const client: Client = response.data
-                  // localStorage.setItem('currentClient', JSON.stringify(client))
                   setCurrentClient(client)
                   setModal(true)
                })

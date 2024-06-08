@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Modal from '../../Modal/Modal'
+import Cookies from 'js-cookie'
 
 type FormFields = {
    name: string,
@@ -25,7 +26,11 @@ function MenuSectionForm() {
 
    const onSubmit = (data: FormFields) => {
       if (currentQueryString === '') {
-         axios.post('http://127.0.0.1:8080/api/menu-sections', data)
+         axios.post('http://127.0.0.1:8080/api/menu-sections', data, {
+            headers: {
+               Authorization: `Bearer ${Cookies.get('token')}`
+            }
+         })
             .then(response => {
                console.log(response.data)
                navigate('/admin-panel/menu-sections')
@@ -33,7 +38,11 @@ function MenuSectionForm() {
             .catch(error => console.log(error))
       }
       else {
-         axios.put('http://127.0.0.1:8080/api/menu-sections/' + currentMenuSection, data)
+         axios.put('http://127.0.0.1:8080/api/menu-sections/' + currentMenuSection, data, {
+            headers: {
+               Authorization: `Bearer ${Cookies.get('token')}`
+            }
+         })
             .then(response => {
                console.log(response.data)
                navigate('/admin-panel/menu-sections')
@@ -69,7 +78,11 @@ function MenuSectionForm() {
    }
 
    const pressModalDelete = (): void => {
-      axios.delete('http://127.0.0.1:8080/api/menu-sections/' + currentMenuSection)
+      axios.delete('http://127.0.0.1:8080/api/menu-sections/' + currentMenuSection, {
+         headers: {
+            Authorization: `Bearer ${Cookies.get('token')}`
+         }
+      })
          .then(response => {
             console.log(response.data)
             navigate('/admin-panel/menu-sections')

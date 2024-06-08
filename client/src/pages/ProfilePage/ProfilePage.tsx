@@ -61,7 +61,7 @@ function ProfilePage({ currentClient, setCurrentClient }: ProfilePageProps) {
          email: data.email
       }
 
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/update-client-contact', requestBody, {
+      axios.patch(import.meta.env.VITE_BACKEND_URL + '/api/users/update-client-contact', requestBody, {
          headers: {
             'Authorization': `Bearer ${Cookies.get('token')}`
          }
