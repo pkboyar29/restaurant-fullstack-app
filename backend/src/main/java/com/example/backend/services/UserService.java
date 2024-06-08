@@ -52,7 +52,7 @@ public class UserService {
         this.authenticationManager = authenticationManager;
     }
 
-    public Map<String, Object> signUp(ClientSignUpRequestDTO clientSignUpRequestDTO) {
+    public Map<String, Object> clientSignUp(ClientSignUpRequestDTO clientSignUpRequestDTO) {
         if (userRepository.existsByUsername(clientSignUpRequestDTO.getUsername())) {
             throw new DuplicateClientException("DUPLICATE_USERNAME", "Client with this username already exists");
         }
@@ -92,14 +92,36 @@ public class UserService {
             signInRequestDTO.setUsername(clientSignUpRequestDTO.getUsername());
             signInRequestDTO.setPassword(clientSignUpRequestDTO.getPassword());
 
-            return signIn(signInRequestDTO);
+            return generateToken(authenticate(signInRequestDTO));
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public Map<String, Object> signIn(SignInRequestDTO signInRequestDTO) {
+    public Map<String, Object> clientSignIn(SignInRequestDTO signInRequestDTO) {
+        Authentication auth = authenticate(signInRequestDTO);
+        User user = userRepository.findByUsername(auth.getName()).get();
+        System.out.println("user role is " + user.getRole().getName());
+        if (user.getRole().getName().equals("client")) {
+            return generateToken(auth);
+        } else {
+            throw new UserException("This is employee, not a client");
+        }
+    }
+
+    public Map<String, Object> employeeSignIn(SignInRequestDTO signInRequestDTO) {
+        Authentication auth = authenticate(signInRequestDTO);
+        User user = userRepository.findByUsername(auth.getName()).get();
+        System.out.println("user role is " + user.getRole().getName());
+        if (user.getRole().getName().equals("employee")) {
+            return generateToken(auth);
+        } else {
+            throw new UserException("This is client, not a employee");
+        }
+    }
+
+    private Authentication authenticate(SignInRequestDTO signInRequestDTO) {
         Authentication auth;
         try {
             auth = authenticationManager.authenticate(
@@ -110,6 +132,11 @@ public class UserService {
             throw new UserException("sad");
         }
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+        return auth;
+    }
+
+    private Map<String, Object> generateToken(Authentication auth) {
         String jwt = jwtCore.generateToken(auth);
         System.out.println("generated token is " + jwt);
 

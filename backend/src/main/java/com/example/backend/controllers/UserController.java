@@ -28,12 +28,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(path = "/sign-up")
-    public ResponseEntity<Map<String, Object>> signUp(@RequestBody ClientSignUpRequestDTO clientSignUpRequestDTO) {
+    @PostMapping(path = "/client-sign-up")
+    public ResponseEntity<Map<String, Object>> clientSignUp(@RequestBody ClientSignUpRequestDTO clientSignUpRequestDTO) {
         Map <String, Object> responseBody = new HashMap<>();
 
         try {
-            responseBody = userService.signUp(clientSignUpRequestDTO);
+            responseBody = userService.clientSignUp(clientSignUpRequestDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         }
@@ -48,12 +48,34 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/sign-in")
-    public ResponseEntity<Map<String, Object>> signIn(@RequestBody SignInRequestDTO signInRequestDTO) {
+    @PostMapping(path = "/client-sign-in")
+    public ResponseEntity<Map<String, Object>> clientSignIn(@RequestBody SignInRequestDTO signInRequestDTO) {
         Map <String, Object> responseBody = new HashMap<>();
 
         try {
-            responseBody = userService.signIn(signInRequestDTO);
+            responseBody = userService.clientSignIn(signInRequestDTO);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        } catch (ObjectNotFoundException e ) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+        }
+        catch (UserException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
+        catch (RuntimeException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
+        }
+    }
+
+    @PostMapping(path = "/employee-sign-in")
+    public ResponseEntity<Map<String, Object>> employeeSignIn(@RequestBody SignInRequestDTO signInRequestDTO) {
+        Map <String, Object> responseBody = new HashMap<>();
+
+        try {
+            responseBody = userService.employeeSignIn(signInRequestDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         } catch (ObjectNotFoundException e ) {
