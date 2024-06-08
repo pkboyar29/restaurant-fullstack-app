@@ -23,13 +23,11 @@ public class JWTCore {
 
     public String generateToken(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", userDetails.getId());
         claims.put("username", userDetails.getUsername());
 
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject((userDetails.getUsername()))
                 .setIssuedAt(new Date())
                 .setClaims(claims)
                 .setExpiration(new Date((new Date()).getTime() + expire))
@@ -37,7 +35,9 @@ public class JWTCore {
                 .compact();
     }
 
-    public String getSubjectFromJwt(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJwt(token).getBody().getSubject();
+    public String getUsernameFromJwt(String token) {
+        System.out.println("trying to get username from claims");
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return claims.get("username", String.class);
     }
 }

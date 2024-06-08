@@ -3,7 +3,6 @@ package com.example.backend.dto.Client;
 import com.example.backend.models.OrderDiscount;
 
 public class ClientResponseDTO {
-    private Long id;
     private String username;
     private String firstName;
     private String lastName;
@@ -12,10 +11,6 @@ public class ClientResponseDTO {
     private String email;
     private OrderDiscount orderDiscount;
     private int numberOrders;
-
-    public Long getId() {
-        return id;
-    }
 
     public String getUsername() {
         return username;
@@ -47,10 +42,6 @@ public class ClientResponseDTO {
 
     public int getNumberOrders() {
         return numberOrders;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setUsername(String username) {

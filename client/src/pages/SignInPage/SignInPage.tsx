@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Client } from '../../ts/types/Client'
 import { useState } from 'react'
+import Cookies from 'js-cookie'
 
 import Title from '../../components/Title/Title'
 import TextInput from '../../components/TextInput/TextInput'
@@ -29,12 +30,23 @@ function SignInPage({ setCurrentClient }: SignInProps) {
    })
 
    const onSubmit = (data: ClientsSignInFields) => {
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/clients/sign-in', data)
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/sign-in', data)
          .then(response => {
-            const client: Client = response.data
-            setCurrentClient(client)
-            localStorage.setItem('currentClient', JSON.stringify(client))
-            setModal(true)
+            console.log(response.data)
+            Cookies.set('token', response.data.token)
+
+            axios.get(import.meta.env.VITE_BACKEND_URL + '/api/users/get-client-data', {
+               headers: {
+                  'Authorization': `Bearer ${Cookies.get('token')}`
+               }
+            })
+               .then(response => {
+                  const client: Client = response.data
+                  // localStorage.setItem('currentClient', JSON.stringify(client))
+                  setCurrentClient(client)
+                  setModal(true)
+               })
+               .catch(error => console.log(error))
          })
          .catch(error => {
             switch (error.response.status) {

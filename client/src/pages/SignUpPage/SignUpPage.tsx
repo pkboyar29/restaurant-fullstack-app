@@ -5,6 +5,7 @@ import validator from 'email-validator'
 import axios from 'axios'
 import { Client } from '../../ts/types/Client'
 import { useState } from 'react'
+import Cookies from 'js-cookie'
 
 import Modal from '../../components/Modal/Modal'
 import Title from '../../components/Title/Title'
@@ -43,12 +44,23 @@ function SignUpPage({ setCurrentClient }: SignUpProps) {
    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]+$/
 
    const onSubmit = (data: ClientSignUpFields) => {
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/clients/sign-up', data)
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/sign-up', data)
          .then(response => {
-            const client: Client = response.data
-            setCurrentClient(client)
-            localStorage.setItem('currentClient', JSON.stringify(client))
-            setModal(true)
+            console.log(response.data)
+            Cookies.set('token', response.data.token)
+
+            axios.get(import.meta.env.VITE_BACKEND_URL + '/api/users/get-client-data', {
+               headers: {
+                  'Authorization': `Bearer ${Cookies.get('token')}`
+               }
+            })
+               .then(response => {
+                  const client: Client = response.data
+                  // localStorage.setItem('currentClient', JSON.stringify(client))
+                  setCurrentClient(client)
+                  setModal(true)
+               })
+               .catch(error => console.log(error))
          })
          .catch(error => {
             if (error.response) {

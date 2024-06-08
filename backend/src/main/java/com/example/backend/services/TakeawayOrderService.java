@@ -33,28 +33,24 @@ public class TakeawayOrderService {
         this.orderDiscountRepository = orderDiscountRepository;
     }
 
-    public void addTakeawayOrder(TakeawayOrderRequestDTO takeawayOrderRequestDTO) {
+    public void addTakeawayOrder(String username, TakeawayOrderRequestDTO takeawayOrderRequestDTO) {
         try {
             TakeawayOrder newTakeawayOrder = new TakeawayOrder();
             int clientDiscountValue = 0;
 
-            if (takeawayOrderRequestDTO.getUserId() != null) {
-                Optional<User> optionalUser = userRepository.findById(takeawayOrderRequestDTO.getUserId());
-                if (optionalUser.isEmpty()) {
-                    throw new ObjectNotFoundException("User with this id doesn't exist");
-                }
+            if (username != null) {
+                Optional<User> optionalUser = userRepository.findByUsername(username);
+                if (optionalUser.isEmpty()) { throw new ObjectNotFoundException("User with this username doesn't exist"); }
                 User user = optionalUser.get();
                 newTakeawayOrder.setUser(user);
 
                 Optional<Client> optionalClient = clientRepository.findByUser(user);
-                if (optionalClient.isEmpty()) {
-                    throw new ObjectNotFoundException("Client with this user_id doesn't exist");
-                }
+                if (optionalClient.isEmpty()) { throw new ObjectNotFoundException("Client with this user_id doesn't exist"); }
                 Client client = optionalClient.get();
                 client.setNumberOrders(client.getNumberOrders() + 1);
 
                 clientDiscountValue = client.getOrderDiscount().getDiscount();
-                System.out.println("текущая скидка пользователя" + clientDiscountValue);
+                System.out.println("current client discount" + clientDiscountValue);
 
                 // change client order discount if necessary
                 for (OrderDiscount orderDiscount: orderDiscountRepository.findAll(Sort.by(Sort.Direction.ASC, "id"))) {
@@ -78,13 +74,11 @@ public class TakeawayOrderService {
 
             double cost = 0;
             double discountedCost = 0;
+
             // создать сущности TakeawayOrderPosition
             for (TakeawayOrderPositionRequestDTO takeawayOrderPositionRequestDTO : takeawayOrderRequestDTO.getTakeawayOrderPositionList()) {
-
                 Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(takeawayOrderPositionRequestDTO.getMenuPositionId());
-                if (optionalMenuPosition.isEmpty()) {
-                    throw new ObjectNotFoundException("Menu position with this id doesn't exist");
-                }
+                if (optionalMenuPosition.isEmpty()) { throw new ObjectNotFoundException("Menu position with this id doesn't exist"); }
                 MenuPosition menuPosition = optionalMenuPosition.get();
                 int menuPositionPrice = menuPosition.getPrice();
 

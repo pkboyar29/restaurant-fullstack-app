@@ -7,6 +7,7 @@ import com.example.backend.services.MenuPositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -39,8 +40,6 @@ public class MenuPositionController {
                 }
             }
             catch (ObjectNotFoundException e) {
-//                Map <String, String> responseBody = new HashMap<>();
-//                body.put("message", e.getMessage());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
         }
@@ -72,9 +71,13 @@ public class MenuPositionController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addMenuPosition(@ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO) {
-        Map <String, String> responseBody = new HashMap<>();
+    public ResponseEntity<Map<String, String>> addMenuPosition(Authentication authentication, @ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
+        Map <String, String> responseBody = new HashMap<>();
         try {
             menuPositionService.addMenuPosition(menuPositionRequestDTO);
             responseBody.put("message", "Successful");
@@ -87,12 +90,16 @@ public class MenuPositionController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<Map<String, String>> updateMenuPosition(@ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO, @PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> updateMenuPosition(Authentication authentication, @ModelAttribute MenuPositionRequestDTO menuPositionRequestDTO, @PathVariable Long id) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         Map <String, String> responseBody = new HashMap<>();
         try {
             menuPositionService.updateMenuPosition(id, menuPositionRequestDTO);
@@ -110,7 +117,12 @@ public class MenuPositionController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Map<String, String>> deleteMenuPosition(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteMenuPosition(Authentication authentication, @PathVariable Long id) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         Map <String, String> responseBody = new HashMap<>();
         try {
             menuPositionService.deleteMenuPosition(id);

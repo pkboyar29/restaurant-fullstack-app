@@ -11,6 +11,7 @@ import com.example.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/sign-up")
-    public ResponseEntity<Map<String, Object>> clientSignUp(@RequestBody ClientSignUpRequestDTO clientSignUpRequestDTO) {
+    public ResponseEntity<Map<String, Object>> signUp(@RequestBody ClientSignUpRequestDTO clientSignUpRequestDTO) {
         Map <String, Object> responseBody = new HashMap<>();
 
         try {
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/sign-in")
-    public ResponseEntity<Map<String, Object>> clientSignIn(@RequestBody SignInRequestDTO signInRequestDTO) {
+    public ResponseEntity<Map<String, Object>> signIn(@RequestBody SignInRequestDTO signInRequestDTO) {
         Map <String, Object> responseBody = new HashMap<>();
 
         try {
@@ -69,13 +70,16 @@ public class UserController {
         }
     }
 
-    @PatchMapping(path = "/update-contact")
-    public ResponseEntity<Map<String, Object>> updateClientContact(@RequestBody ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
+    @PostMapping(path = "/update-client-contact")
+    public ResponseEntity<Map<String, Object>> updateClientContact(Authentication authentication, @RequestBody ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
         Map <String, Object> responseBody = new HashMap<>();
-
         try {
-            ClientResponseDTO clientResponseDTO = userService.updateClientContact(clientUpdateContactRequestDTO);
-            responseBody = convertClientResponseDTOToResponseBody(clientResponseDTO);
+            ClientResponseDTO clientResponseDTO = userService.updateClientContact(authentication.getName(), clientUpdateContactRequestDTO);
+            responseBody = userService.convertClientResponseDTOToResponseBody(clientResponseDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
         } catch (ObjectNotFoundException e) {
@@ -87,18 +91,16 @@ public class UserController {
         }
     }
 
-    private Map<String, Object> convertClientResponseDTOToResponseBody(ClientResponseDTO clientResponseDTO) {
-        Map <String, Object> responseBody = new HashMap<>();
-        responseBody.put("id", clientResponseDTO.getId().toString());
-        responseBody.put("firstName", clientResponseDTO.getFirstName());
-        responseBody.put("lastName", clientResponseDTO.getLastName());
-        responseBody.put("patronymic", clientResponseDTO.getPatronymic());
-        responseBody.put("username", clientResponseDTO.getUsername());
-        responseBody.put("phone", clientResponseDTO.getPhone());
-        responseBody.put("email", clientResponseDTO.getEmail());
-        responseBody.put("orderDiscount", clientResponseDTO.getOrderDiscount());
-        responseBody.put("numberOrders", clientResponseDTO.getNumberOrders());
+    @GetMapping(path = "/get-client-data")
+    public ResponseEntity<Map<String, Object>> getClientData(Authentication authentication) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        System.out.println(authentication);
+        ClientResponseDTO clientResponseDTO = userService.getClientData(authentication.getName());
 
-        return responseBody;
+        Map <String, Object> responseBody = userService.convertClientResponseDTOToResponseBody(clientResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

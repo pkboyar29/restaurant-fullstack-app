@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import validator from 'email-validator'
+import Cookies from 'js-cookie'
 
 import { Client } from '../../ts/types/Client'
 import { OrderDiscount } from '../../ts/types/OrderDiscount'
@@ -53,7 +54,6 @@ function ProfilePage({ currentClient, setCurrentClient }: ProfilePageProps) {
 
    const onSubmit = (data: ClientUpdateContactFields) => {
       const requestBody = {
-         id: currentClient?.id,
          firstName: data.firstName,
          lastName: data.lastName,
          patronymic: data.patronymic,
@@ -61,7 +61,11 @@ function ProfilePage({ currentClient, setCurrentClient }: ProfilePageProps) {
          email: data.email
       }
 
-      axios.patch(import.meta.env.VITE_BACKEND_URL + '/api/clients/update-contact', requestBody)
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/update-client-contact', requestBody, {
+         headers: {
+            'Authorization': `Bearer ${Cookies.get('token')}`
+         }
+      })
          .then(response => {
             const client: Client = response.data
             setCurrentClient(client)

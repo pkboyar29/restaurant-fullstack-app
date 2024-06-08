@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie'
 
 import Modal from '../../components/Modal/Modal'
 import Title from '../../components/Title/Title'
@@ -72,7 +73,6 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
       const requestData: OrderRequest = {
          clientName: data.clientName,
          clientPhone: data.clientPhone,
-         userId: currentClient ? Number(currentClient.id) : null,
          requirements: data.requirements,
          paymentMethod: data.paymentMethod,
          receiptDate: data.receiptDate,
@@ -82,7 +82,11 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
       console.log('перед отправкой запроса: ', requestData)
 
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/takeaway-orders', requestData)
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/takeaway-orders', requestData, {
+         headers: {
+            Authorization: `Bearer ${Cookies.get('token')}`
+         }
+      })
          .then(response => {
             console.log(response.data)
             setSubmitModal(true)

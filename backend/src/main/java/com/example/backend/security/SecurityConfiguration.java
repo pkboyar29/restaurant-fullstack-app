@@ -3,6 +3,7 @@ package com.example.backend.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -56,8 +57,15 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/users/**").permitAll()
-                        .anyRequest().fullyAuthenticated()
+                                .requestMatchers(HttpMethod.GET, "/api/users/get-client-data").authenticated()
+                                .requestMatchers(HttpMethod.PATCH, "/api/users/update-client-contact").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/api/menu-positions").authenticated()
+                                .requestMatchers(HttpMethod.PUT, "/api/menu-positions/{id}").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/api/menu-positions/{id}").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/api/menu-sections").authenticated()
+                                .requestMatchers(HttpMethod.PUT, "/api/menu-sections/{id}").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/api/menu-sections/{id}").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

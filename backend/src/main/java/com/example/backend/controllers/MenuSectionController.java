@@ -6,6 +6,7 @@ import com.example.backend.services.MenuSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,7 +28,6 @@ public class MenuSectionController {
     @GetMapping
     public ResponseEntity<List<MenuSection>> getAllMenuSections() {
         List<MenuSection> menuSections = menuSectionService.getAllMenuSections();
-
         return ResponseEntity.status(HttpStatus.OK).body(menuSections);
     }
 
@@ -46,9 +46,13 @@ public class MenuSectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addMenuSection(@RequestBody MenuSection menuSectionDTO) {
-        Map <String, String> responseBody = new HashMap<>();
+    public ResponseEntity<Map<String, String>> addMenuSection(Authentication authentication, @RequestBody MenuSection menuSectionDTO) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
+        Map <String, String> responseBody = new HashMap<>();
         try {
             menuSectionService.addMenuSection(menuSectionDTO);
         }
@@ -62,9 +66,13 @@ public class MenuSectionController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Map<String, String>> deleteMenuSection(@PathVariable Long id) {
-        Map <String, String> responseBody = new HashMap<>();
+    public ResponseEntity<Map<String, String>> deleteMenuSection(Authentication authentication, @PathVariable Long id) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
+        Map <String, String> responseBody = new HashMap<>();
         try {
             menuSectionService.deleteMenuSection(id);
         }
@@ -76,15 +84,18 @@ public class MenuSectionController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-
         responseBody.put("message", "Menu section successfully deleted");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<Map<String, String>> updateMenuSection(@PathVariable Long id, @RequestBody MenuSection menuSectionDTO) {
-        Map <String, String> responseBody = new HashMap<>();
+    public ResponseEntity<Map<String, String>> updateMenuSection(Authentication authentication, @PathVariable Long id, @RequestBody MenuSection menuSectionDTO) {
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
+        Map <String, String> responseBody = new HashMap<>();
         try {
             menuSectionService.updateMenuSection(id, menuSectionDTO);
         }
@@ -96,7 +107,6 @@ public class MenuSectionController {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
-
         responseBody.put("message", "Menu section successfully updated");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

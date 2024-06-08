@@ -1,16 +1,11 @@
 package com.example.backend.dto.Client;
 
 public class ClientUpdateContactRequestDTO {
-    private Long id;
     private String firstName;
     private String lastName;
     private String patronymic;
     private String phone;
     private String email;
-
-    public Long getId() {
-        return id;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -30,10 +25,6 @@ public class ClientUpdateContactRequestDTO {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setFirstName(String firstName) {

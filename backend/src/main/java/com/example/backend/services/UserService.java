@@ -100,7 +100,7 @@ public class UserService {
     }
 
     public Map<String, Object> signIn(SignInRequestDTO signInRequestDTO) {
-        Authentication auth = null;
+        Authentication auth;
         try {
             auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(signInRequestDTO.getUsername(), signInRequestDTO.getPassword())
@@ -119,11 +119,9 @@ public class UserService {
         return responseBody;
     }
 
-    public ClientResponseDTO updateClientContact(ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
-        Optional<User> optionalUser = userRepository.findById(clientUpdateContactRequestDTO.getId());
-        if (optionalUser.isEmpty()) {
-            throw new ObjectNotFoundException("User with this id doesn't exist");
-        }
+    public ClientResponseDTO updateClientContact(String username, ClientUpdateContactRequestDTO clientUpdateContactRequestDTO) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) { throw new ObjectNotFoundException("User with this username doesn't exist"); }
         User user = optionalUser.get();
 
         try {
@@ -137,18 +135,19 @@ public class UserService {
             System.out.println(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
-
-        Optional<Client> optionalClient = clientRepository.findByUser(user);
-        if (optionalClient.isEmpty()) {
-            throw new ObjectNotFoundException("Client with this user_id doesn't exist");
-        }
-
-        return createClientResponseDTO(user, optionalClient.get());
+        return getClientData(username);
     }
 
-    private ClientResponseDTO createClientResponseDTO(User user, Client client) {
+    public ClientResponseDTO getClientData(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        User user = optionalUser.get();
+        Optional<Client> optionalClient = clientRepository.findByUser(user);
+        Client client = optionalClient.get();
+        return createClientResponseDTO(user, client);
+    }
+
+    public ClientResponseDTO createClientResponseDTO(User user, Client client) {
         ClientResponseDTO clientResponseDTO = new ClientResponseDTO();
-        clientResponseDTO.setId(user.getId());
         clientResponseDTO.setFirstName(user.getFirstName());
         clientResponseDTO.setLastName(user.getLastName());
         clientResponseDTO.setPatronymic(user.getPatronymic());
@@ -159,5 +158,19 @@ public class UserService {
         clientResponseDTO.setNumberOrders(client.getNumberOrders());
 
         return clientResponseDTO;
+    }
+
+    public Map<String, Object> convertClientResponseDTOToResponseBody(ClientResponseDTO clientResponseDTO) {
+        Map <String, Object> responseBody = new HashMap<>();
+        responseBody.put("firstName", clientResponseDTO.getFirstName());
+        responseBody.put("lastName", clientResponseDTO.getLastName());
+        responseBody.put("patronymic", clientResponseDTO.getPatronymic());
+        responseBody.put("username", clientResponseDTO.getUsername());
+        responseBody.put("phone", clientResponseDTO.getPhone());
+        responseBody.put("email", clientResponseDTO.getEmail());
+        responseBody.put("orderDiscount", clientResponseDTO.getOrderDiscount());
+        responseBody.put("numberOrders", clientResponseDTO.getNumberOrders());
+
+        return responseBody;
     }
 }
