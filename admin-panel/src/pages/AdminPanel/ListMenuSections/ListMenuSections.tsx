@@ -18,7 +18,6 @@ function ListMenuSections() {
       columnHelper.accessor('id', {
          header: () => 'ID',
          cell: (info) => info.getValue()
-         // enableHiding: false
       }),
       columnHelper.accessor('name', {
          header: () => 'Название раздела меню',

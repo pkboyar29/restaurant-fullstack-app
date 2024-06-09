@@ -26,12 +26,10 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
       columnHelper.accessor('id', {
          header: () => 'ID',
          cell: (info) => info.getValue()
-         // enableHiding: false
       }),
       columnHelper.accessor('name', {
          header: () => 'Название позиции меню',
          cell: (info) => info.getValue()
-         // enableHiding: false
       }),
       columnHelper.accessor('sectionName', {
          header: () => 'Название раздела меню',
@@ -61,7 +59,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
    const deleteHandler = (id: number | string): void => {
       axios.delete('http://127.0.0.1:8080/api/menu-positions/' + id, {
          headers: {
-            Authorization: `Bearer ${Cookies.get('adminToken')}`
+            Authorization: `Bearer ${Cookies.get('token')}`
          }
       })
          .then(response => {

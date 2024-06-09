@@ -8,4 +8,30 @@
       gap: 24px;
       justify-content: center;
    }
+
+   &__sections {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+   }
+
+   &__section {
+      cursor: pointer;
+      color: $blackColor;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 12px;
+      border: 1px solid #DBDFD0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px 20px;
+   }
+}
+
+.active {
+   background-color: $redColor;
+   color: #fff;
 }
