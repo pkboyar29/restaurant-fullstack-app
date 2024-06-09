@@ -25,7 +25,8 @@ interface TakeawayOrderPageProps {
    currentClient: Client | null,
    deleteCartItem: (menuPositionId: number) => void,
    changeNumberCartItem: (MenuPositionId: number, plus: boolean) => void,
-   clearCart: () => void
+   clearCart: () => void,
+   updateClientData: () => void
 }
 
 type TakeawayOrderFields = {
@@ -37,7 +38,7 @@ type TakeawayOrderFields = {
    receiptOption: string
 }
 
-function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCartItem, clearCart }: TakeawayOrderPageProps) {
+function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCartItem, clearCart, updateClientData }: TakeawayOrderPageProps) {
 
    const [cost, setCost] = useState<number>(0)
    const [discountedCost, setDiscountedCost] = useState<number>(0)
@@ -89,6 +90,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
       })
          .then(response => {
             console.log(response.data)
+            updateClientData()
             setSubmitModal(true)
          })
          .catch(error => console.log(error))
@@ -114,7 +116,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
          <>
             <Title>Ваш заказ</Title>
 
-            <Link to='/menu'>Ваша корзина пуста. Перейти к покупкам</Link>
+            <div className={styles['h']}><Link to='/menu'>Ваша корзина пуста. Перейти в меню</Link></div>
          </>
       )
    }
@@ -227,7 +229,27 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
                      }}
                   />
 
-                  <input {...register('receiptDate')} className={styles['input__date']} type='datetime-local' />
+                  <TextInput
+                     inputTitle='Дата получения заказа'
+                     placeholder='Выберите дату получения заказа'
+                     errorMessage={typeof errors.receiptDate?.message === 'string' ? errors.receiptDate.message : ''}
+                     fieldName='receiptDate'
+                     validationRules={{
+                        required: 'Поле обязательно к заполнению',
+                        validate: (value: string) => {
+                           const selectedDate = new Date(value);
+                           const today = new Date();
+                           today.setHours(0, 0, 0, 0);
+                           return selectedDate > today || 'Дата не должна быть позже сегодняшнего дня';
+                        }
+                     }}
+                     register={register}
+                     inputProps={{
+                        className: styles['input__date'],
+                        type: 'datetime-local',
+                        autoComplete: 'off'
+                     }}
+                  />
 
                   <SelectInput
                      inputProps={{

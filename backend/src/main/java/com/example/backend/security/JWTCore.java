@@ -27,7 +27,6 @@ public class JWTCore {
         claims.put("username", userDetails.getUsername());
 
         return Jwts.builder()
-                .setSubject((userDetails.getUsername()))
                 .setIssuedAt(new Date())
                 .setClaims(claims)
                 .setExpiration(new Date((new Date()).getTime() + expire))

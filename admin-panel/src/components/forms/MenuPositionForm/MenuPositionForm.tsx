@@ -52,6 +52,8 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
 
    const onSubmit = (data: FormFields) => {
 
+      console.log('hello world')
+
       const formData = new FormData()
       formData.append('name', data.name)
       formData.append('descr', data.descr)
@@ -88,7 +90,16 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                increaseUpdateKey()
                navigate('/admin-panel/menu-positions')
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+               console.log(error)
+               switch (error.response.status) {
+                  case 401:
+                     navigate('/sign-in')
+                     break
+                  default:
+                     break
+               }
+            })
       }
       else {
          axios.put('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, formData, {
@@ -101,7 +112,16 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                increaseUpdateKey()
                navigate('/admin-panel/menu-positions')
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+               console.log(error)
+               switch (error.response.status) {
+                  case 401:
+                     navigate('/sign-in')
+                     break
+                  default:
+                     break
+               }
+            })
       }
    }
 
@@ -360,7 +380,15 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
                      <div className={styles['element__title']}>Цена (в ₽)</div>
                      <input className={styles['element__input']} type='number' placeholder='Введите цену здесь' min='0' max='1000000'
                         {...register('price', {
-                           required: 'Поле обязательно к заполнению'
+                           required: 'Поле обязательно к заполнению',
+                           min: {
+                              value: 0,
+                              message: 'Минимальное значение - 0'
+                           },
+                           max: {
+                              value: 10000,
+                              message: 'Максимальное значение - 10000'
+                           }
                         })} />
                      <div className={'element__error'}>{errors?.price && <p>{errors?.price?.message}</p>}</div>
                   </div>

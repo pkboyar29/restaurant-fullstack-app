@@ -16,11 +16,15 @@ interface TableProps {
 }
 
 function Table({ data, columns, deleteHandler, editHandler, modalDeleteText, modalEditText }: TableProps) {
-
    const table = useReactTable({
       data,
       columns,
       debugTable: true,
+      initialState: {
+         columnVisibility: {
+            id: false // hide this column by default
+         }
+      },
       getCoreRowModel: getCoreRowModel()
    })
 
@@ -50,7 +54,7 @@ function Table({ data, columns, deleteHandler, editHandler, modalDeleteText, mod
    return (
       <div className={styles['table__container']}>
          <table className={styles['table']}>
-            {deleteModal && <Modal modalText={`${modalDeleteText} ${selectedCell}?`} buttonConfirmText='Удалить' confirmHandler={pressModalDelete} cancelHandler={pressModalCancel} />}
+            {deleteModal && <Modal modalText={modalDeleteText} buttonConfirmText='Удалить' confirmHandler={pressModalDelete} cancelHandler={pressModalCancel} />}
             {editModal && <Modal modalText={modalEditText} buttonConfirmText='Да' confirmHandler={pressModalEdit} cancelHandler={pressModalCancel} />}
             <thead className={styles['table-header']}>
                {table.getHeaderGroups().map((headerGroup) => (
@@ -74,13 +78,13 @@ function Table({ data, columns, deleteHandler, editHandler, modalDeleteText, mod
                      ))}
                      <td className={styles['table-body__icons']}>
                         <button onClick={() => {
-                           setSelectedCell(row.getVisibleCells()[0].getValue() as number)
+                           setSelectedCell(row.getAllCells()[0].getValue() as number)
                            setEditModal(true)
                         }} className={styles['table-body__icon']}>
                            <img src={editButtonIcon} alt="Edit button" />
                         </button>
                         <button onClick={() => {
-                           setSelectedCell(row.getVisibleCells()[0].getValue() as number)
+                           setSelectedCell(row.getAllCells()[0].getValue() as number)
                            setDeleteModal(true)
                         }} className={styles['table-body__icon']}>
                            <img src={deleteButtonIcon} alt="Delete button" />

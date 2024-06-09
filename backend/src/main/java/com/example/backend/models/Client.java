@@ -2,8 +2,6 @@ package com.example.backend.models;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "clients")
 public class Client {

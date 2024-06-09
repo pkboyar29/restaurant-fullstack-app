@@ -130,7 +130,7 @@ public class UserService {
             );
         } catch (BadCredentialsException e) {
             System.out.println("bad credentials exception error" + e);
-            throw new UserException("sad");
+            throw new BadCredentialsException("Invalid credentials");
         }
         SecurityContextHolder.getContext().setAuthentication(auth);
 

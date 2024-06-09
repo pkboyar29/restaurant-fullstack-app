@@ -12,6 +12,7 @@ import com.example.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,15 +57,13 @@ public class UserController {
             responseBody = userService.clientSignIn(signInRequestDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-        } catch (ObjectNotFoundException e ) {
-            responseBody.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-        }
-        catch (UserException e) {
+        } catch (UserException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
-        }
-        catch (RuntimeException e) {
+        } catch (BadCredentialsException e) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseBody);
+        } catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }
@@ -78,15 +77,13 @@ public class UserController {
             responseBody = userService.employeeSignIn(signInRequestDTO);
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-        } catch (ObjectNotFoundException e ) {
-            responseBody.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
-        }
-        catch (UserException e) {
+        } catch (UserException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
-        }
-        catch (RuntimeException e) {
+        } catch (BadCredentialsException e ) {
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseBody);
+        } catch (RuntimeException e) {
             responseBody.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
         }

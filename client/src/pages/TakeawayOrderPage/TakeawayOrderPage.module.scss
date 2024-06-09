@@ -106,3 +106,17 @@
    color: #737865;
    font-size: 16px;
 }
+
+.h {
+   text-align: center;
+
+   a {
+      color: $blackColor;
+      font-size: 18px;
+      transition: all .5s;
+
+      &:hover {
+         opacity: 0.5;
+      }
+   }
+}

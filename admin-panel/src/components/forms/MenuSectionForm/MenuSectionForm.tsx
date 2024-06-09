@@ -35,7 +35,16 @@ function MenuSectionForm() {
                console.log(response.data)
                navigate('/admin-panel/menu-sections')
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+               console.log(error)
+               switch (error.response.status) {
+                  case 401:
+                     navigate('/sign-in')
+                     break
+                  default:
+                     break
+               }
+            })
       }
       else {
          axios.put('http://127.0.0.1:8080/api/menu-sections/' + currentMenuSection, data, {
@@ -47,7 +56,16 @@ function MenuSectionForm() {
                console.log(response.data)
                navigate('/admin-panel/menu-sections')
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+               console.log(error)
+               switch (error.response.status) {
+                  case 401:
+                     navigate('/sign-in')
+                     break
+                  default:
+                     break
+               }
+            })
       }
    }
 

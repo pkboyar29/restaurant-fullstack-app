@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import useCart from '../hooks/useCart'
 import Cookies from 'js-cookie'
 import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
 import SignInPage from '../pages/SignInPage/SignInPage'
 import SignUpPage from '../pages/SignUpPage/SignUpPage'
@@ -28,11 +29,8 @@ function App() {
     initiateCart()
   }, [])
 
-  useEffect(() => {
+  const updateClientData = () => {
     if (Cookies.get('token')) {
-
-      // check if token is expired. maybe this would be separate endpoint, or we can check it here using jwt-decode. best practices?
-
       axios.get(import.meta.env.VITE_BACKEND_URL + '/api/users/get-client-data', {
         headers: {
           'Authorization': `Bearer ${Cookies.get('token')}`
@@ -44,7 +42,34 @@ function App() {
         })
         .catch(error => console.log(error))
     }
+  }
+
+  useEffect(() => {
+    checkTokenExpiration()
+    updateClientData()
   }, [])
+
+  const checkTokenExpiration = () => {
+    const token = Cookies.get('token')
+
+    if (token) {
+      try {
+        const decoded = jwtDecode(token)
+        const currentTime = Date.now() / 1000
+
+        if (decoded.exp && decoded.exp < currentTime) {
+          console.log(decoded.exp)
+          Cookies.remove('token')
+          return false
+        }
+        return true
+      } catch (error) {
+        console.error('Failed to decode token:', error)
+        return false
+      }
+    }
+    return false
+  }
 
   return (
     <div className='App'>
@@ -56,7 +81,7 @@ function App() {
         <Route path='/sign-up' element={<SignUpPage setCurrentClient={setCurrentClient} />} />
         <Route path='/profile' element={<ProfilePage setCurrentClient={setCurrentClient} currentClient={currentClient} />} />
         <Route path='/menu' element={<MenuPage setCartItem={setCartItem} />} />
-        <Route path='/order' element={<TakeawayOrderPage cart={cart} deleteCartItem={deleteCartItem} changeNumberCartItem={changeNumberCartItem} clearCart={clearCart} currentClient={currentClient} />} />
+        <Route path='/order' element={<TakeawayOrderPage updateClientData={updateClientData} cart={cart} deleteCartItem={deleteCartItem} changeNumberCartItem={changeNumberCartItem} clearCart={clearCart} currentClient={currentClient} />} />
         <Route path='/' element={<Navigate to='menu' />} />
       </Routes>
     </div>

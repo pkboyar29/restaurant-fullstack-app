@@ -50,10 +50,10 @@ function SignInPage({ setCurrentClient }: SignInProps) {
          .catch(error => {
             switch (error.response.status) {
                case 401:
-                  setError('password', { type: 'custom', message: 'Пароль неверный' })
+                  setError('username', { type: 'custom', message: 'Клиента с таким логином не существует' })
                   break
-               case 404:
-                  setError('username', { type: 'custom', message: 'Пользователя с таким логином не существует' })
+               case 409:
+                  setError('password', { type: 'custom', message: 'Учетные данные пользователя неверны' })
                   break
                default:
                   break

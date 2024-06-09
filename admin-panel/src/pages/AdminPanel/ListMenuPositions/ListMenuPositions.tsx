@@ -15,7 +15,6 @@ interface ListMenuPositionsProps {
 }
 
 function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
-
    const navigate = useNavigate()
 
    const [menuPositions, setMenuPositions] = useState<MenuPosition[]>([])
@@ -27,10 +26,12 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
       columnHelper.accessor('id', {
          header: () => 'ID',
          cell: (info) => info.getValue()
+         // enableHiding: false
       }),
       columnHelper.accessor('name', {
          header: () => 'Название позиции меню',
          cell: (info) => info.getValue()
+         // enableHiding: false
       }),
       columnHelper.accessor('sectionName', {
          header: () => 'Название раздела меню',
@@ -158,7 +159,7 @@ function ListMenuPositions({ updateKey }: ListMenuPositionsProps) {
             </div>
 
             {menuPositions.length > 0 ? (<Table deleteHandler={deleteHandler} editHandler={editHandler} data={menuPositions}
-               columns={columns} modalDeleteText='Вы точно хотите удалить позицию меню' modalEditText='Перейти на страницу редактирования позиции меню?' />)
+               columns={columns} modalDeleteText='Вы точно хотите удалить эту позицию меню?' modalEditText='Перейти на страницу редактирования позиции меню?' />)
                : (<div style={{ marginTop: '15px' }}>Результатов не было найдено</div>)}
 
          </div>

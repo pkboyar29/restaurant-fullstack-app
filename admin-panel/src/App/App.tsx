@@ -43,6 +43,36 @@ function App() {
     setUpdateKey(updateKey + 1)
   }
 
+  const checkTokenExpiration = () => {
+    const token = Cookies.get('token')
+
+    if (token) {
+      try {
+        const decoded = jwtDecode(token)
+        const currentTime = Date.now() / 1000
+
+        if (decoded.exp && decoded.exp < currentTime) {
+          console.log(decoded.exp)
+          Cookies.remove('token')
+          return false
+        }
+        return true
+      } catch (error) {
+        console.error('Failed to decode token:', error)
+        return false
+      }
+    }
+    return false
+  }
+
+  useEffect(() => {
+    const tokenExpired: boolean = checkTokenExpiration()
+
+    if (!tokenExpired) {
+      navigate('/sign-in')
+    }
+  }, [])
+
   return (
     <div className='App'>
       <Routes>

@@ -39,7 +39,16 @@ function SignInPage({ setUsername }: SignInPageProps) {
             setUsername()
          })
          .catch(error => {
-            console.log(error)
+            switch (error.response.status) {
+               case 401:
+                  setError('username', { type: 'custom', message: 'Сотрудника с таким логином не существует' })
+                  break
+               case 409:
+                  setError('password', { type: 'custom', message: 'Учетные данные пользователя неверны' })
+                  break
+               default:
+                  break
+            }
          })
    }
 
