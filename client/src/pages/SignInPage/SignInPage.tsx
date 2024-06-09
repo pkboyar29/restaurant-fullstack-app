@@ -33,11 +33,11 @@ function SignInPage({ setCurrentClient }: SignInProps) {
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/users/client-sign-in', data)
          .then(response => {
             console.log(response.data)
-            Cookies.set('token', response.data.token)
+            Cookies.set('clientToken', response.data.token)
 
             axios.get(import.meta.env.VITE_BACKEND_URL + '/api/users/get-client-data', {
                headers: {
-                  'Authorization': `Bearer ${Cookies.get('token')}`
+                  'Authorization': `Bearer ${Cookies.get('clientToken')}`
                }
             })
                .then(response => {

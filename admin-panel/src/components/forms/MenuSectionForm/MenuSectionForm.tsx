@@ -28,7 +28,7 @@ function MenuSectionForm() {
       if (currentQueryString === '') {
          axios.post('http://127.0.0.1:8080/api/menu-sections', data, {
             headers: {
-               Authorization: `Bearer ${Cookies.get('token')}`
+               Authorization: `Bearer ${Cookies.get('adminToken')}`
             }
          })
             .then(response => {
@@ -49,7 +49,7 @@ function MenuSectionForm() {
       else {
          axios.put('http://127.0.0.1:8080/api/menu-sections/' + currentMenuSection, data, {
             headers: {
-               Authorization: `Bearer ${Cookies.get('token')}`
+               Authorization: `Bearer ${Cookies.get('adminToken')}`
             }
          })
             .then(response => {
@@ -98,7 +98,7 @@ function MenuSectionForm() {
    const pressModalDelete = (): void => {
       axios.delete('http://127.0.0.1:8080/api/menu-sections/' + currentMenuSection, {
          headers: {
-            Authorization: `Bearer ${Cookies.get('token')}`
+            Authorization: `Bearer ${Cookies.get('adminToken')}`
          }
       })
          .then(response => {

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,9 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -161,14 +160,23 @@ public class MenuPositionService {
             createMenuPositionDirectory(imagesPathClient, menuPositionId);
             Path menuPositionAdminResourcePath = Paths.get(imagesPathAdmin + menuPositionId);
             Path menuPositionClientResourcePath = Paths.get(imagesPathClient + menuPositionId);
-            addFilesToMenuPositionDirectory(menuPositionAdminResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
-                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
-            addFilesToMenuPositionDirectory(menuPositionClientResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
-                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
+
+            List<MultipartFile> images = Arrays.asList(menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
+                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4())
+                    .stream()
+                    .filter(file -> file != null && !file.isEmpty())
+                    .collect(Collectors.toList());
+            List<String> fileNames = generateUniqueFileNames(images);
+            System.out.println("filenames: ");
+            for (String fileName: fileNames) {
+                System.out.println(fileName);
+            }
+
+            addFilesToMenuPositionDirectory(menuPositionAdminResourcePath, images, fileNames);
+            addFilesToMenuPositionDirectory(menuPositionClientResourcePath, images, fileNames);
 
             // добавляем изображения в БД
-            addMenuPositionImages(menuPositionWithId, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
-                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
+            addMenuPositionImagesToDB(menuPositionWithId, fileNames);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -204,17 +212,27 @@ public class MenuPositionService {
             createMenuPositionDirectory(imagesPathAdmin, menuPositionId);
             createMenuPositionDirectory(imagesPathClient, menuPositionId);
 
-            addFilesToMenuPositionDirectory(menuPositionAdminResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
-                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
-            addFilesToMenuPositionDirectory(menuPositionClientResourcePath, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
-                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
+            List<MultipartFile> images = Arrays.asList(menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
+                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4())
+                    .stream()
+                    .filter(file -> file != null && !file.isEmpty())
+                    .collect(Collectors.toList());
+            List<String> fileNames = generateUniqueFileNames(images);
+            System.out.println("длина images " + images.size());
+            System.out.println("длина filenames " + fileNames.size());
+            System.out.println("filenames: ");
+            for (String fileName: fileNames) {
+                System.out.println(fileName);
+            }
+
+            addFilesToMenuPositionDirectory(menuPositionAdminResourcePath, images, fileNames);
+            addFilesToMenuPositionDirectory(menuPositionClientResourcePath, images, fileNames);
 
             // удаляем все изображения из БД
-            List<MenuPositionImage> images = menuPositionImageRepository.findByMenuPosition(menuPositionWithId);
-            menuPositionImageRepository.deleteAllInBatch(images);
+            List<MenuPositionImage> menuPositionImages = menuPositionImageRepository.findByMenuPosition(menuPositionWithId);
+            menuPositionImageRepository.deleteAllInBatch(menuPositionImages);
             // добавляем их заново в БД
-            addMenuPositionImages(menuPositionWithId, menuPositionRequestDTO.getImage1(), menuPositionRequestDTO.getImage2(),
-                    menuPositionRequestDTO.getImage3(), menuPositionRequestDTO.getImage4());
+            addMenuPositionImagesToDB(menuPositionWithId, fileNames);
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to add menu position: " + e.getMessage());
@@ -228,16 +246,6 @@ public class MenuPositionService {
         }
 
         MenuPosition menuPosition = optionalMenuPosition.get();
-//        try {
-//            Path menuPositionAdminResourcePath = Paths.get(imagesPathAdmin + menuPosition.getId());
-//            deleteMenuPositionDirectory(menuPositionAdminResourcePath);
-//
-//            Path menuPositionClientResourcePath = Paths.get(imagesPathClient + menuPosition.getId());
-//            deleteMenuPositionDirectory(menuPositionClientResourcePath);
-//        }
-//        catch (Exception e) {
-//            throw new RuntimeException(e.getMessage());
-//        }
         List<MenuPositionImage> images = menuPositionImageRepository.findByMenuPosition(menuPosition);
         try {
             menuPosition.setDeleted(true);
@@ -252,7 +260,7 @@ public class MenuPositionService {
         }
     }
 
-    public void createMenuPositionDirectory(String imagesPath, Long menuPositionId) {
+    private void createMenuPositionDirectory(String imagesPath, Long menuPositionId) {
         try {
             // получаем путь к директории ресурсов
             Path resourcePath = Paths.get(imagesPath);
@@ -272,26 +280,6 @@ public class MenuPositionService {
         }
     }
 
-    public void addFilesToMenuPositionDirectory(Path menuPositionDirectoryPath, MultipartFile image1, MultipartFile image2,
-                                                MultipartFile image3, MultipartFile image4) throws IOException {
-        if (image1 != null && !image1.isEmpty()) {
-            Path image1Path = menuPositionDirectoryPath.resolve(image1.getOriginalFilename());
-            Files.copy(image1.getInputStream(), image1Path);
-        }
-        if (image2 != null && !image2.isEmpty()) {
-            Path image2Path = menuPositionDirectoryPath.resolve(image2.getOriginalFilename());
-            Files.copy(image2.getInputStream(), image2Path);
-        }
-        if (image3 != null && !image3.isEmpty()) {
-            Path image3Path = menuPositionDirectoryPath.resolve(image3.getOriginalFilename());
-            Files.copy(image3.getInputStream(), image3Path);
-        }
-        if (image4 != null && !image4.isEmpty()) {
-            Path image4Path = menuPositionDirectoryPath.resolve(image4.getOriginalFilename());
-            Files.copy(image4.getInputStream(), image4Path);
-        }
-    }
-
     public void deleteMenuPositionDirectory(Path menuPositionDirectoryPath) throws IOException {
         Files.walk(menuPositionDirectoryPath)
                 .sorted((p1, p2) -> -p1.compareTo(p2))
@@ -307,43 +295,43 @@ public class MenuPositionService {
         System.out.println("Папка успешно удалена: " + menuPositionDirectoryPath);
     }
 
-    public void addMenuPositionImages(MenuPosition menuPosition, MultipartFile image1, MultipartFile image2,
-                              MultipartFile image3, MultipartFile image4) {
-        if (image1 != null && !image1.isEmpty()) {
-            MenuPositionImage menuPositionImage1 = new MenuPositionImage();
-            menuPositionImage1.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image1.getOriginalFilename());
-            menuPositionImage1.setOrderNumber(1);
-            menuPositionImage1.setMenuPosition(menuPosition);
-            menuPositionImage1.setDeleted(false);
-
-            menuPositionImageRepository.save(menuPositionImage1);
+    private List<String> generateUniqueFileNames(List<MultipartFile> images) {
+        List<String> fileNames = new ArrayList<>();
+        for (MultipartFile image : images) {
+            if (image != null && !image.isEmpty()) {
+                String originalFilename = StringUtils.cleanPath(image.getOriginalFilename());
+                String extension = StringUtils.getFilenameExtension(originalFilename);
+                String uniqueFileName = UUID.randomUUID().toString() + "." + extension;
+                fileNames.add(uniqueFileName);
+            }
         }
-        if (image2 != null && !image2.isEmpty()) {
-            MenuPositionImage menuPositionImage2 = new MenuPositionImage();
-            menuPositionImage2.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image2.getOriginalFilename());
-            menuPositionImage2.setOrderNumber(2);
-            menuPositionImage2.setMenuPosition(menuPosition);
-            menuPositionImage2.setDeleted(false);
+        return fileNames;
+    }
 
-            menuPositionImageRepository.save(menuPositionImage2);
+    private void addFilesToMenuPositionDirectory(Path menuPositionDirectoryPath, List<MultipartFile> images, List<String> fileNames) throws IOException {
+        System.out.println("добавляем изображения в директорию и перед добавлением печатаем fileName: ");
+        for (int i = 0; i < images.size(); i++) {
+            MultipartFile image = images.get(i);
+            if (image != null && !image.isEmpty()) {
+                String fileName = fileNames.get(i);
+                System.out.println(fileName);
+                Path imagePath = menuPositionDirectoryPath.resolve(fileName);
+                Files.copy(image.getInputStream(), imagePath);
+            }
         }
-        if (image3 != null && !image3.isEmpty()) {
-            MenuPositionImage menuPositionImage3 = new MenuPositionImage();
-            menuPositionImage3.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image3.getOriginalFilename());
-            menuPositionImage3.setOrderNumber(3);
-            menuPositionImage3.setMenuPosition(menuPosition);
-            menuPositionImage3.setDeleted(false);
+    }
 
-            menuPositionImageRepository.save(menuPositionImage3);
-        }
-        if (image4 != null && !image4.isEmpty()) {
-            MenuPositionImage menuPositionImage4 = new MenuPositionImage();
-            menuPositionImage4.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image4.getOriginalFilename());
-            menuPositionImage4.setOrderNumber(4);
-            menuPositionImage4.setMenuPosition(menuPosition);
-            menuPositionImage4.setDeleted(false);
+    public void addMenuPositionImagesToDB(MenuPosition menuPosition, List<String> fileNames) {
+        System.out.println("добавляем изображения в БД и перед добавлением печатаем fileName: ");
+        for (int i = 0; i < fileNames.size(); i++) {
+            System.out.println(fileNames.get(i));
+            MenuPositionImage menuPositionImage = new MenuPositionImage();
+            menuPositionImage.setMenuPosition(menuPosition);
+            menuPositionImage.setLink("/menu-position-images/" + menuPosition.getId() + "/" + fileNames.get(i));
+            menuPositionImage.setOrderNumber(i + 1);
+            menuPositionImage.setDeleted(false);
 
-            menuPositionImageRepository.save(menuPositionImage4);
+            menuPositionImageRepository.save(menuPositionImage);
         }
     }
 }

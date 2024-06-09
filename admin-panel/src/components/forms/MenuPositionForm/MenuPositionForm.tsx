@@ -82,7 +82,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
          axios.post('http://127.0.0.1:8080/api/menu-positions', formData, {
             headers: {
                'Content-Type': 'multipart/form-data',
-               Authorization: `Bearer ${Cookies.get('token')}`
+               Authorization: `Bearer ${Cookies.get('adminToken')}`
             }
          })
             .then(response => {
@@ -104,7 +104,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
       else {
          axios.put('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, formData, {
             headers: {
-               Authorization: `Bearer ${Cookies.get('token')}`
+               Authorization: `Bearer ${Cookies.get('adminToken')}`
             }
          })
             .then(response => {
@@ -293,7 +293,7 @@ function MenuPositionForm({ increaseUpdateKey }: MenuPositionFormProps) {
    const pressModalDelete = (): void => {
       axios.delete('http://127.0.0.1:8080/api/menu-positions/' + currentMenuPosition, {
          headers: {
-            Authorization: `Bearer ${Cookies.get('token')}`
+            Authorization: `Bearer ${Cookies.get('adminToken')}`
          }
       })
          .then(response => {

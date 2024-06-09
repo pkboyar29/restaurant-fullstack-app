@@ -34,7 +34,7 @@ function SignInPage({ setUsername }: SignInPageProps) {
       axios.post('http://127.0.0.1:8080/api/users/employee-sign-in', data)
          .then(response => {
             console.log(response.data)
-            Cookies.set('token', response.data.token)
+            Cookies.set('adminToken', response.data.token)
             setModal(true)
             setUsername()
          })

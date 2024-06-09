@@ -85,7 +85,7 @@ function TakeawayOrderPage({ cart, currentClient, deleteCartItem, changeNumberCa
 
       axios.post(import.meta.env.VITE_BACKEND_URL + '/api/takeaway-orders', requestData, {
          headers: {
-            Authorization: `Bearer ${Cookies.get('token')}`
+            Authorization: `Bearer ${Cookies.get('clientToken')}`
          }
       })
          .then(response => {

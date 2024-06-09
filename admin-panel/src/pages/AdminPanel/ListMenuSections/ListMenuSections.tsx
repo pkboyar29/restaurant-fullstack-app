@@ -37,7 +37,7 @@ function ListMenuSections() {
    const deleteHandler = (id: number | string): void => {
       axios.delete('http://127.0.0.1:8080/api/menu-sections/' + id, {
          headers: {
-            Authorization: `Bearer ${Cookies.get('token')}`
+            Authorization: `Bearer ${Cookies.get('adminToken')}`
          }
       })
          .then(response => {

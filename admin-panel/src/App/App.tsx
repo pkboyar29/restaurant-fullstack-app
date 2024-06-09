@@ -23,7 +23,7 @@ function App() {
   }, [])
 
   const setUsername = () => {
-    const token: string | undefined = Cookies.get('token')
+    const token: string | undefined = Cookies.get('adminToken')
 
     if (token) {
       const decoded: JwtPayload = jwtDecode(token)
@@ -35,7 +35,7 @@ function App() {
 
   const logOut = () => {
     setCurrentUsername(null)
-    Cookies.remove('token')
+    Cookies.remove('adminToken')
     navigate('/sign-in')
   }
 
@@ -44,7 +44,7 @@ function App() {
   }
 
   const checkTokenExpiration = () => {
-    const token = Cookies.get('token')
+    const token = Cookies.get('adminToken')
 
     if (token) {
       try {
@@ -53,7 +53,7 @@ function App() {
 
         if (decoded.exp && decoded.exp < currentTime) {
           console.log(decoded.exp)
-          Cookies.remove('token')
+          Cookies.remove('adminToken')
           return false
         }
         return true

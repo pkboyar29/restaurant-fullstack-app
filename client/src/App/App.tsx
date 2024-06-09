@@ -21,7 +21,7 @@ function App() {
 
   const signOut = () => {
     setCurrentClient(null)
-    Cookies.remove('token')
+    Cookies.remove('clientToken')
     navigate('/menu')
   }
 
@@ -30,10 +30,10 @@ function App() {
   }, [])
 
   const updateClientData = () => {
-    if (Cookies.get('token')) {
+    if (Cookies.get('clientToken')) {
       axios.get(import.meta.env.VITE_BACKEND_URL + '/api/users/get-client-data', {
         headers: {
-          'Authorization': `Bearer ${Cookies.get('token')}`
+          'Authorization': `Bearer ${Cookies.get('clientToken')}`
         }
       })
         .then(response => {
@@ -50,7 +50,7 @@ function App() {
   }, [])
 
   const checkTokenExpiration = () => {
-    const token = Cookies.get('token')
+    const token = Cookies.get('clientToken')
 
     if (token) {
       try {
@@ -59,7 +59,7 @@ function App() {
 
         if (decoded.exp && decoded.exp < currentTime) {
           console.log(decoded.exp)
-          Cookies.remove('token')
+          Cookies.remove('clientToken')
           return false
         }
         return true
