@@ -45,7 +45,11 @@ public class MenuPositionService {
     }
 
     public List<MenuPositionResponseDTO> getAllMenuPositions() {
-        return createListMenuPositionResponseDTO(menuPositionRepository.findAll(Sort.by(Sort.Direction.ASC, "id")));
+        List<MenuPosition> menuPositions = menuPositionRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        List<MenuPosition> filteredMenuPositions = menuPositions.stream()
+                .filter(menuPosition -> !menuPosition.isDeleted())
+                .toList();
+        return createListMenuPositionResponseDTO(filteredMenuPositions);
     }
 
     public List<MenuPositionResponseDTO> getAvailableMenuPositions() {
@@ -57,14 +61,15 @@ public class MenuPositionService {
     }
 
     public List<MenuPositionResponseDTO> getMenuPositionsBySectionId(Long sectionId) {
-
         Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(sectionId);
-        if (optionalMenuSection.isEmpty()) {
-            throw new ObjectNotFoundException("Menu section doesn't exist");
-        }
-
+        if (optionalMenuSection.isEmpty()) { throw new ObjectNotFoundException("Menu section doesn't exist"); }
         MenuSection menuSection = optionalMenuSection.get();
-        return createListMenuPositionResponseDTO(menuPositionRepository.findByMenuSection(menuSection));
+
+        List<MenuPosition> menuPositions = menuPositionRepository.findByMenuSection(menuSection);
+        List<MenuPosition> filteredMenuPositions = menuPositions.stream()
+                .filter(menuPosition -> !menuPosition.isDeleted())
+                .toList();
+        return createListMenuPositionResponseDTO(filteredMenuPositions);
     }
 
     public List<MenuPositionResponseDTO> getAvailableMenuPositionsBySectionId(Long sectionId) {
@@ -76,11 +81,8 @@ public class MenuPositionService {
     }
 
     public MenuPositionResponseDTO getMenuPositionById(Long id) throws ObjectNotFoundException {
-
         Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
-        if (optionalMenuPosition.isEmpty()) {
-            throw new ObjectNotFoundException("Menu position doesn't exist");
-        }
+        if (optionalMenuPosition.isEmpty()) { throw new ObjectNotFoundException("Menu position doesn't exist"); }
         MenuPosition menuPosition = optionalMenuPosition.get();
 
         return createMenuPositionResponseDTO(menuPosition);
@@ -144,11 +146,10 @@ public class MenuPositionService {
         newMenuPosition.setPrice(menuPositionRequestDTO.getPrice());
         newMenuPosition.setAvailability(menuPositionRequestDTO.isAvailability());
         newMenuPosition.setDateEnteredInMenu(LocalDate.now());
+        newMenuPosition.setDeleted(false);
 
         Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(menuPositionRequestDTO.getMenuSection());
-        if (optionalMenuSection.isEmpty()) {
-            throw new ObjectNotFoundException("Menu section doesn't exist");
-        }
+        if (optionalMenuSection.isEmpty()) { throw new ObjectNotFoundException("Menu section doesn't exist"); }
         newMenuPosition.setMenuSection(optionalMenuSection.get());
 
         try {
@@ -177,13 +178,9 @@ public class MenuPositionService {
 
     public void updateMenuPosition(Long id, MenuPositionRequestDTO menuPositionRequestDTO) {
         Optional<MenuPosition> optionalMenuPosition = menuPositionRepository.findById(id);
-        if (optionalMenuPosition.isEmpty()) {
-            throw new ObjectNotFoundException("Menu position doesn't exist");
-        }
+        if (optionalMenuPosition.isEmpty()) { throw new ObjectNotFoundException("Menu position doesn't exist"); }
         Optional<MenuSection> optionalMenuSection = menuSectionRepository.findById(menuPositionRequestDTO.getMenuSection());
-        if (optionalMenuSection.isEmpty()) {
-            throw new ObjectNotFoundException("Menu section doesn't exist");
-        }
+        if (optionalMenuSection.isEmpty()) { throw new ObjectNotFoundException("Menu section doesn't exist"); }
 
         MenuPosition updatedMenuPosition = optionalMenuPosition.get();
         updatedMenuPosition.setName(menuPositionRequestDTO.getName());
@@ -231,21 +228,24 @@ public class MenuPositionService {
         }
 
         MenuPosition menuPosition = optionalMenuPosition.get();
-        try {
-            Path menuPositionAdminResourcePath = Paths.get(imagesPathAdmin + menuPosition.getId());
-            deleteMenuPositionDirectory(menuPositionAdminResourcePath);
-
-            Path menuPositionClientResourcePath = Paths.get(imagesPathClient + menuPosition.getId());
-            deleteMenuPositionDirectory(menuPositionClientResourcePath);
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
+//        try {
+//            Path menuPositionAdminResourcePath = Paths.get(imagesPathAdmin + menuPosition.getId());
+//            deleteMenuPositionDirectory(menuPositionAdminResourcePath);
+//
+//            Path menuPositionClientResourcePath = Paths.get(imagesPathClient + menuPosition.getId());
+//            deleteMenuPositionDirectory(menuPositionClientResourcePath);
+//        }
+//        catch (Exception e) {
+//            throw new RuntimeException(e.getMessage());
+//        }
         List<MenuPositionImage> images = menuPositionImageRepository.findByMenuPosition(menuPosition);
         try {
-            menuPositionImageRepository.deleteAllInBatch(images);
-            menuPositionRepository.deleteById(id);
+            menuPosition.setDeleted(true);
+            menuPositionRepository.save(menuPosition);
+            for (MenuPositionImage image: images) {
+                image.setDeleted(true);
+                menuPositionImageRepository.save(image);
+            }
         }
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -314,6 +314,7 @@ public class MenuPositionService {
             menuPositionImage1.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image1.getOriginalFilename());
             menuPositionImage1.setOrderNumber(1);
             menuPositionImage1.setMenuPosition(menuPosition);
+            menuPositionImage1.setDeleted(false);
 
             menuPositionImageRepository.save(menuPositionImage1);
         }
@@ -322,6 +323,7 @@ public class MenuPositionService {
             menuPositionImage2.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image2.getOriginalFilename());
             menuPositionImage2.setOrderNumber(2);
             menuPositionImage2.setMenuPosition(menuPosition);
+            menuPositionImage2.setDeleted(false);
 
             menuPositionImageRepository.save(menuPositionImage2);
         }
@@ -330,6 +332,7 @@ public class MenuPositionService {
             menuPositionImage3.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image3.getOriginalFilename());
             menuPositionImage3.setOrderNumber(3);
             menuPositionImage3.setMenuPosition(menuPosition);
+            menuPositionImage3.setDeleted(false);
 
             menuPositionImageRepository.save(menuPositionImage3);
         }
@@ -338,6 +341,7 @@ public class MenuPositionService {
             menuPositionImage4.setLink("/menu-position-images/" + menuPosition.getId() + "/" + image4.getOriginalFilename());
             menuPositionImage4.setOrderNumber(4);
             menuPositionImage4.setMenuPosition(menuPosition);
+            menuPositionImage4.setDeleted(false);
 
             menuPositionImageRepository.save(menuPositionImage4);
         }

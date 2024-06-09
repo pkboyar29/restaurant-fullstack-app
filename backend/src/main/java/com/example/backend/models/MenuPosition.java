@@ -29,6 +29,9 @@ public class MenuPosition {
     @Column(name = "portion", length = 40, nullable = false)
     private String portion;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
+
     @ManyToOne
     @JoinColumn(name = "menu_section", nullable = false)
     private MenuSection menuSection;
@@ -61,6 +64,10 @@ public class MenuPosition {
         return portion;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public MenuSection getMenuSection() {
         return menuSection;
     }
@@ -87,6 +94,10 @@ public class MenuPosition {
 
     public void setPortion(String portion) {
         this.portion = portion;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public void setMenuSection(MenuSection menuSection) {

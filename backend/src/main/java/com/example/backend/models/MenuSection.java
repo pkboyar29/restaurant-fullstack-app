@@ -16,6 +16,9 @@ public class MenuSection {
     @Column(name = "descr")
     private String descr;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
+
     public MenuSection() { }
 
     public Long getId() {
@@ -30,8 +33,8 @@ public class MenuSection {
         return descr;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
     public void setName(String name) {
@@ -40,5 +43,9 @@ public class MenuSection {
 
     public void setDescr(String descr) {
         this.descr = descr;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

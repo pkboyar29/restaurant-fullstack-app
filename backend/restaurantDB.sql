@@ -1,7 +1,8 @@
 CREATE TABLE menu_sections (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(100) NOT NULL,
-	descr VARCHAR(400)
+	descr VARCHAR(400),
+	is_deleted BOOLEAN NOT NULL DEFAULT false
 )
 
 INSERT INTO menu_sections (name, descr) VALUES
@@ -25,6 +26,7 @@ CREATE TABLE menu_positions (
     date_entered_in_menu DATE NOT NULL DEFAULT CURRENT_DATE,
     price INTEGER NOT NULL,
     portion VARCHAR(40) NOT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT false,
     menu_section INTEGER NOT NULL,
     CONSTRAINT fk_menusection FOREIGN KEY (menu_section) REFERENCES menu_sections(id)
 );
@@ -45,16 +47,10 @@ CREATE TABLE menu_position_images (
 	id SERIAL PRIMARY KEY,
 	link VARCHAR(200) NOT NULL,
 	order_number INTEGER NOT NULL CHECK(order_number >= 1 AND order_number <= 4),
+	is_deleted BOOLEAN NOT NULL DEFAULT false,
 	menu_position INTEGER NOT NULL,
 	CONSTRAINT FK_MenuPosition FOREIGN KEY (menu_position) REFERENCES menu_positions(id)
 )
-
-INSERT INTO menu_position_images (link, order_number, menu_position)
-VALUES ('1.jpg', 1, 1),
-('2.jpg', 2, 1),
-('3.jpg', 3, 1),
-('o1.jpg', 1, 2),
-('forg.jpg', 2, 2)
 
 CREATE TABLE order_discounts (
 	id SERIAL PRIMARY KEY,

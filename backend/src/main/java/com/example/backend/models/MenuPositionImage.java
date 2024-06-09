@@ -16,9 +16,12 @@ public class MenuPositionImage {
     @Column(name = "order_number", nullable = false)
     private int orderNumber;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
+
     @ManyToOne
     @JoinColumn(name = "menu_position", nullable = false)
-    private  MenuPosition menuPosition;
+    private MenuPosition menuPosition;
 
     public Long getId() {
         return id;
@@ -36,8 +39,8 @@ public class MenuPositionImage {
         return orderNumber;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
     public void setLink(String link) {
@@ -46,6 +49,10 @@ public class MenuPositionImage {
 
     public void setOrderNumber(int orderNumber) {
         this.orderNumber = orderNumber;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public void setMenuPosition(MenuPosition menuPosition) {
