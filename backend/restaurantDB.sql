@@ -91,7 +91,7 @@ CREATE TABLE roles (
 	name VARCHAR(30) NOT NULL
 )
 
-INSERT INTO roles (name) VALUES ('client'), ('employer')
+INSERT INTO roles (name) VALUES ('client'), ('employee')
 
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
@@ -108,7 +108,7 @@ CREATE TABLE users (
 	CONSTRAINT fk_role FOREIGN KEY (role) REFERENCES roles(id)
 )
 
-CREATE TABLE employers (
+CREATE TABLE employees (
 	id SERIAL PRIMARY KEY,
 	user_id INT UNIQUE NOT NULL,
 	CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
