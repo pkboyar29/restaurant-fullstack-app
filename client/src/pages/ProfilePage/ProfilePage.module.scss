@@ -1,6 +1,11 @@
 @import '../../style.scss';
 
 .profile {
+
+   &__container {
+      margin-bottom: 40px;
+   }
+
    &__client-discount {
       font-weight: 700;
       font-family: $dmsans;
@@ -21,5 +26,65 @@
       flex-direction: column;
       gap: 20px;
       margin: 20px 0;
+   }
+}
+
+.mini__title {
+   font-size: 24px;
+   margin: 10px 0;
+}
+
+.orders {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+.order {
+   display: flex;
+   flex-direction: column;
+   gap: 7px;
+   font-family: $dmsans;
+
+   &__item {}
+
+   &__title {
+      font-weight: 700;
+   }
+
+   &__positions {
+      margin-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+   }
+}
+
+.position {
+   display: flex;
+   gap: 10px;
+
+   &__item {}
+
+   &:last-child {
+      margin-bottom: 40px;
+   }
+}
+
+.red {
+   color: $redColor;
+   font-weight: 700;
+}
+
+.toggle-button {
+   margin-left: 20px;
+}
+
+.icon {
+   width: 25px;
+   height: 25px;
+
+   &__transform {
+      transform: rotate(180deg);
    }
 }

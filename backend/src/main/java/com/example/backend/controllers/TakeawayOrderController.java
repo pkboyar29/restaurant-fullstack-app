@@ -1,6 +1,7 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dto.TakeawayOrder.TakeawayOrderRequestDTO;
+import com.example.backend.dto.TakeawayOrder.TakeawayOrderResponseDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserRoleException;
 import com.example.backend.services.TakeawayOrderService;
@@ -11,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,6 +23,25 @@ public class TakeawayOrderController {
     @Autowired
     public TakeawayOrderController(TakeawayOrderService takeawayOrderService) {
         this.takeawayOrderService = takeawayOrderService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TakeawayOrderResponseDTO>> getTakeawayOrders(Authentication authentication) {
+        String username;
+        if (authentication == null) {
+            System.out.println("authentication is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } else {
+            username = authentication.getName();
+        }
+
+        try {
+            List<TakeawayOrderResponseDTO> takeawayOrders = takeawayOrderService.getTakeawayOrders(username);
+
+            return ResponseEntity.status(HttpStatus.OK).body(takeawayOrders);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping

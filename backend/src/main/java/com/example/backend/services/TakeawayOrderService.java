@@ -2,6 +2,7 @@ package com.example.backend.services;
 
 import com.example.backend.dto.TakeawayOrder.TakeawayOrderPositionRequestDTO;
 import com.example.backend.dto.TakeawayOrder.TakeawayOrderRequestDTO;
+import com.example.backend.dto.TakeawayOrder.TakeawayOrderResponseDTO;
 import com.example.backend.exceptions.ObjectNotFoundException;
 import com.example.backend.exceptions.UserRoleException;
 import com.example.backend.models.*;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +35,34 @@ public class TakeawayOrderService {
         this.userRepository = userRepository;
         this.menuPositionRepository = menuPositionRepository;
         this.orderDiscountRepository = orderDiscountRepository;
+    }
+
+    public List<TakeawayOrderResponseDTO> getTakeawayOrders(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) { throw new ObjectNotFoundException("User with this username doesn't exist"); }
+        User user = optionalUser.get();
+
+        List<TakeawayOrder> takeawayOrders = takeawayOrderRepository.findByUser(user);
+
+        return convertToTakeawayOrderResponseDTOS(takeawayOrders);
+    }
+
+    private List<TakeawayOrderResponseDTO> convertToTakeawayOrderResponseDTOS(List<TakeawayOrder> takeawayOrders) {
+        List<TakeawayOrderResponseDTO> responseDTOs = new ArrayList<>();
+
+        for (TakeawayOrder order : takeawayOrders) {
+            TakeawayOrderResponseDTO dto = new TakeawayOrderResponseDTO();
+            dto.setId(order.getId());
+            dto.setOrderDate(order.getOrderDate());
+            dto.setDiscountedCost(order.getDiscountedCost());
+            dto.setReceiptDate(order.getReceiptDate());
+            dto.setPaymentMethod(order.getPaymentMethod());
+            dto.setReceiptOption(order.getReceiptOption());
+            responseDTOs.add(dto);
+            dto.setTakeawayOrderPositions(takeawayOrderPositionRepository.findByTakeawayOrder(order));
+        }
+
+        return responseDTOs;
     }
 
     public void addTakeawayOrder(String username, TakeawayOrderRequestDTO takeawayOrderRequestDTO) {
